@@ -1,0 +1,70 @@
+{
+  "name": "dsh-bw-router",
+  "version": "0.1.0",
+  "description": "B&W (B棒 & Wolf) — DSH plugin: plan a task into stages, pick the right model per stage, and switch models inside one session without losing context.",
+  "type": "module",
+  "license": "MIT",
+  "author": "B&W (小棒 & 灰狼)",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "bw",
+    "model-router",
+    "routing",
+    "cost"
+  ],
+  "engines": {
+    "node": ">=20",
+    "dsh": "^0.2.1-rc.2"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./client": {
+      "types": "./dist/plugin/client-entry.d.ts",
+      "default": "./dist/client/client.js"
+    },
+    "./client-format": {
+      "types": "./dist/plugin/client.d.ts",
+      "import": "./dist/plugin/client.js"
+    },
+    "./dsh": {
+      "types": "./dist/plugin/dsh-shell.d.ts",
+      "import": "./dist/plugin/dsh-shell.js"
+    }
+  },
+  "files": [
+    "dist",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "pack:check": "npm pack --dry-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beidou6972yh/dsh-bw-router.git"
+  },
+  "bugs": {
+    "url": "https://github.com/beidou6972yh/dsh-bw-router/issues"
+  },
+  "homepage": "https://github.com/beidou6972yh/dsh-bw-router#readme",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}

@@ -19,12 +19,14 @@
 需要 DeepSeek Harness `0.2.1-rc.2` 或同线版本，Node.js `>=20`。
 
 ```sh
-# npm 发布后
-dsh plugin --profile web add dsh-bw-router
-
-# 或直接从 GitHub 安装（tag 固定版本）
+# 从 GitHub 固定 tag 安装（推荐）
 dsh plugin --profile web add 'github:beidou6972yh/dsh-bw-router#v0.2.0'
+
+# 或从 Release 的预构建 tarball 安装
+dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v0.2.0/dsh-bw-router-0.2.0.tgz'
 ```
+
+> npm 渠道暂不发布；GitHub 仓库与 Release tarball 是唯一发布源。
 
 装完重启一次承载插件的宿主（`dsh web`）。包内 `cordis.patch.yml` 已声明 `dsh.bundle`，安装后会自动启用，无需手写 patch 行。
 

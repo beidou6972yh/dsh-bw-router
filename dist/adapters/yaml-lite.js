@@ -12,7 +12,15 @@
  *   - block mappings (`key: value`, `key:` + nested block);
  *   - block sequences (`- value`, `- key: value`);
  *   - flow sequences/mappings on one line (`[ text, image ]`, `{ a: 1 }`);
- *   - quoted and plain scalars, block scalars (`|`, `>`), comments.
+ *   - quoted and plain scalars, block scalars (`|`, `>`), comments;
+ *   - **wrapped plain scalars** — a value continued on a following, deeper line
+ *     (`- ApiKey` then `<key>`), which YAML folds with a space.
+ *
+ * That last form is not decoration: a live 0.2.1-rc.2 web profile uses it for an
+ * MCP `args` entry, and rejecting it skipped the **whole** file — `config=0`,
+ * with every provider, price and context window unreadable on an otherwise
+ * valid profile (灰狼 2026-11-15, `cordis.patch.yml` line 732). A profile is
+ * worth more than the one entry written in a form we used to dislike.
  *
  * Anchors (`&name`) and aliases (`*name`) are tolerated rather than rejected:
  * an anchor marker is stripped and the rest of the line parsed normally, while
@@ -328,10 +336,64 @@ function parseBlock(lines, start, indent, context) {
     }
     if (isSequenceItem(anchored.rest))
         return parseSequence(lines, start, indent, context);
+    if (!splitKey(anchored.rest)) {
+        // A block whose first line is not `key: value` and not `- item` is a plain
+        // scalar written on its own lines (`key:` then the text underneath). YAML
+        // folds those lines with a space; the same rule the inline continuation
+        // below uses, so both spellings of one value land on one code path.
+        const folded = foldScalarLines(lines, start, indent, anchored.rest);
+        const value = parseScalar(folded.value, first.number, context);
+        rememberAnchors(context, anchored.names, value);
+        return { value, next: folded.next };
+    }
     return parseMapping(lines, start, indent, context);
 }
 function isSequenceItem(text) {
     return text === '-' || text.startsWith('- ');
+}
+/**
+ * True when a value that already started on its owner's line may be continued
+ * by the lines below it. Flow collections are excluded: `[a, b]` is complete on
+ * its own line, so a deeper line after it is an indentation error, not a fold.
+ */
+function isFoldableScalar(text) {
+    if (text === '')
+        return false;
+    const first = text[0];
+    return first !== '[' && first !== '{';
+}
+/**
+ * Folds a wrapped plain scalar back into one value.
+ *
+ * YAML joins the continuation lines of a plain scalar with a single space, and a
+ * continuation line is one that is **more indented** than the entry that owns the
+ * value (`- ApiKey` / `<key on the next line>`) or **exactly at** the scalar's own
+ * indent when the scalar started on its own line (`key:` / `  text`).
+ *
+ * Only lines that cannot begin a new structure are folded. A deeper line that
+ * *is* a `key: value` pair or a `- item` is still an indentation error: tolerance
+ * for a legal YAML spelling must not turn broken indentation into prose.
+ *
+ * Blank lines inside a wrapped scalar are dropped by {@link toLines}; the fold is
+ * therefore always a single space, never a paragraph break.
+ */
+function foldScalarLines(lines, start, contentIndent, first, ownerIndent = contentIndent - 1) {
+    const parts = [first];
+    let i = start + 1;
+    while (i < lines.length) {
+        const line = lines[i];
+        if (line.indent <= ownerIndent)
+            break;
+        if (line.indent < contentIndent)
+            break;
+        if (isSequenceItem(line.text))
+            break;
+        if (splitKey(line.text))
+            break;
+        parts.push(line.text);
+        i++;
+    }
+    return { value: parts.join(' '), next: i };
 }
 function parseSequence(lines, start, indent, context) {
     const out = [];
@@ -373,10 +435,12 @@ function parseSequence(lines, start, indent, context) {
         }
         const pair = splitKey(inline);
         if (!pair) {
-            const value = parseScalar(inline, line.number, context);
+            // `- ApiKey` + a deeper continuation line is one value, not two items.
+            const folded = foldScalarLines(lines, i, line.indent + 1, inline, line.indent);
+            const value = parseScalar(folded.value, line.number, context);
             rememberAnchors(context, names, value);
             out.push(value);
-            i++;
+            i = folded.next;
             continue;
         }
         // `- key: value` starts a mapping whose keys sit at indent + 2.
@@ -421,10 +485,13 @@ function parseMapping(lines, start, indent, context) {
             continue;
         }
         if (valueText !== '') {
-            value = parseScalar(valueText, line.number, context);
+            const folded = isFoldableScalar(valueText)
+                ? foldScalarLines(lines, i, line.indent + 1, valueText, line.indent)
+                : { value: valueText, next: i + 1 };
+            value = parseScalar(folded.value, line.number, context);
             rememberAnchors(context, names, value);
             out[pair.key] = value;
-            i++;
+            i = folded.next;
             continue;
         }
         const next = lines[i + 1];
@@ -453,12 +520,19 @@ function parseInlineMapping(lines, start, indent, first, context) {
     const anchoredFirst = takeAnchors(first.rest);
     const firstText = anchoredFirst.rest;
     let firstValue;
+    /** Where the first value stopped; the item's remaining keys resume here. */
+    let resume = start + 1;
     if (isBlockScalarMarker(firstText)) {
-        const { value } = readBlockScalar(lines, start, indent, firstText);
-        firstValue = value;
+        const scalar = readBlockScalar(lines, start, indent, firstText);
+        firstValue = scalar.value;
+        resume = scalar.next;
     }
     else if (firstText !== '') {
-        firstValue = parseScalar(firstText, line.number, context);
+        const folded = isFoldableScalar(firstText)
+            ? foldScalarLines(lines, start, indent + 1, firstText, indent)
+            : { value: firstText, next: start + 1 };
+        firstValue = parseScalar(folded.value, line.number, context);
+        resume = folded.next;
     }
     else {
         const next = lines[start + 1];
@@ -472,7 +546,7 @@ function parseInlineMapping(lines, start, indent, first, context) {
     }
     rememberAnchors(context, anchoredFirst.names, firstValue);
     out[first.key] = firstValue;
-    let i = start + 1;
+    let i = resume;
     while (i < lines.length) {
         const current = lines[i];
         if (current.indent < indent)
@@ -504,10 +578,13 @@ function parseInlineMapping(lines, start, indent, first, context) {
             continue;
         }
         if (valueText !== '') {
-            value = parseScalar(valueText, current.number, context);
+            const folded = isFoldableScalar(valueText)
+                ? foldScalarLines(lines, i, current.indent + 1, valueText, current.indent)
+                : { value: valueText, next: i + 1 };
+            value = parseScalar(folded.value, current.number, context);
             rememberAnchors(context, names, value);
             out[pair.key] = value;
-            i++;
+            i = folded.next;
             continue;
         }
         const next = lines[i + 1];
@@ -526,8 +603,15 @@ function parseInlineMapping(lines, start, indent, first, context) {
     }
     return { value: out, next: i };
 }
+/**
+ * True for a block-scalar header: `|` / `>`, each with an optional chomping
+ * indicator (`-` keep-less, `+` keep) and an optional explicit indentation
+ * indicator (`1`–`9`), in either order (`|2-`, `|-2`). A profile that says
+ * `|2` used to fall through to the "plain scalar" path and then die on the
+ * block's own indentation.
+ */
 function isBlockScalarMarker(text) {
-    return /^[|>][+-]?$/.test(text.trim());
+    return /^[|>](?:[1-9][+-]?|[+-][1-9]?)?$/.test(text.trim());
 }
 /**
  * Reads a `|` / `>` block scalar: every following line more indented than the

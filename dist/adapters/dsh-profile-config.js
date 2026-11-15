@@ -78,7 +78,7 @@ export async function readProfileConfigFiles(candidates) {
             parsed = file.endsWith('.json') ? JSON.parse(text) : parseYamlLite(text);
         }
         catch (error) {
-            skipped.push(`${file}: ${error instanceof Error ? error.message : String(error)}`);
+            skipped.push(unreadableProfile(file, error));
             continue;
         }
         const found = providerConfigsFromDocument(parsed);
@@ -106,6 +106,19 @@ export async function readProfileConfigFiles(candidates) {
         filesRead,
         skipped,
     };
+}
+/**
+ * Why a config file was not read, in one line that also says **what is lost**.
+ *
+ * The standing rule for a bad config is「坏配置 = 暂无模型」, but a bare
+ * `unexpected indentation (line 732)` let a real defect read as "this host has
+ * no prices" for days (灰狼 2026-11-15: `sources.config=0`). The consequence
+ * belongs in the same sentence as the cause: `config=0` means **not read**, and
+ * "not configured" is a different claim about the host.
+ */
+function unreadableProfile(file, error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return `${file}: 未读取（${message}）—— 该文件的 provider/价格/窗口本次不生效；config=0 只说明没读到，不等于没配置`;
 }
 /**
  * Extracts provider routes from one parsed document.

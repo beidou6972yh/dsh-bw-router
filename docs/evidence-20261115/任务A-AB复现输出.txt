@@ -1,0 +1,23 @@
+=== BEFORE ===
+adapters      : temp/before-dist/adapters
+file          : /tmp/repro-732-YS9VbE/cordis.patch.yml
+续写行号      : 732
+filesRead     : 0
+config(providers): 0
+config(models)   : 0
+providers     : []
+models        : []
+skipped       : ["/tmp/repro-732-YS9VbE/cordis.patch.yml: unexpected indentation (line 732)"]
+VERDICT       : config=0 ❌
+
+=== AFTER ===
+adapters      : temp/after-dist/adapters
+file          : /tmp/repro-732-cCOkyI/cordis.patch.yml
+续写行号      : 732
+filesRead     : 1
+config(providers): 2
+config(models)   : 2
+providers     : ["freellmapi","deepseek-account"]
+models        : [{"key":"freellmapi/auto","contextWindow":200000,"maxTokens":16384,"inputPerMTok":0,"outputPerMTok":0},{"key":"deepseek-account/deepseek-flash","contextWindow":1048576,"maxTokens":65536,"inputPerMTok":0.28,"outputPerMTok":0.42}]
+skipped       : []
+VERDICT       : config>0 ✅

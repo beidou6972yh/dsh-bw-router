@@ -1,0 +1,199 @@
+import type { CostEstimate } from './types.js';
+
+/**
+ * F6 — the honest half of a cost estimate: the band, the statement, and the
+ * correction that comes from real usage.
+ *
+ * Three facts this file refuses to let the UI blur:
+ *  1. an estimate is an **interval**, never a number that looks exact;
+ *  2. the band has to be *stated* ("our band means this, measured against X"),
+ *     because a ± with no meaning is decoration;
+ *  3. once real usage arrives, the next estimate is narrower **and** the last
+ *     one is checked against the bill — an estimate that never gets compared to
+ *     reality is a guess wearing a suit.
+ */
+
+/** One calibrated observation: what we said, what it was. */
+export interface CalibrationSample {
+  /** Predicted/actual for one dimension. Predicted must be > 0 to be usable. */
+  ratio: number;
+  /** Stage this sample came from, for the audit trail. */
+  stageId?: string;
+}
+
+/**
+ * Running calibration state for a run.
+ *
+ * Deliberately small and local: no persistence, no cross-project learning. One
+ * run's errors improve the same run's next band — that is the whole promise
+ * ("逐步收窄"), and it is checkable by a test instead of a claim.
+ */
+export interface CalibrationState {
+  /** Samples of actual/predicted for token counts. */
+  tokenSamples: CalibrationSample[];
+  /** Samples of actual/predicted for money, only where both sides are known. */
+  costSamples: CalibrationSample[];
+  /** How many comparisons ran outside the band the estimate advertised. */
+  outOfBand: number;
+  /** Stage ids that fell outside their advertised band. */
+  outOfBandStages: string[];
+}
+
+export function emptyCalibration(): CalibrationState {
+  return { tokenSamples: [], costSamples: [], outOfBand: 0, outOfBandStages: [] };
+}
+
+/** Advertised band before any real usage is known. */
+export const BASE_UNCERTAINTY = 0.35;
+
+/** Below this the band stops being informative and becomes a boast. */
+export const FLOOR_UNCERTAINTY = 0.15;
+
+/** Never promise more than this; a huge band is honest, a fake tight one is not. */
+export const CEILING_UNCERTAINTY = 1;
+
+/**
+ * Records one finished stage against its estimate.
+ *
+ * `actualCost` is the real charge (null when the model has no price — then only
+ * tokens are compared, because comparing an unknown amount would be inventing
+ * one). Returns the fields the caller books; the state is mutated in place
+ * because it belongs to the run, not to the ledger.
+ */
+export function observeStage(
+  state: CalibrationState,
+  params: {
+    stageId: string;
+    /** Real usage. */
+    actualInputTokens: number;
+    actualOutputTokens: number;
+    actualCost: number | null;
+    estimate: CostEstimate;
+  },
+): CalibrationState {
+  const predictedTokens = params.estimate.inputTokens + params.estimate.outputTokens;
+  const actualTokens = params.actualInputTokens + params.actualOutputTokens;
+  if (predictedTokens > 0 && actualTokens >= 0) {
+    state.tokenSamples.push({ ratio: actualTokens / predictedTokens, stageId: params.stageId });
+  }
+  if (
+    params.actualCost !== null &&
+    params.estimate.cost !== null &&
+    params.estimate.cost > 0
+  ) {
+    const ratio = params.actualCost / params.estimate.cost;
+    state.costSamples.push({ ratio, stageId: params.stageId });
+    const band = params.estimate.uncertainty;
+    // Outside the advertised band is a factual miss. Counted, never hidden: the
+    // "账目偏差落在声明区间内" acceptance is only meaningful if misses show up.
+    if (Math.abs(1 - ratio) > band) {
+      state.outOfBand += 1;
+      state.outOfBandStages.push(params.stageId);
+    }
+  }
+  return state;
+}
+
+/**
+ * The band to advertise for the **next** estimate of this run.
+ *
+ * Before any sample: the base 35%. After: the widest observed error, plus a
+ * margin, because one stage is a sample and not a distribution — and never below
+ * the floor. It can grow as easily as it shrinks: an estimate that was wrong by
+ * 3× this run must not advertise ±15% next stage.
+ */
+export function calibratedUncertainty(
+  state: CalibrationState,
+  base: number = BASE_UNCERTAINTY,
+): number {
+  const ratios = [...state.costSamples, ...state.tokenSamples].map((s) => s.ratio);
+  if (ratios.length === 0) return clampBand(base);
+  const worst = ratios.reduce((max, ratio) => Math.max(max, Math.abs(1 - ratio)), 0);
+  // Margin falls with evidence: 1 sample → +60% of the error, many → +15%.
+  const margin = 1 + Math.max(0.15, 0.6 / Math.sqrt(ratios.length));
+  return clampBand(Math.max(worst * margin, Math.min(worst * 1.15, worst + 0.05)));
+}
+
+function clampBand(band: number): number {
+  return Math.min(CEILING_UNCERTAINTY, Math.max(FLOOR_UNCERTAINTY, round3(band)));
+}
+
+/** `±35%` for a band. One function, so no two screens print it differently. */
+export function bandText(uncertainty: number): string {
+  return `±${Math.round(clampBand(uncertainty) * 100)}%`;
+}
+
+/** Interval for one amount: `$0.0120 ~ $0.0240` (band on the amount, not on the savings). */
+export function costInterval(cost: number, uncertainty: number): { low: number; high: number } {
+  const band = clampBand(uncertainty);
+  return { low: round6(cost * (1 - band)), high: round6(cost * (1 + band)) };
+}
+
+/** Interval for a token count: `~18k (11.7k–24.3k)`. */
+export function tokenInterval(tokens: number, uncertainty: number): { low: number; high: number } {
+  const band = clampBand(uncertainty);
+  return { low: Math.round(tokens * (1 - band)), high: Math.round(tokens * (1 + band)) };
+}
+
+/**
+ * The error statement that goes next to every estimate (F6 §1).
+ *
+ * A number without this is a promise nobody can check. The statement names the
+ * **basis** (how many real stages it has been compared against) and what the band
+ * covers (token counts, and money when prices are known). It never says "准确".
+ */
+export function errorStatement(state: CalibrationState, uncertainty: number): string {
+  const samples = state.tokenSamples.length;
+  const band = bandText(uncertainty);
+  const basis =
+    samples === 0
+      ? '尚未与真实用量对账（首次预估，仅按 token 口径推）'
+      : `已与 ${samples} 段真实用量对账${state.outOfBand > 0 ? `（其中 ${state.outOfBand} 段超出声明区间，已计入加宽）` : '，均在声明区间内'}`;
+  return (
+    `误差口径：${band}，覆盖输入/输出 token 与（已知价格时的）费用；` +
+    `${basis}。这是区间不是承诺，实际结算以宿主用量为准。`
+  );
+}
+
+/** Why an amount is not in the savings figure (F6 §3, the "省 100%" accident). */
+export interface SavingsExclusion {
+  /** Model keys whose price we do not know. */
+  unpriced: string[];
+  /** Human sentence: why the savings figure is missing. */
+  reason: string;
+}
+
+/**
+ * Savings must never be computed from an unpriced side.
+ *
+ * The historic accident: no price configured ⇒ cost rendered `$0.0000` ⇒ "节省
+ * 100%". An unknown price is not zero, so it is excluded from the savings sum and
+ * named, and the caller prints "未知" instead of a number.
+ */
+export function savingsExclusion(estimates: CostEstimate[]): SavingsExclusion {
+  const unpriced = new Set<string>();
+  for (const estimate of estimates) {
+    if (estimate.cost === null || estimate.savings === null) {
+      for (const key of estimate.unknownPricing ?? []) unpriced.add(key);
+      if ((estimate.unknownPricing ?? []).length === 0 && estimate.priceUnknownReason) {
+        unpriced.add(estimate.priceUnknownReason);
+      }
+    }
+  }
+  const list = [...unpriced];
+  return {
+    unpriced: list,
+    reason:
+      list.length === 0
+        ? ''
+        : `节约额不计入：${list.join('、')} 无价格（未知不等于 0 元，故不参与节约额计算）`,
+  };
+}
+
+function round3(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
+function round6(n: number): number {
+  return Math.round(n * 1e6) / 1e6;
+}

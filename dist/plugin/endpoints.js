@@ -1,3 +1,5 @@
+import { nowIso } from '../core/types.js';
+import { buildPlanCard } from '../core/card.js';
 import { buildWizardView, confirmWizard, PluginHost, RouterError, RouterSession, } from './index.js';
 /**
  * The four HTTP endpoints the client half talks to — **and nothing else**.
@@ -67,6 +69,12 @@ function optionalBoolean(source, field) {
 }
 /** HTTP status per stable machine code; everything else is a 400. */
 const FAILURE_STATUS = {
+    // `getCard` promises "404 no-plan" and the client half keys its "draw nothing"
+    // on exactly that: `requestCard()` maps **404** to `idle`. The code answered
+    // 400 (the fallback), so a fresh session's dock printed
+    // `加载失败：no plan yet` — an error banner for the normal state. Same value the
+    // two neighbours already use.
+    'no-plan': 404,
     'unknown-plan': 404,
     'unknown-stage': 404,
     // A switch whose session cannot be named is a conflict with the host's state
@@ -148,10 +156,48 @@ async function postPlan(body, deps) {
         throw new RouterError('bad-request', '"stageNames" must be an array of strings');
     }
     const inputTokens = optionalNumber(payload, 'estimatedInputTokens') ?? 20_000;
+    const summary = typeof payload.summary === 'string' ? payload.summary : taskId;
     // `true` = "I know this plan contains unpriced models, plan it anyway". On a
     // host with no prices at all this is already the default (and the card says
     // so); on a mixed catalog it is the only way past `price-unknown`.
     const allowUnknownPricing = optionalBoolean(payload, 'allowUnknownPricing');
+    // 空清单 (blocker B, 灰狼 2026-11-15): "the user gave no stages" is a normal
+    // request, not a programming error. `buildStages()` treats an empty list as a
+    // contract violation (and keeps doing so — the planner's contract is not what
+    // this fix is allowed to change); the HTTP boundary answers it with a 200 and a
+    // card that says why nothing can start, because a 500 here is an error banner
+    // the UI cannot turn into words.
+    if (stageNames.length === 0) {
+        const notice = '空清单：未提供阶段（请至少给出一个阶段名）';
+        // Reused, not hand-written: the empty card goes through the same builder as
+        // every other card so its shape (pricing stance, `canStart: false`, no rows)
+        // cannot drift. Only the footer is replaced — an empty sum would otherwise
+        // print `合计 ~$0.0000`, which reads like a real, free plan.
+        const built = buildPlanCard({
+            plan: {
+                taskId,
+                planId: '',
+                summary,
+                stages: [],
+                baselineModelKey: '',
+                baselineIsGuess: true,
+                createdAt: nowIso(),
+            },
+            pricing: deps.host.pricing,
+        });
+        return json(200, {
+            ok: true,
+            // No plan was created: `planId: ''` (not a made-up id that `/plan/confirm`
+            // would answer with `unknown-plan`), plus the same fact as data.
+            planId: '',
+            empty: true,
+            notice,
+            stages: [],
+            modelCount: 0,
+            pricing: deps.host.pricing,
+            card: { ...built, footer: notice, blockers: [] },
+        });
+    }
     // How many models this scan found — the number `/router/plan` reports. The
     // registry's size would be the union of every scan this process ever did.
     let modelCount = 0;
@@ -163,7 +209,7 @@ async function postPlan(body, deps) {
     }
     const plan = deps.host.plan({
         taskId,
-        summary: typeof payload.summary === 'string' ? payload.summary : taskId,
+        summary,
         stageNames: stageNames,
         estimatedInputTokens: inputTokens,
         ...(optionalNumber(payload, 'estimatedOutputTokens') === undefined
@@ -278,12 +324,9 @@ async function postSwitch(body, deps) {
     }
     if (resolution)
         deps.sessions?.bind(planId, resolution.sessionId);
-    // [2026-11-12 融合契约 v1.0] 换挡连续性入参：goalHash / ctxId / 对表五项，可选
-    const continuity = asObject(payload.continuity ?? {});
     const result = await deps.host.switchForStage(stageId, targetKey, contextTokens, expectedOutputTokens, required, planId, {
         ...(allowUnknownPricing === undefined ? {} : { allowUnknownPricing }),
         ...(resolution ? { sessionId: resolution.sessionId } : {}),
-        ...(Object.keys(continuity).length ? { continuity } : {}),
     });
     // A successful switch is what moves the bar forward. "Already in use" is a
     // success too (B1): the session **is** on the model this stage needs, so the

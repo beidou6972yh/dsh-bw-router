@@ -1,7 +1,6 @@
 import { estimateStage, estimateWithoutModel, formatEstimate, sumEstimates, } from '../core/budget.js';
 import { decideModel, decidePlan } from '../core/decider.js';
 import { guardSwitch, singleShotMaxTokens } from '../core/guard.js';
-import { continuityVerdict, noteContinuity } from '../core/continuity-guard.js';
 import { DEFAULT_CONTEXT_THRESHOLDS, compactionNotice, decideContext, emptyHandover, handoverComplete, readThresholds, renderHandover, validateHandover, } from '../core/context-guard.js';
 import { BASE_UNCERTAINTY, calibratedUncertainty, costInterval, emptyCalibration, errorStatement, observeStage, savingsExclusion, tokenInterval, } from '../core/calibration.js';
 import { Ledger } from '../core/ledger.js';
@@ -741,12 +740,6 @@ export class PluginHost {
         // stance (host policy + catalog + opt-in), never from the guard's default.
         // On a host that prices nothing this is why a real switch can now happen;
         // on a mixed catalog it is still `price-unknown` unless asked otherwise.
-        // [2026-11-12 融合契约 v1.0 §四] 换挡连续性守门：目标漂移/上下文标识变/断崖 → 保持原档
-        const continuity = continuityVerdict(options.sessionId, contextTokens, options.continuity);
-        if (!continuity.allowed) {
-            this.ledger.recordBlocked(stageId, targetKey, continuity.message, planId);
-            return { switched: false, code: continuity.code, message: continuity.message, continuity };
-        }
         const pricing = this.pricingFor(planId, options.allowUnknownPricing);
         const verdict = guardSwitch({
             target: entry.model,
@@ -833,7 +826,6 @@ export class PluginHost {
             };
         }
         this.ledger.recordSwitch(stageId, from, targetKey, planId);
-        noteContinuity(options.sessionId, contextTokens, targetKey, options.continuity);
         // F6 §5: the switch re-sends the prompt to the new model, and that prefill is
         // billed like any other input. Booked against the *target* model's price; an
         // unpriced model books the tokens with no money rather than `$0`.

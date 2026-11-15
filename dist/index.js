@@ -1,5 +1,5 @@
 /**
- * Public entry of the dsh-model-router package.
+ * Public entry of the dsh-bw-router package.
  *
  * Everything a host (the DSH plugin shell, a CLI, a test) may import lives here.
  * `src/adapters/` stays out on purpose: platform code is handed to the plugin,

@@ -12,7 +12,15 @@
  *   - block mappings (`key: value`, `key:` + nested block);
  *   - block sequences (`- value`, `- key: value`);
  *   - flow sequences/mappings on one line (`[ text, image ]`, `{ a: 1 }`);
- *   - quoted and plain scalars, block scalars (`|`, `>`), comments.
+ *   - quoted and plain scalars, block scalars (`|`, `>`), comments;
+ *   - **wrapped plain scalars** — a value continued on a following, deeper line
+ *     (`- ApiKey` then `<key>`), which YAML folds with a space.
+ *
+ * That last form is not decoration: a live 0.2.1-rc.2 web profile uses it for an
+ * MCP `args` entry, and rejecting it skipped the **whole** file — `config=0`,
+ * with every provider, price and context window unreadable on an otherwise
+ * valid profile (灰狼 2026-11-15, `cordis.patch.yml` line 732). A profile is
+ * worth more than the one entry written in a form we used to dislike.
  *
  * Anchors (`&name`) and aliases (`*name`) are tolerated rather than rejected:
  * an anchor marker is stripped and the rest of the line parsed normally, while

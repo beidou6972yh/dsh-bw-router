@@ -58,6 +58,21 @@ export declare function fetchView<T>(path: string, options?: {
     method?: string;
     body?: unknown;
 }): Promise<View<T>>;
+/**
+ * What a plan request answers: the host-built card, plus two fields the bare
+ * card cannot carry.
+ *
+ * `notice` is the host's own sentence for a plan that answered 200 but has
+ * nothing to start (an empty stage list is the reported case); `empty` is the
+ * same fact as data, for a caller that should not match prose. `planId` is `''`
+ * when no plan was created — never a made-up id that `confirm` would 404 on.
+ */
+export interface PlanPayload {
+    planId: string;
+    card: PlanCard;
+    notice?: string;
+    empty?: boolean;
+}
 /** Plan card request: the whole happy path for the composer dock. */
 export declare function requestPlan(input: {
     taskId: string;
@@ -67,10 +82,7 @@ export declare function requestPlan(input: {
     usage?: Record<string, number>;
 }, options?: {
     fetchImpl?: FetchLike;
-}): Promise<View<{
-    planId: string;
-    card: PlanCard;
-}>>;
+}): Promise<View<PlanPayload>>;
 /** Confirm-开工. A 400 here means the card was not startable; show why. */
 export declare function confirmPlan(planId: string, options?: {
     fetchImpl?: FetchLike;

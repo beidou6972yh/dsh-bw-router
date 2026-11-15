@@ -1,7 +1,7 @@
 {
   "name": "dsh-bw-router",
-  "version": "0.1.0",
-  "description": "B&W (B棒 & Wolf) — DSH plugin: plan a task into stages, pick the right model per stage, and switch models inside one session without losing context.",
+  "version": "0.2.0",
+  "description": "B&W (小棒 & 灰狼) — DSH plugin: plan a task into stages, pick the right model per stage, and switch models inside one session without losing context.",
   "type": "module",
   "license": "MIT",
   "author": "B&W (小棒 & 灰狼)",
@@ -42,10 +42,26 @@
     "dist",
     "cordis.patch.yml",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
-    "pack:check": "npm pack --dry-run"
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json && npm run build:client",
+    "build:client": "node scripts/build-client.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "verify:plan-trigger": "node scripts/verify-plan-trigger.mjs",
+    "verify:dist-client": "node scripts/verify-dist-client.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@vitest/coverage-v8": "^4.1.12",
+    "rolldown": "^1.2.15",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.12"
   },
   "repository": {
     "type": "git",

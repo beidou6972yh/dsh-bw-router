@@ -240,7 +240,7 @@ export interface DshHttpResponse {
     writeHead(status: number, headers: Record<string, string>): void;
     end(payload: string): void;
 }
-export declare const PLUGIN_NAME = "dsh-model-router";
+export declare const PLUGIN_NAME = "dsh-bw-router";
 /**
  * Injects the web server; without it the plugin has no HTTP surface.
  *

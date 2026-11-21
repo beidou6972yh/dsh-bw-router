@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WB 模型路由网关 · 开源发布 v1.0.3.3</title>
+<style>
+:root{
+  --ink:#16233C;
+  --paper:#F6F4EF;
+  --card:#FFFFFF;
+  --muted:#5A6273;
+  --accent:#B2431B;
+  --accent-soft:rgba(178,67,27,.085);
+  --rule:rgba(22,35,60,.14);
+  --on-ink:#F6F4EF;
+  --on-ink-2:rgba(246,244,239,.74);
+  --sans:-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1880px}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-font-smoothing:antialiased}
+.poster{width:1080px;height:1880px;display:flex;flex-direction:column}
+
+/* ---------- 顶部 ---------- */
+.hero{position:relative;flex:0 0 auto;background:var(--ink);color:var(--on-ink);padding:26px 56px 20px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(246,244,239,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(246,244,239,.055) 1px,transparent 1px);
+  background-size:48px 48px}
+.hero-in{position:relative}
+.kicker{display:flex;align-items:center;gap:11px;font-size:16px;letter-spacing:.1em;color:var(--on-ink-2)}
+.kicker .pip{width:8px;height:8px;background:var(--accent);border-radius:2px}
+.kicker b{color:var(--on-ink);font-weight:600;letter-spacing:.06em}
+h1{font-size:76px;line-height:1.06;font-weight:800;letter-spacing:-.03em;margin-top:16px;white-space:nowrap}
+h1 em{font-style:normal;border-bottom:4px solid var(--accent);padding-bottom:4px}
+.sub{margin-top:13px;font-size:22px;line-height:1.45;color:var(--on-ink-2);max-width:900px}
+.facts{position:relative;display:flex;list-style:none;margin-top:16px;padding-top:12px;border-top:1px solid rgba(246,244,239,.22)}
+.facts li{display:flex;align-items:center;gap:10px;font-size:16px;color:var(--on-ink);white-space:nowrap}
+.facts li+li{border-left:1px solid rgba(246,244,239,.22);padding-left:22px;margin-left:22px}
+.facts li::before{content:"";flex:0 0 7px;width:7px;height:7px;background:var(--accent);border-radius:1px}
+.facts li.hot{font-weight:600}
+
+/* ---------- 区块头 ---------- */
+.body{flex:1 1 auto;padding:9px 56px 0;display:flex;flex-direction:column;gap:11px;justify-content:space-between}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.shead .num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.04em;
+  background:var(--accent-soft);border:1px solid rgba(178,67,27,.28);border-radius:3px;padding:1px 6px}
+h2{font-size:27px;line-height:1.2;font-weight:700;letter-spacing:.01em;white-space:nowrap}
+.shead .line{flex:1;height:1px;background:var(--rule)}
+
+/* ---------- 01 ---------- */
+.pains{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pain{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:11px 16px 12px}
+.pain .k{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--muted);opacity:.72}
+.pain h3{margin-top:7px;font-size:21px;line-height:1.25;font-weight:700;letter-spacing:.01em}
+.pain p{margin-top:4px;font-size:19px;line-height:1.38;color:var(--muted);text-wrap:pretty}
+
+/* ---------- 02 三步 + 计划卡 ---------- */
+.flow{display:grid;grid-template-columns:1fr 430px;gap:26px;align-items:stretch}
+.steps3{display:flex;flex-direction:column;gap:11px;justify-content:space-between}
+.st{display:grid;grid-template-columns:52px 1fr;gap:12px;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:9px 16px 10px}
+.st .sn{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);padding-top:4px;letter-spacing:.04em}
+.st h3{font-size:20px;font-weight:700;letter-spacing:.01em}
+.st p{margin-top:3px;font-size:19px;line-height:1.35;color:var(--muted);text-wrap:pretty}
+.st p.more{margin-top:2px;color:rgba(90,98,115,.92)}
+
+.pcard{background:var(--card);border:1px solid rgba(22,35,60,.22);border-radius:10px;padding:16px 18px 16px;display:flex;flex-direction:column}
+.pc-task{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:19px;line-height:1.35;font-weight:700}
+.pc-ico{flex:0 0 20px;width:20px;height:20px}
+.pc-lines{margin-top:18px;border-top:1px solid var(--rule)}
+.pc-line{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;padding:13px 0;border-bottom:1px solid var(--rule)}
+.pc-line .pc-n{font-size:19px;font-weight:700;color:var(--accent);line-height:1.3}
+.pc-line p{font-size:19px;line-height:1.34;color:var(--ink)}
+.pc-line b{font-weight:700}
+.pc-line .ar{color:var(--muted)}
+.pc-line .money{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--accent)}
+.pc-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.pc-step{font-family:var(--mono);font-size:14px;color:var(--muted);flex:0 0 auto}
+.pc-model{font-size:18px;font-weight:600;flex:1}
+.pc-price{font-family:var(--mono);font-size:17px;color:var(--accent);font-weight:700;flex:0 0 auto}
+.pc-edit{margin-top:9px;font-size:14px;line-height:1.3;color:var(--accent);display:flex;align-items:center;gap:6px}
+.pc-edit::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);flex:0 0 5px}
+.pc-btn{margin-top:auto;background:var(--accent);color:var(--on-ink);font-size:18px;font-weight:700;
+  text-align:center;border-radius:6px;padding:11px 0;letter-spacing:.06em}
+.pc-note{margin-top:12px;font-size:14px;line-height:1.3;color:var(--muted);text-align:center}
+
+/* ---------- 03 六格 ---------- */
+.grid7{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+.cell.wide{grid-column:1 / -1}
+.cell.wide p{font-size:19px}
+.cell{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:9px 18px 10px;display:grid;grid-template-columns:24px 1fr;gap:10px}
+.cell .cn{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--muted);opacity:.72;padding-top:3px}
+.cell h3{font-size:20px;line-height:1.3;font-weight:700;letter-spacing:.01em}
+.cell p{margin-top:3px;font-size:19px;line-height:1.38;color:var(--muted);text-wrap:pretty}
+.cell.hi{background:var(--accent-soft);border-color:rgba(178,67,27,.45)}
+.cell.hi h3{color:var(--accent)}
+
+/* ---------- 02b 选模逻辑带 ---------- */
+.pickline{display:flex;align-items:center;gap:14px;margin-top:12px;background:var(--card);
+  border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:8px;padding:10px 16px}
+.btag{flex:0 0 auto;font-size:14px;font-weight:700;color:var(--accent);background:var(--accent-soft);
+  border:1px solid rgba(178,67,27,.32);border-radius:4px;padding:3px 9px;white-space:nowrap}
+.btext{flex:1;font-size:19px;line-height:1.38;color:var(--ink);text-wrap:pretty}
+.btext b{font-weight:700}
+
+/* ---------- 04 差异表 ---------- */
+.tbl{border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--card)}
+.trow{display:grid;grid-template-columns:138px 212px 1fr}
+.trow>div{padding:7px 14px;border-top:1px solid var(--rule);border-left:1px solid var(--rule);
+  font-size:19px;line-height:1.34;display:flex;align-items:center;text-wrap:pretty}
+.trow>div:first-child{border-left:none;color:var(--muted);font-weight:700}
+.trow>div.us{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.trow>div.other{color:var(--muted)}
+.thead>div{border-top:none;background:rgba(22,35,60,.04);font-size:15px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.same{margin-top:7px;font-size:19px;line-height:1.35;font-weight:700;color:var(--ink)}
+.tnote{margin-top:5px;font-size:14px;line-height:1.4;color:var(--muted)}
+
+/* ---------- 05 ---------- */
+.quick{display:flex;align-items:stretch}
+.q{flex:1;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:9px 16px;display:flex;align-items:center;gap:11px}
+.q b{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent)}
+.q span{font-size:19px;font-weight:600;letter-spacing:.01em}
+.qarrow{flex:0 0 26px;display:flex;align-items:center;justify-content:center;color:rgba(22,35,60,.35)}
+.qnote{margin-top:6px;font-size:14px;line-height:1.4;color:var(--muted)}
+
+/* ---------- 页脚 ---------- */
+.foot{flex:0 0 auto;background:var(--ink);color:var(--on-ink-2);padding:11px 56px 12px;font-size:14px;line-height:1.5}
+.foot .f1{display:flex;justify-content:space-between;gap:16px;color:var(--on-ink);font-weight:700;font-size:15px;
+  padding-bottom:7px;border-bottom:1px solid rgba(246,244,239,.2)}
+.foot .f1 .r{font-weight:500;color:var(--on-ink-2)}
+.foot .f2{margin-top:6px}
+.foot .warn{color:var(--on-ink);font-weight:700;border-bottom:1px solid var(--accent);padding-bottom:1px}
+</style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ================= 顶部 ================= -->
+  <header class="hero">
+    <div class="hero-in">
+      <div class="kicker"><span class="pip"></span><b>WB 模型路由网关</b> · 开源发布 · v1.0.3.3</div>
+      <h1>先看计划，<em>你点头才执行</em>。</h1>
+      <p class="sub">把任务分步、每步挑 AI、预计花费先摆出来。</p>
+      <ul class="facts">
+        <li>自己安装、自己管理</li>
+        <li>云端与本地模型都能接</li>
+        <li class="hot">生成计划不收费，执行才按真实用量计费</li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- ================= 正文 ================= -->
+  <main class="body">
+
+    <!-- 01 -->
+    <section>
+      <div class="shead"><span class="num">01</span><h2>它解决什么问题</h2><span class="line"></span></div>
+      <div class="pains">
+        <div class="pain"><div class="k">01</div><h3>选模型靠猜</h3><p>大模型做设计、小模型做执行、专业模型做专业事——没有分工，只能靠猜。</p></div>
+        <div class="pain"><div class="k">02</div><h3>钱花在哪说不清</h3><p>月底只有总额。</p></div>
+        <div class="pain"><div class="k">03</div><h3>换 AI 就得重来</h3><p>前面聊的接不上，任务易跑偏。</p></div>
+        <div class="pain"><div class="k">04</div><h3>自动化是黑箱</h3><p>出事说不清为什么选它。</p></div>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section>
+      <div class="shead"><span class="num">02</span><h2>它怎么帮你</h2><span class="line"></span></div>
+      <div class="flow">
+        <div class="steps3">
+          <div class="st"><div class="sn">01</div><div><h3>决策模型做判断</h3><p>先判断这是什么活、难不难。</p><p class="more">写代码、长文、看图、写作，各有各的判断标准。</p></div></div>
+          <div class="st"><div class="sn">02</div><div><h3>按任务步骤选模型</h3><p>分成 2–3 步，每步配擅长的模型。</p><p class="more">每段还可以自己手动换。</p></div></div>
+          <div class="st"><div class="sn">03</div><div><h3>判断策略和成本</h3><p>在够用的模型里比价，把预计花费先摆出来。</p><p class="more">都够用时，优先更便宜或本地的那个。</p></div></div>
+        </div>
+        <div class="pcard">
+          <div class="pc-task"><svg class="pc-ico" viewBox="0 0 20 20" role="img" aria-labelledby="pc-ico-title pc-ico-desc"><title id="pc-ico-title">计划单</title><desc id="pc-ico-desc">一张按判断、选模型、算成本三步列出预计花费的计划单。</desc><rect x="3" y="2" width="14" height="16" rx="2" fill="none" stroke="#B2431B" stroke-width="1.4"/><path d="M6.5 7h7M6.5 10.5h7M6.5 14h4" stroke="#B2431B" stroke-width="1.4" stroke-linecap="round"/></svg>任务：把三份表汇总成一段</div>
+          <div class="pc-lines">
+            <div class="pc-line"><span class="pc-n">①</span><p><b>判断</b>：写作类 · 难易中等</p></div>
+            <div class="pc-line"><span class="pc-n">②</span><p><b>选模型</b>：第 1 步 · 小模型做整理 <span class="ar">→</span><br>第 2 步 · 专业模型写成稿</p></div>
+            <div class="pc-line"><span class="pc-n">③</span><p><b>算成本</b>：预计 <span class="money">¥0.02 + ¥0.05 ＝ ¥0.07</span></p></div>
+          </div>
+          <div class="pc-btn">确认开工</div>
+          <div class="pc-note">确认前不调用模型、不产生费用</div>
+        </div>
+      </div>
+      <div class="pickline">
+        <span class="btag">专业优先</span>
+        <div class="btext"><b>怎么挑模型</b>：设计给大模型、执行给小模型、专业活给专业模型；<b>同样够用时，再挑更便宜的那个</b>。</div>
+        <span class="btag">成本其次</span>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section>
+      <div class="shead"><span class="num">03</span><h2>你能得到什么</h2><span class="line"></span></div>
+      <div class="grid7">
+        <div class="cell wide hi"><div class="cn">01</div><div><h3>图形界面：设路由、看运行</h3><p>网页上设定任务怎么分段、每段走哪个模型，也能改策略与价目；看运行：谁在接单、成功率、耗时、花费、上下文占用。</p></div></div>
+        <div class="cell"><div class="cn">02</div><div><h3>装好就能用</h3><p>解压、填样例、启动。</p></div></div>
+        <div class="cell hi"><div class="cn">03</div><div><h3>换 AI 不丢上下文</h3><p>同一段对话里换，前面聊的还在，不用重说。</p></div></div>
+        <div class="cell hi"><div class="cn">04</div><div><h3>模型自己选</h3><p>云端模型能接，OpenAI 协议的本地模型也能接。</p></div></div>
+        <div class="cell"><div class="cn">05</div><div><h3>花钱前先看计划</h3><p>每步价格先摆出来。</p></div></div>
+        <div class="cell"><div class="cn">06</div><div><h3>花完能对账</h3><p>按任务、按 AI 都能查。</p></div></div>
+        <div class="cell"><div class="cn">07</div><div><h3>选它的理由可查</h3><p>为什么选它、花多少，可复算。</p></div></div>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section>
+      <div class="shead"><span class="num">04</span><h2>和同类开源项目比，差在哪</h2><span class="line"></span></div>
+      <div class="tbl">
+        <div class="trow thead"><div>维度</div><div>常见做法</div><div>我们</div></div>
+        <div class="trow"><div>选模型</div><div class="other">按规则或阈值转发</div><div class="us">按任务分步，专业优先、再比成本，每步预计花费摆在你确认前。</div></div>
+        <div class="trow"><div>谁按开关</div><div class="other">后台自动生效</div><div class="us">你点确认才执行，不确认不计费。</div></div>
+        <div class="trow"><div>钱怎么算</div><div class="other">按配置估算或额度</div><div class="us">账本记真实用量，预估和实付能对账。</div></div>
+        <div class="trow"><div>怎么复盘</div><div class="other">用量与费用看板</div><div class="us">本次任务的路由与运行一屏看完，还能逐段改模型、事后复算。</div></div>
+        <div class="trow"><div>接什么模型</div><div class="other">多家云端服务</div><div class="us">云端 + OpenAI 协议的本地/局域网模型都能接。</div></div>
+        <div class="trow"><div>部署与入口</div><div class="other">多为自托管或聚合</div><div class="us">自托管；管理面只在内网，不对外。</div></div>
+      </div>
+      <p class="same">相同点：都开源、都接多家模型、都看成本。</p>
+      <p class="tnote">对比依据 2026-11 公开说明（LiteLLM、new-api、HiRoute 等），不评价优劣。</p>
+    </section>
+  </main>
+
+  <!-- ================= 页脚 ================= -->
+  <footer class="foot">
+    <div class="f1"><span>WB 模型路由网关 v1.0.3.3　｜　开源发布　｜　<span class="warn">仓库与许可证待发布方确认</span></span></div>
+    <div class="f2">需自备服务地址和密钥；Linux / 容器已验证，Windows、macOS 未验证。</div>
+    <div class="f2">来源：1.0.3.3 文档、2026-11 实测。</div>
+  </footer>
+</div>
+</body>
+</html>

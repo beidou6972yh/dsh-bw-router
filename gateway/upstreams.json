@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "upstreams": [
+    {
+      "id": "up-a",
+      "base_url": "https://upstream-a.example.com/v1",
+      "api_key_env": "UPSTREAM_A_API_KEY",
+      "max_rpm": 50,
+      "models": {
+        "model-fast-0731": {
+          "context_window": 800000,
+          "max_tokens": 65536,
+          "vision": false,
+          "tier": "cheap"
+        }
+      },
+      "label": "上游 up-a（示例，请替换为你侧真实上游）"
+    },
+    {
+      "id": "up-b",
+      "base_url": "https://upstream-b.example.com/v1",
+      "api_key_env": "UPSTREAM_B_API_KEY",
+      "max_rpm": 50,
+      "models": {
+        "model-glm-flash": {
+          "context_window": 800000,
+          "max_tokens": 65536,
+          "vision": true,
+          "tier": "cheap"
+        },
+        "model-glm-strong": {
+          "context_window": 1048576,
+          "max_tokens": 65536,
+          "vision": true,
+          "tier": "strong"
+        }
+      },
+      "label": "上游 up-b（示例，请替换为你侧真实上游）"
+    },
+    {
+      "id": "up-c",
+      "base_url": "https://upstream-c.example.com/v1",
+      "api_key_env": "UPSTREAM_C_API_KEY",
+      "max_rpm": 50,
+      "models": {
+        "model-flash": {
+          "context_window": 1048576,
+          "max_tokens": 384000,
+          "vision": true,
+          "tier": "cheap"
+        }
+      },
+      "label": "上游 up-c（示例，请替换为你侧真实上游）"
+    },
+    {
+      "id": "up-d",
+      "base_url": "https://upstream-d.example.com/api/plan/v3",
+      "api_key_env": "UPSTREAM_D_API_KEY",
+      "max_rpm": 50,
+      "models": {
+        "model-code": {
+          "context_window": 1049000,
+          "max_tokens": 384000,
+          "vision": true,
+          "tier": "strong"
+        },
+        "model-pro": {
+          "context_window": 1048576,
+          "max_tokens": 384000,
+          "vision": false,
+          "tier": "strong"
+        },
+        "model-seed": {
+          "context_window": 262144,
+          "max_tokens": 65536,
+          "vision": true,
+          "tier": "strong"
+        }
+      },
+      "label": "上游 up-d（示例，请替换为你侧真实上游）"
+    },
+    {
+      "id": "local-lan",
+      "base_url": "http://<YOUR_LAN_HOST>:11434/v1",
+      "api_key_env": "LOCAL_UPSTREAM_API_KEY",
+      "max_rpm": 10,
+      "models": {
+        "model-decider_d": {
+          "context_window": 262144,
+          "max_tokens": 16384,
+          "vision": true,
+          "tier": "cheap"
+        }
+      },
+      "label": "上游 local-lan（示例，请替换为你侧真实上游）"
+    }
+  ],
+  "_note": "本文件为脱敏样例：上游 id / base_url / 密钥环境变量名均为占位，模型元数据（context_window / max_tokens / vision / tier）保留可直接用；密钥只从 ROUTER_CREDENTIALS_PATH 指向的 YAML 的 refs 节点按 api_key_env 取值，本文件不含任何密钥。"
+}

@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>WB 模型路由网关 · 使用说明书（v1.0.3.3）</title>
+  <style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">:root{--fg:#1f2328;--muted:#57606a;--line:#d0d7de;--bg:#ffffff;--code:#f6f8fa;--accent:#0b6bcb;}
+html{-webkit-text-size-adjust:100%;}
+body{max-width:900px;margin:0 auto;padding:16px 16px 48px;color:var(--fg);background:var(--bg);
+font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;}
+h1{font-size:26px;line-height:1.3;margin:8px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--accent);}
+h2{font-size:21px;margin:28px 0 10px;padding-top:8px;border-top:1px solid var(--line);}
+h3{font-size:18px;margin:20px 0 8px;}
+h4{font-size:16px;margin:16px 0 6px;}
+p,li{font-size:16px;}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;
+background:var(--code);padding:1px 5px;border-radius:4px;word-break:break-word;}
+pre{background:var(--code);padding:12px;border-radius:8px;overflow-x:auto;border:1px solid var(--line);}
+pre code{background:none;padding:0;font-size:13.5px;line-height:1.6;white-space:pre;}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;margin:12px 0;font-size:14.5px;}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;}
+th{background:var(--code);font-weight:600;}
+blockquote{margin:12px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#f3f8ff;color:#243b53;}
+blockquote p{margin:4px 0;}
+a{color:var(--accent);}
+hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
+</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">WB 模型路由网关 · 使用说明书（v1.0.3.3）</h1>
+</header>
+<h1 id="wb-模型路由网关--使用说明书零编码基础版">WB 模型路由网关 ·
+使用说明书（零编码基础版）</h1>
+<blockquote>
+<p><strong>版本</strong>：1.0.3.3（2026-11-21）　<strong>展示名</strong>：WB
+模型路由网关（英文可用 WB Router）
+<strong>读者</strong>：不会写代码，但会解压文件、会复制粘贴命令的人
+<strong>一句话</strong>：把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。
+<strong>开源状态</strong>：准备开源；<strong>仓库地址与许可证待发布方确认</strong>（本书不写具体许可证名，也不写仓库地址）。</p>
+</blockquote>
+<hr />
+<p><a id="toc"></a></p>
+<h2 id="目录">目录</h2>
+<ol type="1">
+<li><a href="#s1">一、这是什么（3 分钟读懂）</a></li>
+<li><a href="#s2">二、它能帮你做什么</a></li>
+<li><a href="#s3">三、安装前准备</a></li>
+<li><a href="#s4">四、安装（照着做）</a></li>
+<li><a href="#s5">五、模型配置（四张表）</a></li>
+<li><a href="#s6">六、开始使用（三种入口）</a></li>
+<li><a href="#s7">七、花钱与对账</a></li>
+<li><a href="#s8">八、开关与灰度</a></li>
+<li><a href="#s9">九、常见问题 FAQ</a></li>
+<li><a href="#s10">十、安全与备份</a></li>
+<li><a href="#s11">十一、附录</a></li>
+<li><a href="#s12">十二、编者自检</a></li>
+</ol>
+<hr />
+<p><a id="s1"></a></p>
+<h2 id="一这是什么3-分钟读懂">一、这是什么（3 分钟读懂）</h2>
+<h3 id="11-一句话说明">1.1 一句话说明</h3>
+<p>它装在你自己的机器上，坐在你和多个大模型之间。你把任务交给它，它先给你一张<strong>分段计划＋每段估价</strong>；你点同意，它才真去调模型；调完把<strong>真实花了多少</strong>记回账本，让你月底能对上账。</p>
+<p>它不是模型、也不卖模型。它管的是<strong>决策和账</strong>：这一段该用哪个模型、这一步大概多少钱、实际花了多少。</p>
+<h3 id="12-它由哪几件组成">1.2 它由哪几件组成</h3>
+<table>
+<thead>
+<tr class="header">
+<th>件</th>
+<th>是什么</th>
+<th>你要不要装</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>网关（核心）</td>
+<td>单进程 Python 服务，对外说标准 OpenAI 接口</td>
+<td>要，这是主体</td>
+</tr>
+<tr class="even">
+<td>管理面板</td>
+<td>内网可看：<code>/admin</code>、<code>/admin/live</code>（运行状态）、<code>/admin/review</code>（复盘页）</td>
+<td>随网关自带</td>
+</tr>
+<tr class="odd">
+<td>DSH 插件（Pro / Max）</td>
+<td>在 DSH 界面里直接用的两个入口</td>
+<td>只有你在用 DSH 才需要</td>
+</tr>
+<tr class="even">
+<td>Skill / MCP</td>
+<td>给 Agent 调用的技能与工具（可选）</td>
+<td>按需</td>
+</tr>
+</tbody>
+</table>
+<p>技术底子：单进程、Python 3.12、只依赖 <code>PyYAML</code> 与
+<code>requests</code>；默认只绑本机回环
+<code>127.0.0.1:18790</code>，不对外。</p>
+<h3 id="13-适合谁--不适合谁">1.3 适合谁 / 不适合谁</h3>
+<p><strong>适合</strong>：你在用好几个模型（云端＋本地），每次都要纠结「这个活派给谁」；月底只看到一张总账，说不出钱花在哪个环节；想让「花钱」每次都被你看一眼、点个头；会解压、会改
+JSON 文本、会复制命令——<strong>不需要会写代码</strong>。</p>
+<p><strong>不适合</strong>：你要的是全自动、不打扰、自己换模型（本项目的设计相反：<strong>要你确认</strong>，节奏可调见
+8.4）；你指望它自带模型或额度（它只连你已有的上游）；你想让它替你判断谁「更聪明」（它按你给的规则、窗口、价格、健康度选，不做效果排名）；你在
+Windows 或 macOS 原生环境（见 3.1）。</p>
+<h3 id="14-三个先划清的边界">1.4 三个先划清的边界</h3>
+<p>一是<strong>不承诺具体价格</strong>：上游名单与价格表随你自己配置，本书不写任何具体单价。二是<strong>不做效果承诺</strong>：不写准确率、不写省钱比例、不做「谁更强」的比较。三是<strong>开源信息待定</strong>：仓库地址、许可证、开源版面板默认账号都还没定，统一写「待确认」（清单见
+11.6）。</p>
+<hr />
+<p><a id="s2"></a></p>
+<h2 id="二它能帮你做什么">二、它能帮你做什么</h2>
+<h3 id="21-它对准的五个真问题">2.1 它对准的五个真问题</h3>
+<ol type="1">
+<li><strong>选模型靠猜</strong>：贵模型处处用、或便宜模型不敢用，没有依据。</li>
+<li><strong>钱花在哪说不清</strong>：月底只看到一张总额，不知道哪一段、哪个模型花的。</li>
+<li><strong>换模型要改代码/重启</strong>：业务被迫绑死一个模型。</li>
+<li><strong>一次超窗或超时，整轮白跑</strong>：上下文超预算、本地装不下、上游超时，错误信息看不懂。</li>
+<li><strong>自动化是黑箱</strong>：出事说不清「为什么选了它」「这一步花了多少」。</li>
+</ol>
+<h3 id="22-四步链像请装修队">2.2 四步链：像请装修队</h3>
+<table>
+<thead>
+<tr class="header">
+<th>步</th>
+<th>网关动作</th>
+<th>生活里的对应</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>计划 plan</td>
+<td>把任务切成 2–3 段，每段给模型＋估价，<strong>无副作用</strong></td>
+<td>装修队先上门量房，给你一张<strong>报价单</strong>：哪个房间派谁、大概多少钱</td>
+</tr>
+<tr class="even">
+<td>确认 confirm</td>
+<td>你点同意；不点，不执行</td>
+<td>你在报价单上<strong>签字</strong>；没签字，师傅不动手</td>
+</tr>
+<tr class="odd">
+<td>执行 execute</td>
+<td>按段调模型（OpenAI 兼容接口，支持流式）</td>
+<td>按房间<strong>分段施工</strong></td>
+</tr>
+<tr class="even">
+<td>回写 annotate</td>
+<td>把真实用量记回计划，返回 <code>estimate_delta</code></td>
+<td>完工按<strong>实际用料结算</strong>，多退少补写在单子上</td>
+</tr>
+</tbody>
+</table>
+<p>关键点：<strong>计划这一步不花钱</strong>。你可以在报价单上反复看、反复改，点了「确认」才产生实际调用。</p>
+<h3 id="23-它和自动换模型的工具差在哪">2.3
+它和「自动换模型」的工具差在哪</h3>
+<p>不比谁更强，只比四件事：<strong>决策单位</strong>（按段 vs
+按轮）、<strong>谁按开关</strong>（用户确认 vs
+阈值自动）、<strong>钱的口径</strong>（账本实账 vs
+配置口径估算）、<strong>复盘</strong>（报告＋只读复算 vs
+日志报表）。一句话差异：<strong>别人替你「自动换模型」，我们让你「先看计划、再点同意、花完能对账」。</strong></p>
+<hr />
+<p><a id="s3"></a></p>
+<h2 id="三安装前准备">三、安装前准备</h2>
+<h3 id="31-系统要求不扩大范围">3.1 系统要求（不扩大范围）</h3>
+<table>
+<thead>
+<tr class="header">
+<th>项</th>
+<th>要求</th>
+<th>验证状态</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>操作系统</td>
+<td>Linux 或容器</td>
+<td><strong>已验证</strong>（发布方生产部署即在此环境）</td>
+</tr>
+<tr class="even">
+<td>Windows / macOS 原生安装</td>
+<td>—</td>
+<td><strong>未验证</strong>（待确认，见 11.6）</td>
+</tr>
+<tr class="odd">
+<td>Python</td>
+<td>3.12（依赖仅 <code>PyYAML</code>、<code>requests</code>）</td>
+<td>已验证</td>
+</tr>
+<tr class="even">
+<td>端口</td>
+<td>默认 <code>127.0.0.1:18790</code>，只绑本机回环</td>
+<td>已验证</td>
+</tr>
+<tr class="odd">
+<td>磁盘</td>
+<td>账本按请求逐行追加，会随时间增长</td>
+<td>视你的用量</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-要先准备四样东西">3.2 要先准备四样东西</h3>
+<table>
+<thead>
+<tr class="header">
+<th>准备项</th>
+<th>具体是什么</th>
+<th>没有会怎样</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>上游地址</td>
+<td>每家上游的 <code>base_url</code>（通常以 <code>/v1</code>
+结尾）</td>
+<td>连不上，<code>/health</code> 里该上游报错</td>
+</tr>
+<tr class="even">
+<td>上游密钥</td>
+<td>每家的 API key（<strong>只放环境变量</strong>）</td>
+<td>该上游 401 或被熔断</td>
+</tr>
+<tr class="odd">
+<td>模型清单</td>
+<td>每家有哪些模型、窗口多大、能否看图、输出上限</td>
+<td>选到不存在的模型，或超窗被拒</td>
+</tr>
+<tr class="even">
+<td>价格表</td>
+<td>每百万 token 的输入/输出单价（分峰谷）</td>
+<td>计划显示「0（待用户录入）」，不算钱</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最省事的起步方式</strong>：先别改配置，用包里的匿名样例把服务跑起来、把
+<code>/health</code>
+打通，再逐张表替换成你自己的。这样出问题时能分清「是装坏了」还是「是配置错了」。</p>
+<h3 id="33-三个心理准备">3.3 三个心理准备</h3>
+<ul>
+<li><strong>改配置改坏是常态</strong>：每次改前先复制一份
+<code>.bak-日期</code>（第十章有命令）。</li>
+<li><strong>改完要重启</strong>（少数例外见
+8.1）；<strong>密钥只走环境变量</strong>，不写进
+JSON、不进聊天记录、不进截图。</li>
+</ul>
+<hr />
+<p><a id="s4"></a></p>
+<h2 id="四安装照着做">四、安装（照着做）</h2>
+<blockquote>
+<p>下文用 <code>~/wb-router</code>
+当「安装目录」的例子；你放在别处也行，把命令里的路径换成你的即可。</p>
+</blockquote>
+<h3 id="41-建目录并进入">4.1 建目录并进入</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/wb-router</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span></code></pre></div>
+<p><strong>你会看到</strong>：无输出，提示符回来，说明目录建好了。<strong>报错
+<code>Permission denied</code></strong>：换到家目录下（如
+<code>~/wb-router</code>）即可。</p>
+<h3 id="42-第-1-步解包三件">4.2 第 1 步：解包三件</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.3.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.3.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.3.tar.gz</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div>
+<p><strong>你会看到</strong>（三件）：<code>gateway  plugins  skill-mcp</code>。其中
+<code>gateway/</code> 里有
+<code>main.py</code>、<code>config/</code>、<code>tests/</code>、<code>scripts/</code>、<code>run-tests.sh</code>、<code>VERSION</code>；<code>plugins/</code>
+是两份 DSH 插件；<code>skill-mcp/</code> 是技能与 MCP。</p>
+<h3 id="43-第-2-步用样例配置起跑">4.3 第 2 步：用样例配置起跑</h3>
+<p>包里的 <code>gateway/config/</code>
+已是<strong>匿名样例</strong>：上游叫
+<code>up-a</code>、<code>up-b</code>、<code>up-c</code>、<code>up-d</code>、<code>local-lan</code>，地址是
+<code>.example.com</code>
+占位，不含任何真实凭据与价格。先跑通，再换成你自己的。</p>
+<p>如果你手里还有源码树里的 <code>sample-config/</code>
+两份模板，可以直接抄：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> sample-config/routing.json   gateway/config/routing.json</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> sample-config/upstreams.json gateway/config/upstreams.json</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool gateway/config/routing.json <span class="op">&gt;</span> /dev/null   <span class="co"># 无输出＝JSON 合法</span></span></code></pre></div>
+<h3 id="44-第-3-步把凭据放进环境变量">4.4 第 3
+步：把凭据放进环境变量</h3>
+<p><strong>变量名以 <code>upstreams.json</code> 里每家的
+<code>api_key_env</code> 为准</strong>（样例是
+<code>UPSTREAM_A_API_KEY</code>
+这类名字，不是密钥本身）。真实密钥只在这个环境变量里。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">UPSTREAM_A_API_KEY</span><span class="op">=</span><span class="st">&#39;你的真实密钥&#39;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">UPSTREAM_B_API_KEY</span><span class="op">=</span><span class="st">&#39;你的真实密钥&#39;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">UPSTREAM_C_API_KEY</span><span class="op">=</span><span class="st">&#39;你的真实密钥&#39;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">UPSTREAM_D_API_KEY</span><span class="op">=</span><span class="st">&#39;你的真实密钥&#39;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">LOCAL_UPSTREAM_API_KEY</span><span class="op">=</span><span class="st">&#39;你的真实密钥&#39;</span></span></code></pre></div>
+<p>只填你真实用到的那几家。想让变量长期生效，把这几行写进
+<code>~/.bashrc</code>，重开终端生效。</p>
+<p><strong>你会看到</strong>：无输出。确认是否设好：<code>echo ${UPSTREAM_A_API_KEY:+已设置}</code>
+→ 输出「已设置」。<strong>别</strong>用
+<code>echo $UPSTREAM_A_API_KEY</code>（会把密钥打到屏幕上）。</p>
+<h3 id="45-第-4-步装两个-python-依赖">4.5 第 4 步：装两个 Python
+依赖</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install PyYAML requests</span></code></pre></div>
+<p><strong>你会看到</strong>：最后一行类似
+<code>Successfully installed ... PyYAML ... requests</code>。<strong>报错
+<code>No module named pip</code></strong>：先
+<code>python3 -m ensurepip</code>，或用系统包管理器装
+<code>python3-pip</code>。</p>
+<h3 id="46-第-5-步启动">4.6 第 5 步：启动</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router/gateway</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> main.py</span></code></pre></div>
+<p><strong>你会看到</strong>：① 先打印一行凭据加载信息，形如
+<code>凭据已加载：N 个 ref（仅内存）</code>；②
+然后<strong>停在前台不返回提示符</strong>——这就是在跑了；③
+另开一个终端执行 <code>ss -ltn | grep 18790</code>，能看到一行
+<code>LISTEN</code>。</p>
+<p>停止：在这个窗口按
+<code>Ctrl+C</code>。<strong>长期运行</strong>建议交给进程管理器（发布方生产部署用
+supervisor，服务名
+<code>router-gateway</code>）；具体写法随环境不同，本书不展开。</p>
+<h3 id="47-第-6-步自检-health">4.7 第 6 步：自检
+<code>/health</code></h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool <span class="kw">|</span> <span class="fu">head</span> <span class="at">-20</span></span></code></pre></div>
+<p><strong>你会看到</strong>大致这样的结构（内容随你的配置变）：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;ok&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;uptime&quot;</span><span class="fu">:</span> <span class="fl">12.3</span><span class="fu">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;upstreams&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span><span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;up-a&quot;</span><span class="fu">,</span> <span class="dt">&quot;state&quot;</span><span class="fu">:</span> <span class="st">&quot;ok&quot;</span><span class="fu">,</span> <span class="dt">&quot;circuit&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;open&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span> <span class="dt">&quot;remaining_s&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">},</span> <span class="dt">&quot;last_error&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">}</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>判据（三条同时满足才算装好）</strong>：①
+<code>&quot;ok&quot;: true</code>；② 你配置的每个上游 <code>state</code> 都是
+<code>ok</code>；③
+<code>curl -s http://127.0.0.1:18790/v1/models | head -c 300</code>
+能看到
+<code>auto</code>、<code>auto-fast</code>、<code>auto-strong</code>
+三个虚拟模型名。</p>
+<blockquote>
+<p>发布方自己的生产部署上还能看到价格自证（27
+个可计价模型全部有单价来源、drift 0）和 5 家上游全
+<code>ok</code>——这是<strong>发布方部署的口径</strong>，你自建后数量按你自己的配置算，判据仍是上面三条。</p>
+</blockquote>
+<h3 id="48-安装期常见报错一张表">4.8 安装期常见报错一张表</h3>
+<table>
+<thead>
+<tr class="header">
+<th>报错 / 现象</th>
+<th>原因</th>
+<th>怎么办</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tar: Cannot open</code> /
+<code>does not look like a tar archive</code></td>
+<td>包没放对位置、文件名不同、传输被截断</td>
+<td><code>ls</code> 看清文件名；重新取包并核对校验值</td>
+</tr>
+<tr class="even">
+<td><code>缺少配置文件：.../config/routing.json</code></td>
+<td>配置没放进 <code>config/</code></td>
+<td>回到 4.3 用 <code>cp</code> 放进去</td>
+</tr>
+<tr class="odd">
+<td><code>配置文件 JSON 语法错误</code></td>
+<td>编辑时多/少逗号，或用了中文引号</td>
+<td><code>python3 -m json.tool &lt;文件&gt;</code> 定位；先还原
+<code>.bak</code> 再改</td>
+</tr>
+<tr class="even">
+<td><code>ModuleNotFoundError: No module named &#39;yaml&#39;</code></td>
+<td>依赖没装</td>
+<td>回到 4.5</td>
+</tr>
+<tr class="odd">
+<td><code>OSError: [Errno 98] Address already in use</code></td>
+<td>18790 已被占用</td>
+<td><code>ss -ltn | grep 18790</code> 查占用并停旧实例；排查时可
+<code>ROUTER_PORT=18791 python3 main.py</code> 起隔离实例</td>
+</tr>
+<tr class="even">
+<td><code>凭据已加载：0 个 ref</code>／提示某上游缺密钥</td>
+<td>环境变量名与 <code>api_key_env</code> 不一致，或启动前没 export</td>
+<td>名字逐字比对（区分大小写）；设好后<strong>重启</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="49-装完的验收清单">4.9 装完的验收清单</h3>
+<table>
+<thead>
+<tr class="header">
+<th>检查</th>
+<th>命令</th>
+<th>通过的样子</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>服务在听 / 健康</td>
+<td><code>ss -ltn | grep 18790</code>；<code>curl -s http://127.0.0.1:18790/health</code></td>
+<td>有 <code>LISTEN</code>；<code>ok: true</code>，上游全
+<code>ok</code></td>
+</tr>
+<tr class="even">
+<td>模型清单</td>
+<td><code>curl -s http://127.0.0.1:18790/v1/models</code></td>
+<td>有虚拟模型名</td>
+</tr>
+<tr class="odd">
+<td>真调一次（会花钱）</td>
+<td><code>python3 scripts/smoke.py</code></td>
+<td>打印 HTTP 码/耗时/返回模型，官方那家成功</td>
+</tr>
+<tr class="even">
+<td>价格自证（填价后）</td>
+<td><code>python3 scripts/price-attest.py</code></td>
+<td>退出码 0，覆盖里 <code>unsourced</code> 为 0</td>
+</tr>
+<tr class="odd">
+<td>回归（可选，几分钟）</td>
+<td><code>bash run-tests.sh --clean</code></td>
+<td>两段都 <code>OK</code>、无失败、退出码 0</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>回归数字：发布方出厂验证是<strong>两段各 568 个用例全绿、exit
+0</strong>。你自己跑时判据是「<strong>两段一致 ＋
+全绿</strong>」，不必盯固定数字——用例数会随配置展开而变。</p>
+</blockquote>
+<hr />
+<p><a id="s5"></a></p>
+<h2 id="五模型配置四张表">五、模型配置（四张表）</h2>
+<h3 id="51-总览">5.1 总览</h3>
+<table>
+<thead>
+<tr class="header">
+<th>文件</th>
+<th>管什么</th>
+<th>必须改</th>
+<th>改错会怎样</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>config/upstreams.json</code></td>
+<td>有哪些上游、怎么连、每个模型的窗口与能力</td>
+<td>上游
+<code>id</code>、<code>base_url</code>、<code>api_key_env</code>、模型清单</td>
+<td>连不上、401、超窗误判、模型选不到</td>
+</tr>
+<tr class="even">
+<td><code>config/routing.json</code></td>
+<td>怎么选：虚拟模型、候选链、时段、熔断、超时、上下文治理</td>
+<td><code>routes</code>／<code>strategies</code>
+里的「上游/模型」键、<code>peak</code>、<code>timeouts</code>、<code>context_governor</code></td>
+<td>选到不存在的模型（启动告警剔除）、候选全灭回 502</td>
+</tr>
+<tr class="odd">
+<td><code>config/pricebook.json</code></td>
+<td>每个模型多少钱（<strong>价格只以这一份为准</strong>）</td>
+<td>每个模型的输入/输出单价（分峰谷）</td>
+<td>计划显示「0（待用户录入）」，不算钱、对不了账</td>
+</tr>
+<tr class="even">
+<td><code>config/api-keys.json</code></td>
+<td>谁能用、用哪些接口、每分钟多少次</td>
+<td><code>required</code>、每把 key 的 <code>scopes</code> 与
+<code>rpm</code></td>
+<td>401；或能看计划但执行被拒（缺 scope）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>包内<strong>不含</strong> <code>pricebook.json</code> 与
+<code>api-keys.json</code>（属于你自己的数据）：前者要你生成或手填，后者可由管理面板创建。</p>
+</blockquote>
+<h3 id="52-upstreamsjson有哪些上游">5.2
+<code>upstreams.json</code>：有哪些上游</h3>
+<pre class="jsonc"><code>{
+  &quot;id&quot;: &quot;up-a&quot;,                                   // 上游短名
+  &quot;base_url&quot;: &quot;https://upstream-a.example.com/v1&quot;, // 换成真实地址，通常以 /v1 结尾
+  &quot;api_key_env&quot;: &quot;UPSTREAM_A_API_KEY&quot;,             // 密钥的「环境变量名」，不是密钥值
+  &quot;max_rpm&quot;: 50,                                   // 这家每分钟最多发多少请求
+  &quot;models&quot;: {
+    &quot;model-fast-0731&quot;: {                           // 模型名必须与上游实际模型名一致
+      &quot;context_window&quot;: 800000,                    // 上下文窗口（token）
+      &quot;max_tokens&quot;: 65536, &quot;vision&quot;: false, &quot;tier&quot;: &quot;cheap&quot;  // 输出上限 / 能否看图 / 档位
+    }
+  },
+  &quot;label&quot;: &quot;上游 up-a（示例，请替换）&quot;
+}</code></pre>
+<p><strong>必须改四处</strong>：<code>id</code>、<code>base_url</code>、<code>api_key_env</code>、<code>models</code>
+里的模型名与元数据。</p>
+<p><strong>改错会怎样</strong>：<code>base_url</code> 错 →
+这家请求必失败；<code>api_key_env</code> 名不一致 →
+等于没有密钥；<code>vision</code> 标错（实际不能看图却写
+<code>true</code>）→ 带图请求被上游拒；<code>context_window</code> 写小
+→ 本来能跑的长输入被判超窗。</p>
+<p><strong>改完怎么验证</strong>：<code>curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -20</code>
+看这家 <code>state</code> 是否 <code>ok</code>；<code>/v1/models</code>
+看模型名在不在。<strong>改完必须重启</strong>。</p>
+<h3 id="53-routingjson怎么选">5.3 <code>routing.json</code>：怎么选</h3>
+<p>这张表大，但你要动的只有几处：</p>
+<table>
+<thead>
+<tr class="header">
+<th>位置</th>
+<th>管什么</th>
+<th>你必须做的</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>virtual_models</code></td>
+<td>对外暴露的虚拟模型：<code>auto</code>（平衡）、<code>auto-fast</code>（便宜优先）、<code>auto-strong</code>（能力优先）</td>
+<td>一般不用改</td>
+</tr>
+<tr class="even">
+<td><code>routes</code></td>
+<td>按「时段 × 复杂度」排候选链：<code>peak</code>/<code>offpeak</code>
+×
+<code>L1</code>/<code>L2</code>/<code>L3</code>/<code>image</code></td>
+<td><strong>把 <code>up-x/model-y</code>
+换成你真实的「上游/模型」</strong></td>
+</tr>
+<tr class="odd">
+<td><code>strategies</code></td>
+<td><code>fast</code>、<code>strong</code> 两条策略各自的候选链</td>
+<td>同上，一起改</td>
+</tr>
+<tr class="even">
+<td><code>complexity</code></td>
+<td>什么算简单（L1）、什么算复杂（L3）</td>
+<td>按模型能力调，保守就先用默认</td>
+</tr>
+<tr class="odd">
+<td><code>peak</code></td>
+<td>什么时段算高峰（默认工作日
+<code>09:00–12:00</code>、<code>14:00–18:00</code>）</td>
+<td>按你上游的计价时段调</td>
+</tr>
+<tr class="even">
+<td><code>breaker</code></td>
+<td>熔断窗口（默认失败类 600 秒、鉴权类 3600 秒）</td>
+<td>一般不用改</td>
+</tr>
+<tr class="odd">
+<td><code>timeouts</code></td>
+<td>超时（默认读 270 秒、流式 600 秒）</td>
+<td>经常超时就调大（重启生效）</td>
+</tr>
+<tr class="even">
+<td><code>context_governor</code></td>
+<td>上下文治理：模式、预算比例、超窗说法、裁剪、413</td>
+<td>先保持 <code>shadow</code> 观察（见第八章）</td>
+</tr>
+<tr class="odd">
+<td><code>hint</code></td>
+<td>插件给网关的「档位提示」通道，默认
+<code>record</code>（只记录不执行）</td>
+<td>一般不用改</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一条硬规则</strong>：<code>routes</code>、<code>strategies</code>、<code>capability_meta</code>、<code>hint.tiers</code>
+里出现的每个 <code>&quot;上游/模型&quot;</code>，都必须在
+<code>upstreams.json</code>
+里真实存在。写错会被启动时自动剔除并打告警；整条链被剔干净，请求就走到「全候选失败」→
+502。</p>
+<p><strong>改错会怎样</strong>：候选链全写错 → 每次 502；时段写反 →
+高峰用了便宜档；超时写太小 → 长任务被自己掐断。</p>
+<p><strong>改完怎么验证</strong>：重启 → 打
+<code>/v1/route/capabilities</code>（档位与模型能力清单，确认模型都在）→
+打一次真实小请求，看响应头 <code>X-Router-Decision</code>
+选的模型是否如你所愿。</p>
+<blockquote>
+<p>复杂度分级：输入短、无图、无工具、输出要求不高 →
+L1；输入很长、含图、或输出要求很高 → L3；其余 L2。阈值就在
+<code>complexity</code> 里。</p>
+</blockquote>
+<h3 id="54-pricebookjson每个模型多少钱">5.4
+<code>pricebook.json</code>：每个模型多少钱</h3>
+<p>这是<strong>价格的单一真源</strong>：估价、实付、对账都以它为准。包里没有这份文件，要你自己做。</p>
+<p><strong>路线
+A（推荐，省事）</strong>：用自带脚本抓公开价目表生成。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router/gateway</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/price_sync.py <span class="at">--dry-run</span>                     <span class="co"># 先看抓到的价，不写文件</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/price_sync.py <span class="at">--out</span> config/pricebook.json    <span class="co"># 满意了再落盘</span></span></code></pre></div>
+<p><strong>路线 B</strong>：照样例结构手填。关键是每个模型的
+<code>price.input</code> / <code>price.output</code>，单位是「元 / 百万
+token」，分 <code>peak</code> /
+<code>offpeak</code>；<code>cache_hit</code> 是命中缓存的输入价。</p>
+<pre class="jsonc"><code>{
+  &quot;models&quot;: {
+    &quot;某个模型名&quot;: {
+      &quot;offers&quot;: [{
+        &quot;provider&quot;: &quot;你的上游 id&quot;, &quot;model_id&quot;: &quot;上游那边的模型名&quot;,
+        &quot;price&quot;: {
+          &quot;input&quot;:     {&quot;peak&quot;: 2.0,  &quot;offpeak&quot;: 1.0},
+          &quot;cache_hit&quot;: {&quot;peak&quot;: 0.04, &quot;offpeak&quot;: 0.02},
+          &quot;output&quot;:    {&quot;peak&quot;: 8.0,  &quot;offpeak&quot;: 4.0}
+        }
+      }]
+    }
+  }
+}</code></pre>
+<blockquote>
+<p>上面数字只是<strong>结构示意</strong>，不是任何厂商的真实报价。真实价格按你自己的价目表填。</p>
+</blockquote>
+<p><strong>没填价会怎样</strong>：不是「免费」，而是标成<strong>未定价</strong>——计划里这段的
+<code>price_state</code> 是
+<code>unpriced</code>，价格标签显示「0（待用户录入）」，未定价模型会被列进
+<code>totals.unpriced_models</code> 并提示「未知部分按 0
+计（不代表免费）」。本地模型则显示「0（本地）」。</p>
+<p><strong>改完怎么验证（两条一起看）</strong>：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-c</span> <span class="st">&quot;import sys,json;print(json.load(sys.stdin).get(&#39;price_consistency&#39;))&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/price-attest.py</span></code></pre></div>
+<p>看到 <code>status</code> 为
+<code>consistent</code>、<code>unsourced</code> 为 0、<code>drift</code>
+为 0 就算过。发布方生产部署的口径是 <strong>27/27（27
+个可计价模型全部有单价来源）、drift
+0</strong>；你自建后按你填了多少模型算。</p>
+<h3 id="55-api-keysjson谁能用">5.5
+<code>api-keys.json</code>：谁能用</h3>
+<p>这份文件管<strong>给别人用的钥匙</strong>（网关自己的 Bearer
+key），跟上游密钥是两套，别混。</p>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>required</code></td>
+<td>是否强制验钥匙。为 <code>true</code> 时所有 <code>/v1/*</code>
+都要带 <code>Authorization: Bearer &lt;key&gt;</code></td>
+</tr>
+<tr class="even">
+<td><code>keys[].id</code> / <code>name</code></td>
+<td>编号与备注名（给自己认人用）</td>
+</tr>
+<tr class="odd">
+<td><code>keys[].prefix</code> / <code>salt</code> / <code>hash</code> /
+<code>iterations</code></td>
+<td>前缀与哈希存储（<strong>不要手改</strong>，改了这把钥匙就废）</td>
+</tr>
+<tr class="even">
+<td><code>keys[].scopes</code></td>
+<td>权限范围：<code>plan</code>（计划/回写）、<code>chat</code>（对话/补全/向量/重排）</td>
+</tr>
+<tr class="odd">
+<td><code>keys[].rpm</code></td>
+<td>这把钥匙自己的每分钟请求上限</td>
+</tr>
+<tr class="even">
+<td><code>keys[].revoked_at</code></td>
+<td>吊销时间；不为 null 即已失效</td>
+</tr>
+</tbody>
+</table>
+<p><strong>正确用法</strong>：不要手写，用管理面创建——在网关那台机器打开
+<code>http://127.0.0.1:18790/admin</code>，在 API keys 卡片里新建，选
+<code>scopes</code>、填 <code>rpm</code>，保存。<strong>明文 key
+只显示一次</strong>，当场抄进密码管理器。</p>
+<p><strong>这份文件不存在时</strong>：网关会建一份空的（<code>required=false</code>），即<strong>默认不验钥匙</strong>，靠「只绑
+127.0.0.1」这道网络边界。你自己在本机用，这样最省事；一旦要给别的机器或别人用，就创建钥匙并把
+<code>required</code> 打开。</p>
+<p><strong>改错会怎样</strong>：只给 <code>plan</code> 不给
+<code>chat</code> → 能出计划但对话被拒；<code>rpm</code> 太小 →
+正常用也会 429；手改哈希 → 这把钥匙直接 401。</p>
+<h3 id="56-改完统一这样验证四步">5.6 改完统一这样验证（四步）</h3>
+<ol type="1">
+<li><strong>重启</strong>网关（配置启动时读一次）；</li>
+<li><code>curl -s http://127.0.0.1:18790/health</code> →
+<code>ok: true</code>、上游全 <code>ok</code>；</li>
+<li>打一次小请求，看响应头
+<code>X-Router-Decision</code>（实际选中的上游/模型）与
+<code>X-Router-Reason</code>（一句话理由）；</li>
+<li>看账本在不在长：<code>ls -l ~/wb-router/gateway/数据/ledger.jsonl</code>。</li>
+</ol>
+<h3 id="57-三条配置纪律">5.7 三条配置纪律</h3>
+<ol type="1">
+<li><strong>改前先备份</strong>：<code>cp -a config/routing.json &quot;config/routing.json.bak-$(date -Iseconds)&quot;</code>。</li>
+<li><strong>一次只改一处</strong>：改完立刻验证，出问题好定位。</li>
+<li><strong>不要整份覆盖</strong>：升级时别用新包的
+<code>routing.json</code> 整体盖掉你调好的那份，要合并。</li>
+</ol>
+<hr />
+<p><a id="s6"></a></p>
+<h2 id="六开始使用三种入口">六、开始使用（三种入口）</h2>
+<h3 id="61-先选路径">6.1 先选路径</h3>
+<table>
+<thead>
+<tr class="header">
+<th>入口</th>
+<th>适合谁</th>
+<th>你要做什么</th>
+<th>花费进网关账本吗</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DSH Max 插件</td>
+<td>已在用 DSH，希望计划、确认、账本都走网关</td>
+<td>装插件 → 选网关模型 → 计划卡点确认</td>
+<td><strong>进</strong></td>
+</tr>
+<tr class="even">
+<td>DSH Pro 插件</td>
+<td>已在用 DSH，只想本机自动分段、不接网关</td>
+<td>装插件 → 勾路由模式 → 生成计划</td>
+<td>不进（计划在本机生成）</td>
+</tr>
+<tr class="odd">
+<td>任意 OpenAI 客户端直连</td>
+<td>用任何支持 OpenAI 接口的软件/脚本</td>
+<td>填三个值：地址、钥匙、模型名</td>
+<td><strong>进</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>最省事的一条</strong>：先在<strong>本机</strong>用直连打通（6.2），确认
+<code>/health</code> 与一次对话都正常，再去接插件或别的机器。</p>
+<h3 id="62-最省事本机直连无钥匙模式">6.2
+最省事：本机直连（无钥匙模式）</h3>
+<p>网关默认只绑
+<code>127.0.0.1</code>、默认不验钥匙，你自己在本机可以直接开始：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-sS</span> http://127.0.0.1:18790/v1/chat/completions <span class="dt">\</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;model&quot;:&quot;auto&quot;,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;用一句话说明今天天气&quot;}],&quot;max_tokens&quot;:64}&#39;</span></span></code></pre></div>
+<p><strong>你会看到</strong>：一段标准 OpenAI 格式 JSON（含
+<code>choices</code>、<code>usage</code> 里的 token 数），响应头带
+<code>X-Router-Decision</code>，形如
+<code>up-a/model-fast-0731</code>。</p>
+<p><strong>判据</strong>：有 <code>choices</code> 且
+<code>usage.total_tokens</code> 大于 0 → 通了。想流式：加
+<code>&quot;stream&quot;:true</code> 并用 <code>curl -N</code>，结束会收到一行
+<code>data: [DONE]</code>。</p>
+<h3 id="63-dsh-里点开就用两种插件">6.3 DSH 里点开就用（两种插件）</h3>
+<p><strong>装插件</strong>：解包
+<code>plugins-1.0.3.3.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.0</code>
+与 <code>dsh-wb-max-0.2.0</code> 两个目录。把它们覆盖到你的 DSH
+插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次
+DSH。</p>
+<blockquote>
+<p>插件的公开下载渠道依赖仓库地址，<strong>待确认</strong>；目前以发布方给的
+<code>plugins-1.0.3.3.tar.gz</code> 为准。</p>
+</blockquote>
+<p><strong>用起来（Max，走网关）</strong>：① 在 DSH
+模型选择里选网关模型（<code>auto</code> / <code>auto-fast</code> /
+<code>auto-strong</code>）；② 输入区点「生成计划」；③
+计划卡出现在输入区上方，每段写着用哪个模型、大概多少钱；④
+点「确认开工」，会话切到第 1 段模型；⑤ 状态栏显示
+<code>[路由] 第 n/N 段 · 当前模型 · 已花 … · 下一段：…</code>，按提示逐段推进；开工前可在计划卡上给某段换模型。</p>
+<p><strong>关键设计</strong>：<strong>不点确认，不执行、不花钱。</strong></p>
+<p><strong>用起来（Pro，本机规划）</strong>：勾「路由模式」→
+点「生成计划」→ 计划卡 → 确认开工。Pro
+的计划在你本机生成、不经过网关，所以<strong>它的花费不进网关账本</strong>；要让每笔都能对账，用
+Max 或直连。</p>
+<h3 id="64-给别的机器或程序用先签发钥匙">6.4
+给别的机器或程序用：先签发钥匙</h3>
+<ol type="1">
+<li>在网关那台机器打开
+<code>http://127.0.0.1:18790/admin</code>（管理面只在内网，不要暴露到外网）；</li>
+<li>找到 API keys 卡片，新建一把：备注名写清给谁用，<code>scopes</code>
+勾上 <code>plan</code> 和 <code>chat</code>，<code>rpm</code>
+按对方用量设；</li>
+<li>保存后显示一次明文 key（形如
+<code>wb_...</code>）——<strong>只显示这一次</strong>，立刻抄走；</li>
+<li>把 key 交给对方，按 6.7 填。</li>
+</ol>
+<blockquote>
+<p>管理面首次登录的账号密码：生产部署由管理员自设，<strong>开源版默认值待确认</strong>（见
+11.6）。确认前请只在本机打开管理面。</p>
+</blockquote>
+<h3 id="65-换模型不丢上下文">6.5 换模型不丢上下文</h3>
+<p><strong>一句话</strong>：同一段对话里换模型，不用重开会话、不用重说一遍——历史消息照常带上，网关只替换「这一段由谁来答」。</p>
+<p><strong>为什么不会把任务带偏</strong>（1.0.3.3 的 B1
+边界纪律，默认开）：B1
+会在计划每段带一段只读的「什么时候该换」说明（<code>boundary_policy</code>），其约定是——</p>
+<ul>
+<li><strong>工具调用进行到一半不换</strong>：同一轮的连续工具调用里模型被冻住（规则名
+<code>same_turn_model_frozen</code>），避免前半段一个模型、后半段另一个模型各说各话；</li>
+<li><strong>只在两个时机换</strong>：新的一条用户消息（<code>new_user_message</code>）或上下文重建处（<code>context_rebuild</code>）；</li>
+<li><strong>换完先复述再动手</strong>：新接手的模型先复述「目标／已完成／下一步／不做什么」，把对表补齐再继续；</li>
+<li>网关因治理、守门或上游降级被动换模时，会记一笔豁免（<code>context_governor</code>／<code>guard</code>／<code>fallback</code>），不算违规——判据看非豁免计数（<code>GET /v1/route/discipline?range=7d</code>）。</li>
+</ul>
+<p>要说明的是：B1 <strong>只记不拦</strong>（违规落账本
+<code>discipline_violation</code>，不给请求报错），所以「换得对」最终靠上面这套节奏约定。</p>
+<p><strong>你能看到、能做的</strong>：</p>
+<table>
+<thead>
+<tr class="header">
+<th>在哪</th>
+<th>能看到 / 能做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>计划卡</td>
+<td>开工前直接给某一段换模型（最稳）</td>
+</tr>
+<tr class="even">
+<td>状态栏</td>
+<td><code>[路由] 第 n/N 段 · 当前模型 · 已花 … · 下一段：…</code></td>
+</tr>
+<tr class="odd">
+<td>账本</td>
+<td>同一会话里出现不同模型的行——说明是「同一会话，只换了模型」</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-直连-api先计划再执行再回写">6.6 直连
+API：先计划，再执行，再回写</h3>
+<p>以下三个命令只用本书附录列出的端点，可直接复制（把
+<code>$WB_KEY</code> 换成你的钥匙；本机无钥匙模式可去掉 Authorization
+头）。</p>
+<p><strong>第 1 步：要一份计划（不花钱）</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WB_BASE</span><span class="op">=</span>http://127.0.0.1:18790</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">WB_KEY</span><span class="op">=</span><span class="st">&#39;wb_你的钥匙&#39;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="st">&quot;</span><span class="va">$WB_BASE</span><span class="st">/v1/route/plan&quot;</span> <span class="dt">\</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$WB_KEY</span><span class="st">&quot;</span> <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;task&quot;:&quot;把三项数据汇总成一句话&quot;,&quot;strategy&quot;:&quot;auto&quot;,&quot;max_stages&quot;:2}&#39;</span></span></code></pre></div>
+<p><strong>你会看到</strong>：<code>plan_id</code>（形如
+<code>plan-…</code>）、<code>stages</code>（每段有
+<code>stage_id</code>、<code>model.key</code>、<code>estimate</code>）、<code>totals</code>（含
+<code>unpriced_models</code>）、<code>pricing.policy</code>、<code>estimate_basis</code>。记下
+<code>plan_id</code> 与第 1 段的
+<code>stage_id</code>、<code>model.key</code>。</p>
+<p><strong>第 2 步：确认后执行这一段（这一步才花钱）</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="st">&quot;</span><span class="va">$WB_BASE</span><span class="st">/v1/chat/completions&quot;</span> <span class="dt">\</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$WB_KEY</span><span class="st">&quot;</span> <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;model&quot;:&quot;up-a/model-fast-0731&quot;,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;把三项数据汇总成一句话&quot;}]}&#39;</span></span></code></pre></div>
+<p><code>model</code> 填计划里那段的 <code>model.key</code>。</p>
+<p><strong>第 3 步：把真实用量回写（对账靠它）</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="st">&quot;</span><span class="va">$WB_BASE</span><span class="st">/v1/route/annotation&quot;</span> <span class="dt">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$WB_KEY</span><span class="st">&quot;</span> <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;plan_id&quot;:&quot;plan-你的编号&quot;,&quot;stage_id&quot;:&quot;s1&quot;,&quot;model_key&quot;:&quot;up-a/model-fast-0731&quot;,&quot;confirmed&quot;:true,&quot;outcome&quot;:&quot;ok&quot;,&quot;usage&quot;:{&quot;prompt_tokens&quot;:12,&quot;completion_tokens&quot;:35}}&#39;</span></span></code></pre></div>
+<p><strong>你会看到</strong>：<code>recorded: true</code>，以及
+<code>estimate_delta</code>（预估 vs 实付的 token 差与金额差）。不带
+<code>usage</code> 就只有一条「已确认」，没有差额。</p>
+<blockquote>
+<p>三个必填：<code>plan_id</code>、<code>stage_id</code>、<code>model_key</code>；<code>confirmed</code>
+必须是
+<code>true</code>/<code>false</code>（布尔值）；<code>outcome</code>
+只能是 <code>ok</code> / <code>fallback</code> / <code>failed</code>。
+计划状态只在前台内存里留一段时间（约 24
+小时，重启即清）；过期后回写会报「计划不存在或已过期」，重新生成一份即可。</p>
+</blockquote>
+<h3 id="67-填进任意-openai-客户端">6.7 填进任意 OpenAI 客户端</h3>
+<table>
+<thead>
+<tr class="header">
+<th>客户端里的字段</th>
+<th>填什么</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Base URL / 接口地址</td>
+<td><code>http://127.0.0.1:18790/v1</code>（要完整路径就填
+<code>.../v1/chat/completions</code>）</td>
+</tr>
+<tr class="even">
+<td>API Key</td>
+<td>你签发的 <code>wb_...</code>（本机无钥匙模式可留空）</td>
+</tr>
+<tr class="odd">
+<td>Model</td>
+<td><code>auto</code>（让网关选）、<code>auto-fast</code>（便宜优先）、<code>auto-strong</code>（能力优先），或直接写
+<code>上游/模型</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>首次成功的三个标志</strong>：客户端能正常回话；网关账本多了一行；响应头里有
+<code>X-Router-Decision</code>。三种入口怎么选：只想本机少折腾 →
+直连；已在用 DSH 且要「点确认才花钱」＋统一账本 →
+Max；只要本机分段计划、不接网关 → Pro（花费不进网关账本）。</p>
+<hr />
+<p><a id="s7"></a></p>
+<h2 id="七花钱与对账">七、花钱与对账</h2>
+<h3 id="71-钱是怎么算出来的">7.1 钱是怎么算出来的</h3>
+<p>一句话：<strong>token 用量 × 单价</strong>。单价来自
+<code>pricebook.json</code>；用量以响应里的 <code>usage</code>
+为准；单价分高峰/低峰。它不替你猜价：没填单价的模型显示「0（待用户录入）·未定价（不当作免费）」，本地模型显示「0（本地）」。</p>
+<h3 id="72-plan-的估价怎么读">7.2 plan 的估价怎么读</h3>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>怎么读</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>stages[].model.key</code></td>
+<td>这段打算用的「上游/模型」——执行时就把它填进 <code>model</code></td>
+</tr>
+<tr class="even">
+<td><code>stages[].estimate.input_tokens</code> /
+<code>output_tokens</code></td>
+<td>这段的输入/输出 token 估算</td>
+</tr>
+<tr class="odd">
+<td><code>stages[].estimate.price_state</code></td>
+<td><code>priced</code>（有单价）/ <code>local</code>（本地 0）/
+<code>unpriced</code>（未定价）</td>
+</tr>
+<tr class="even">
+<td><code>stages[].estimate.price_label</code></td>
+<td>给人看的标签：<code>按已填单价</code> / <code>0（本地）</code> /
+<code>0（待用户录入）</code></td>
+</tr>
+<tr class="odd">
+<td><code>totals.unpriced_models</code></td>
+<td>哪些模型没价——<strong>出现它就要当心，不代表免费</strong></td>
+</tr>
+<tr class="even">
+<td><code>pricing.policy</code></td>
+<td>三种状态的官方说法</td>
+</tr>
+<tr class="odd">
+<td><code>estimate_basis</code></td>
+<td>估价口径：<strong>不含 system
+prompt、不含历史消息</strong>，是上限近似不是承诺</td>
+</tr>
+<tr class="even">
+<td><code>estimate_confidence</code></td>
+<td><code>low</code>（有未定价模型）或 <code>medium</code></td>
+</tr>
+<tr class="odd">
+<td><code>automation</code>（传了档位才有）</td>
+<td>当前确认节奏（见 8.4）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>读法</strong>：先看 <code>totals.unpriced_models</code>
+是否为空，再逐段看 <code>model.key</code>
+与估价。不满意就换段模型（插件里换，或改计划再执行），<strong>这一切都不花钱</strong>。</p>
+<h3 id="73-你确认之后发生什么">7.3 你确认之后发生什么</h3>
+<p>只有你点确认（<code>confirmed: true</code>）或自己发起对话，才有真实调用与花费；每次真实调用在账本落一行（模型、耗时、token
+用量、状态）；回写把真实 <code>usage</code> 记回计划并算出差额。</p>
+<h3 id="74-estimate_delta-怎么读">7.4 <code>estimate_delta</code>
+怎么读</h3>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>planned_input_tokens</code> /
+<code>planned_output_tokens</code></td>
+<td>计划里的估算</td>
+</tr>
+<tr class="even">
+<td><code>actual_input_tokens</code> /
+<code>actual_output_tokens</code></td>
+<td>实际用量</td>
+</tr>
+<tr class="odd">
+<td><code>input_tokens_delta</code> /
+<code>output_tokens_delta</code></td>
+<td>差值；<strong>正数＝实付比预估多</strong></td>
+</tr>
+<tr class="even">
+<td><code>input_ratio</code> / <code>output_ratio</code></td>
+<td>实际/预估的倍数</td>
+</tr>
+<tr class="odd">
+<td><code>actual_cost</code> / <code>planned_cost</code> /
+<code>cost_delta</code></td>
+<td>金额差（元，6 位小数，小钱也看得见）</td>
+</tr>
+<tr class="even">
+<td><code>basis</code></td>
+<td>口径提醒：估价不含 system prompt/历史消息</td>
+</tr>
+</tbody>
+</table>
+<p><strong>为什么会对不上</strong>：估算是按字符数粗估、且不含系统提示与历史消息，真实调用会把它们算进去——「实付
+&gt; 预估」是常见现象，不是出错。</p>
+<h3 id="75-v1routereport预估-vs-实付">7.5
+<code>/v1/route/report</code>：预估 vs 实付</h3>
+<p>主对账表：把计划里的预估与账本里的实账放一起比，可按时间范围与分组看。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="st">&quot;http://127.0.0.1:18790/v1/route/report?range=7d&amp;group=model&quot;</span> <span class="dt">\</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$WB_KEY</span><span class="st">&quot;</span></span></code></pre></div>
+<p><strong>你会看到</strong>：两套汇总——一套来自回写（计划侧），一套来自账本（实账侧），以及
+<code>notes</code> 提示。只读到账本尾部一段数据时会标
+<code>partial</code>（不完整，别当全量）。<strong>怎么看</strong>：同一模型/同一组差得离谱
+→
+先查价格表（单价填错或没填），再查是否长期用最大窗口的模型跑小任务。</p>
+<h3 id="76-v1routereplay只读复算">7.6
+<code>/v1/route/replay</code>：只读复算</h3>
+<p>用当前配置把同一份计划重算一遍「如果现在跑，会怎么选、大概多少钱」，<strong>不执行、不写账</strong>。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST <span class="st">&quot;http://127.0.0.1:18790/v1/route/replay&quot;</span> <span class="dt">\</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer </span><span class="va">$WB_KEY</span><span class="st">&quot;</span> <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;plan_id&quot;:&quot;plan-你的编号&quot;}&#39;</span></span></code></pre></div>
+<p><strong>你会看到</strong>：<code>mode: &quot;read_only&quot;</code>，以及每段「原来选了什么、现在会选什么、有没有变、差额多少」。<strong>用途</strong>：改完配置或价格表先复算再决定是否真跑；也用于事后追查「当时为什么选它」。<strong>限制</strong>：计划状态在内存里（约
+24 小时，重启即清），过期后复算会提示计划不存在，重新生成即可。</p>
+<h3 id="77-admin-系列三个页面看什么">7.7 <code>/admin</code>
+系列三个页面看什么</h3>
+<ul>
+<li><strong><code>/admin</code>（管理页）</strong>：上游健康与熔断；<strong>上游余额／套餐快照</strong>（快照太久没更新会提示）；<strong>API
+Key</strong>（新建／吊销／轮换，设 <code>scopes</code> 与
+<code>rpm</code>）；<strong>路由策略与价目</strong>；<strong>插件状态</strong>；<strong>自动学习开关</strong>（<code>learnedOverrides</code>
+的查看）。三个页面里只有它能改东西，改完按页面提示区分「热读」与「需重启」。</li>
+<li><strong><code>/admin/live</code>（运行状态，只读）</strong>：这一屏的价值不是给你一堆数字，而是让你<strong>一眼看懂四件事</strong>——
+<ol type="1">
+<li><strong>整个任务的路由策略</strong>：任务怎么切成「轻判断／主力执行／关键决策」三层，每层承担什么活、各占多少量（分工泳道）；</li>
+<li><strong>每次请求的选模策略与方式</strong>：每次请求的候选链有哪些、最后选中哪个模型、什么时候升档、什么时候降级（失败／超时／上下文不够）（实时请求流）；</li>
+<li><strong>不同任务分别调用哪些模型</strong>：按模型看的承接量、成功率、P50/P95、Token
+与花费（模型分工矩阵）；</li>
+<li><strong>运行情况怎么样</strong>：请求数、成功率、P50/P95、输入/输出
+Token、成本、本地与云端占比、上游健康与熔断，以及上下文治理的 band
+分布（<code>pass</code>／<code>compress</code>／<code>reject</code>）。</li>
+</ol></li>
+<li><strong><code>/admin/review</code>（复盘页，只读）</strong>：按时间段对账复盘，适合每周或每月固定看一次；和
+<code>/v1/route/report</code> 的「预估 vs 实付」对照着看。</li>
+</ul>
+<p><strong>访问前提</strong>：三个页面都只绑本机回环、只在内网，且需要登录；对外只放行
+<code>/health</code> 与 <code>/v1/*</code>，所以从外网打管理面一定
+404（见 FAQ 9.17）。</p>
+<h3 id="78-一周一次的对账习惯与排查顺序">7.8
+一周一次的对账习惯与排查顺序</h3>
+<p>对账五步：① 看 <code>/admin/live</code>
+上游是否全绿、有没有长时间熔断；② 拉一次
+<code>/v1/route/report?range=7d&amp;group=model</code> 并把「预估 vs
+实账」存档；③ 看有没有 <code>unpriced_models</code>，有就补价格表；④
+看有没有一直用最贵档跑小活的组（那是调候选链的信号）；⑤
+有疑问的某份计划，用 <code>replay</code> 复算一次。</p>
+<p>对不上先查四个：价格表有没有这个模型（<code>unpriced</code>）／峰谷时段对不对（<code>peak</code>
+设错则单价全错）／回写有没有真的带 <code>usage</code>／报告是不是
+<code>partial</code>。</p>
+<hr />
+<p><a id="s8"></a></p>
+<h2 id="八开关与灰度">八、开关与灰度</h2>
+<p>设计原则：<strong>先只观察，稳定后逐级开启；每次只动一个开关，并记下改动时间与回滚点。</strong></p>
+<h3 id="81-出厂默认一览">8.1 出厂默认一览</h3>
+<table>
+<thead>
+<tr class="header">
+<th>能力</th>
+<th>开关</th>
+<th>默认</th>
+<th>改完要重启吗</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B1 边界纪律</td>
+<td><code>ROUTER_B1_DISCIPLINE</code></td>
+<td>开（1）</td>
+<td>要</td>
+</tr>
+<tr class="even">
+<td>B2 报告与回放</td>
+<td>无独立开关</td>
+<td>开</td>
+<td>—</td>
+</tr>
+<tr class="odd">
+<td>B3 自动化档位</td>
+<td><code>ROUTER_B3_AUTOMATION</code></td>
+<td>开（1，不传档位＝现状）</td>
+<td>要</td>
+</tr>
+<tr class="even">
+<td>B4 影子判定</td>
+<td><code>config/shadow_judge.json → enabled</code> 或
+<code>ROUTER_B4_SHADOW=1</code></td>
+<td><strong>关</strong></td>
+<td><strong>不用</strong>（热加载）</td>
+</tr>
+<tr class="odd">
+<td>B5 只读直通</td>
+<td><code>ROUTER_B5_PASSTHROUGH=1</code> ＋ key 的
+<code>passthrough:true</code></td>
+<td><strong>关</strong></td>
+<td>要</td>
+</tr>
+<tr class="even">
+<td>上下文治理</td>
+<td><code>context_governor.mode</code> 或
+<code>ROUTER_CTX_GOVERNOR</code></td>
+<td><code>shadow</code></td>
+<td>要</td>
+</tr>
+<tr class="odd">
+<td>阶梯裁剪 trim</td>
+<td><code>context_governor.trim.enabled</code></td>
+<td><strong>关</strong></td>
+<td>要</td>
+</tr>
+<tr class="even">
+<td>413 出口</td>
+<td><code>context_governor.error.allow_413</code></td>
+<td><strong>关</strong>（默认回 400）</td>
+<td>要</td>
+</tr>
+<tr class="odd">
+<td>单源价格自证</td>
+<td><code>ROUTER_PRICE_ATTEST</code></td>
+<td>开（1）</td>
+<td>要</td>
+</tr>
+<tr class="even">
+<td>超时收回</td>
+<td><code>timeouts.read_seconds</code> /
+<code>stream_seconds</code></td>
+<td>读 270 秒 / 流式 600 秒</td>
+<td>要</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-建议的开启节奏">8.2 建议的开启节奏</h3>
+<ol type="1">
+<li><strong>第 1 天</strong>：全部保持默认（shadow/关档），只观察
+<code>/health</code>、<code>/v1/route/report</code>、<code>/v1/route/discipline</code>、<code>/v1/route/shadow</code>；确认错误率与响应时间和升级前一个样。</li>
+<li><strong>第 2–3 天</strong>：只把 <code>context_governor</code> 从
+<code>shadow</code> 切到 <code>enforce</code>（trim 仍关），盯
+<code>ctx_gov.band=reject</code> 的比例与 400 次数；比例异常就先切回
+shadow 再分析。</li>
+<li><strong>稳定后</strong>：按需逐个开 trim / 413 / B4 /
+B5，一次只动一个；<strong>任何异常先关开关</strong>（不必卸载），再查
+<code>/v1/route/report</code> 与账本
+<code>ctx_gov</code>——回滚不删数据。</li>
+</ol>
+<h3 id="83-上下文治理-context_governor默认-shadow">8.3 上下文治理
+<code>context_governor</code>（默认 shadow）</h3>
+<p><strong>是什么</strong>：给每次请求算一个输入预算：<strong>预算 ＝
+模型窗口 − max(1024,
+⌈0.2×窗口⌉)</strong>；超了按模式处理。中文按更保守口径估，图片按固定成本粗估。
+<strong>三档模式</strong>：<code>off</code>（不管）／<code>shadow</code>（只观测、不改行为，<strong>默认</strong>）／<code>enforce</code>（真正按预算拒收或处理）。
+<strong>超窗会怎样</strong>：<code>enforce</code> 下回结构化 <strong>400
+<code>context_window_exceeded</code></strong>，并带头
+<code>X-DSH-Context-Window</code>/<code>-Budget</code>/<code>-Used</code>/<code>-Used-Kind</code>。
+<strong>怎么切</strong>：改 <code>context_governor.mode</code>（或
+<code>ROUTER_CTX_GOVERNOR</code>）→ 重启。<strong>看什么</strong>：账本
+<code>ctx_gov.band</code>（<code>pass</code>/<code>compress</code>/<code>reject</code>）分布、响应头
+<code>X-DSH-Context-*</code>、400 次数。<strong>回滚</strong>：改回
+<code>shadow</code> 或 <code>off</code>。</p>
+<h3 id="84-其余开关怎么开看什么怎么回滚">8.4
+其余开关：怎么开、看什么、怎么回滚</h3>
+<table>
+<thead>
+<tr class="header">
+<th>能力</th>
+<th>怎么开</th>
+<th>看什么</th>
+<th>回滚</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B1 边界纪律（默认开）</td>
+<td>默认开；关＝<code>ROUTER_B1_DISCIPLINE=0</code> 并重启</td>
+<td><code>GET /v1/route/discipline?range=7d</code> 的
+<code>non_exempt_violations</code>（非豁免计数才算判据）</td>
+<td>设回 1 并重启</td>
+</tr>
+<tr class="even">
+<td>B3 自动化档位（默认 L1）</td>
+<td>请求体/头带 <code>automation_level</code> 取
+<code>L1</code>/<code>L2</code>/<code>L3</code>；<strong>只改确认节奏、不改选模</strong></td>
+<td>计划返回的 <code>automation</code> 块；L2/L3 下确认次数减少</td>
+<td>不传档位即回 L1</td>
+</tr>
+<tr class="odd">
+<td>B4 影子判定（默认关）</td>
+<td><code>config/shadow_judge.json → enabled=true</code>（<strong>热加载</strong>）或
+<code>ROUTER_B4_SHADOW=1</code></td>
+<td><code>/v1/route/shadow?range=7d</code> 的
+<code>calls</code>/<code>ok</code>/<code>bad_output</code>/<code>latency</code>；<code>/health.shadow</code></td>
+<td><code>enabled=false</code></td>
+</tr>
+<tr class="even">
+<td>B5 只读直通（默认关）</td>
+<td><strong>两道都开</strong>：<code>ROUTER_B5_PASSTHROUGH=1</code>（或
+<code>ROUTER_B5_PASSTHROUGH_KEYS</code> 指定 key）＋ 管理面给这把 key
+勾权限；请求头 <code>X-WB-Route-Mode: passthrough</code></td>
+<td>响应头
+<code>X-WB-Model</code>/<code>X-WB-Strategy</code>/<code>X-WB-Usage-Kind</code>；账本
+<code>passthrough=true</code> 行</td>
+<td>关环境变量或撤 key 权限</td>
+</tr>
+<tr class="odd">
+<td>阶梯裁剪 trim（默认关）</td>
+<td><code>context_governor.trim.enabled=true</code>（<strong>只在
+<code>enforce</code> 下生效</strong>）</td>
+<td>账本 <code>attempts</code> 的
+<code>trimmed</code>/<code>ctx_trim_retry</code>、响应头
+<code>X-DSH-Trimmed</code></td>
+<td>置回 <code>false</code> 并重启</td>
+</tr>
+<tr class="even">
+<td>413 出口（默认关）</td>
+<td><code>context_governor.error.allow_413=true</code>；默认同类超限回
+400</td>
+<td>状态码分布里是否出现 413</td>
+<td>置回 <code>false</code> 并重启（除非客户端明确区分
+413，否则别开）</td>
+</tr>
+<tr class="odd">
+<td>价格自证（默认开）</td>
+<td>默认开（<code>ROUTER_PRICE_ATTEST=1</code>）</td>
+<td><code>/health.price_consistency</code> 的
+<code>status</code>/<code>unsourced</code>/<code>drift</code>；发布方口径
+27/27、drift 0</td>
+<td>设 <code>0</code> 并重启</td>
+</tr>
+<tr class="even">
+<td>超时收回（读 270 秒 / 流式 600 秒）</td>
+<td>改 <code>timeouts.read_seconds</code> / <code>stream_seconds</code>
+后重启</td>
+<td>账本 <code>attempts[].ms</code>
+的高分位（p99）；长任务总在同一时长附近断就是它</td>
+<td>改回旧值并重启</td>
+</tr>
+</tbody>
+</table>
+<h3 id="85-一次只动一个记录模板">8.5 一次只动一个（记录模板）</h3>
+<table>
+<thead>
+<tr class="header">
+<th>日期时间</th>
+<th>改了哪个开关</th>
+<th>改前</th>
+<th>改后</th>
+<th>观察多久</th>
+<th>结论</th>
+<th>回滚点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>例：11-21 20:00</td>
+<td><code>context_governor.mode</code></td>
+<td>shadow</td>
+<td>enforce</td>
+<td>3 天</td>
+<td>待观察</td>
+<td>改回 shadow</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="s9"></a></p>
+<h2 id="九常见问题-faq">九、常见问题 FAQ</h2>
+<blockquote>
+<p>每条按「现象 → 原因 →
+怎么办」。改配置的，改完都<strong>要重启</strong>（8.1
+里标了热加载的除外）。</p>
+</blockquote>
+<p><strong>9.1 返回 401，说没授权</strong> <strong>现象</strong>：所有
+<code>/v1/*</code> 都 401，<code>type</code> 是
+<code>authentication_error</code>、<code>code</code> 是
+<code>unauthorized</code>，响应头带 <code>WWW-Authenticate</code>。
+<strong>原因</strong>：没带 <code>Authorization</code> 头；写成「非
+Bearer」形式；key 拼错或带多余空格；key 已被吊销；或
+<code>required</code> 已打开但手上还是旧 key。
+<strong>怎么办</strong>：头写成
+<code>Authorization: Bearer wb_...</code>（<code>Bearer</code>
+大小写不敏感，key 本身别加引号）；到管理面看这把 key 的
+<code>revoked_at</code>；换 key
+后<strong>重启客户端</strong>（不少客户端启动只读一次 key）。</p>
+<p><strong>9.2 返回 429，说太频繁</strong>
+<strong>现象</strong>：429，<code>type</code> 是
+<code>rate_limit_error</code>、<code>code</code> 是
+<code>rate_limit_exceeded</code>，带 <code>Retry-After</code> 头与
+<code>retry_after</code> 秒数。 <strong>原因</strong>：这把 key
+每分钟请求数超过它自己的 <code>rpm</code>；或这个 token
+连续鉴权失败被临时限流。 <strong>怎么办</strong>：按
+<code>retry_after</code> 等；把并发降下来；确实不够就在管理面提高这把
+key 的 <code>rpm</code>（保存即生效）；若是鉴权失败引起，先按 9.1
+修好。</p>
+<p><strong>9.3 返回 400 <code>context_window_exceeded</code></strong>
+<strong>现象</strong>：400，<code>code</code> 是
+<code>context_window_exceeded</code>，响应头有
+<code>X-DSH-Context-Window</code>/<code>-Budget</code>/<code>-Used</code>/<code>-Used-Kind</code>。
+<strong>原因</strong>：输入加上要预留的输出超过所选模型窗口（<code>context_governor</code>
+处于 <code>enforce</code> 时被结构性拒收）。
+<strong>怎么办</strong>：精简上下文（去掉长历史、长工具输出）；换窗口更大的模型（<code>auto-strong</code>
+或指定大窗口模型）；看 <code>-Used-Kind</code>
+判断估算口径。只想观察可把 <code>context_governor</code> 切回
+<code>shadow</code>（重启生效），但那是放松治理，别长期放。</p>
+<p><strong>9.4 返回 413</strong>
+<strong>现象</strong>：413，<code>code</code> 是
+<code>payload_too_large</code>。
+<strong>原因</strong>：<strong>只有</strong>把
+<code>context_governor.error.allow_413</code> 设成 <code>true</code>
+才会出现；默认同类超限回 400。 <strong>怎么办</strong>：默认不用管，按
+9.3 处理；若你开了 413 又不想要，置回 <code>false</code> 重启。</p>
+<p><strong>9.5 返回 503 <code>local_unavailable</code></strong>
+<strong>现象</strong>：503，错误体里 <code>type</code> 是
+<code>local_unavailable</code>（不是一句干巴巴的 503）。
+<strong>原因</strong>：本地候选（私有地址或显式标 <code>local</code>
+的上游）回了 503/507，或回了带显存关键词的
+500，网关统一转成结构化错误；同一台宿主还会进短冷却（默认 60
+秒），期间不再重试。
+<strong>怎么办</strong>：改走云端候选——候选阶梯里要有云端同档，且调用方要带
+<code>X-Route-Allow-Cloud: 1</code>（<strong>默认不自动转云</strong>）；或等本地模型卸载/加载完；要等卸载可带
+<code>X-Route-Wait-Local=&lt;秒&gt;</code>（上限 20
+秒，只重试一次）。</p>
+<p><strong>9.6 返回 503 <code>local_vram_insufficient</code></strong>
+<strong>现象</strong>：503，<code>code</code> 是
+<code>local_vram_insufficient</code>，带
+<code>need_mib</code>/<code>free_mib</code>，且
+<code>retryable: false</code>。
+<strong>原因</strong>：模型装不下显存——这个错误重试没用。
+<strong>怎么办</strong>：换更小的本地模型或走云端；<strong>不要反复重试同一台宿主</strong>（只会把等待时间叠加）；判断依据看
+<code>need_mib</code> 与 <code>free_mib</code> 的差。</p>
+<p><strong>9.7 返回 502 上游错误</strong>
+<strong>现象</strong>：502，<code>type</code> 是
+<code>upstream_error</code>，响应体里带每一步的
+<code>上游/模型=状态</code> 摘要（或每个候选被跳过的 <code>skip:</code>
+原因）。 <strong>原因</strong>：候选链全部失败（上游
+5xx、超时、鉴权失败），或全部候选被熔断/RPM 跳过。
+<strong>怎么办</strong>：先看 <code>/health</code> 各上游
+<code>state</code>；再读摘要，判断是「上游坏了」「我们的
+key/额度有问题」还是 <code>max_rpm</code>
+太小；修完再试。摘要能告诉你「一个都没发出去」——这种情况也回 502。</p>
+<p><strong>9.8 熔断 <code>circuit_open:&lt;秒&gt;</code></strong>
+<strong>现象</strong>：账本或错误里出现 <code>circuit_open:600</code>
+这类字样；<code>/health</code> 里某上游
+<code>circuit.open=true</code>、<code>state=circuit_open</code>。
+<strong>原因</strong>：这家上游连续失败被熔断（连接失败/超时/402/408/429/5xx
+默认 600 秒；401/403 默认 3600 秒）。400/413/422
+属「请求本身不合适」，<strong>不计熔断</strong>，只计被拒次数。
+<strong>怎么办</strong>：等窗口过去（<code>remaining_s</code>
+会倒数）；同时修根因（key
+过期最常见）；熔断状态只在内存，重启即清零——但别用重启掩盖问题。</p>
+<p><strong>9.9 启动失败 / 端口被占用</strong>
+<strong>现象</strong>：启动就退出，报
+<code>Address already in use</code>；或进程管理器反复重启。
+<strong>原因</strong>：18790
+已有进程在听（旧实例没停，或别的程序占了）。
+<strong>怎么办</strong>：<code>ss -ltn | grep 18790</code>
+看谁在听；停掉旧实例（前台
+<code>Ctrl+C</code>，或用进程管理器停）；只排查时可临时换端口起隔离实例
+<code>ROUTER_PORT=18791 python3 main.py</code>，但别把正式入口改乱。</p>
+<p><strong>9.10 价格缺失或对不上</strong>
+<strong>现象</strong>：计划里某段显示「0（待用户录入）」、<code>price_state</code>
+是 <code>unpriced</code>；或报告里预估与实付差得远。
+<strong>原因</strong>：<code>pricebook.json</code>
+没有这个模型的单价（未定价<strong>不当作免费</strong>）；或估价口径不含
+system prompt/历史消息；或峰谷单价填反。
+<strong>怎么办</strong>：补价格（手填，或
+<code>python3 scripts/price_sync.py --out config/pricebook.json</code>）后重启；跑
+<code>python3 scripts/price-attest.py</code>
+看覆盖与偏差；对账以账本实账与 <code>/v1/route/report</code>
+为准；差额解释看 <code>estimate_delta.basis</code>。</p>
+<p><strong>9.11 计划卡不出现 / 点了没反应</strong>
+<strong>现象</strong>：点「生成计划」没反应；计划卡不出现；或点「确认开工」模型没切。
+<strong>原因</strong>：插件没装好或页面没刷新（宿主改动需重启
+DSH）；插件与宿主版本不配套；Max 模式下网关没在跑或
+<code>/v1/route/plan</code> 不通；这把 key 的 <code>scopes</code> 里没有
+<code>plan</code>。 <strong>怎么办</strong>：先
+<code>curl -s http://127.0.0.1:18790/health</code> 确认网关活着；再用
+curl 直接打一次计划接口看能否拿到 <code>plan_id</code>；刷新页面或重启
+DSH；确认 Base URL 指向网关；到管理面确认这把 key 勾了
+<code>plan</code>。</p>
+<p><strong>9.12 流式输出中途断了</strong>
+<strong>现象</strong>：字出来一半没了；账本这行
+<code>final_status</code> 是
+<code>stream_error</code>；客户端报连接被重置。
+<strong>原因</strong>：流式一旦开始发响应头，上游中途断开就<strong>只能断连接</strong>、没法再改状态码；或超过流式超时（默认
+600 秒）；或中间代理/客户端自己先超时。
+<strong>怎么办</strong>：同样的内容先打一次<strong>非流式</strong>，判断是上游还是链路；调大
+<code>timeouts.stream_seconds</code>（重启生效）；看
+<code>/health</code> 里该上游状态与账本 <code>attempts</code>。</p>
+<p><strong>9.13 账本找不到</strong> <strong>现象</strong>：找不到
+<code>数据/ledger.jsonl</code>，或找到了但是空的。
+<strong>原因</strong>：账本路径写在
+<code>routing.json → ledger.path</code>（样例
+<code>数据/ledger.jsonl</code>，<strong>相对进程当前目录</strong>）；你从别的目录启动它就落到别处；或还没有一次成功请求。
+<strong>怎么办</strong>：先 <code>cd ~/wb-router/gateway</code>
+再启动；<code>ls -l 数据/</code>
+看文件在不在、有没有变大；内网还有一个只读账本查询接口（<code>/router/ledger</code>），用法见包内
+<code>README.md</code>；失败请求也会落一行，<code>final_status</code>
+会说明结果。</p>
+<p><strong>9.14 换了 key 不生效</strong>
+<strong>现象</strong>：换了上游密钥或客户端 key，行为没变：还是
+401，或还在用旧额度。
+<strong>原因</strong>：上游密钥来自环境变量、进程启动时读入 →
+<strong>必须重启网关</strong>；客户端把 key
+缓存在自己的配置或连接里；两套 key 容易混（上游密钥 vs 客户端 key）。
+<strong>怎么办</strong>：改的是环境变量或凭据文件 →
+重启网关；改的是管理面里的客户端 key（创建/吊销/轮换）→
+网关侧立即生效，但客户端要换成新 token；先确认你改的是对的那套。</p>
+<p><strong>9.15 升级与回滚怎么回</strong>
+<strong>现象</strong>：换了新版本，或升级后行为不对、想退回旧版。
+<strong>原因</strong>：升级不只是换文件，还要合并配置——新版本会新增配置块、也会改动默认值（1.0.3.3
+就新增了上下文治理块、超时值也变了），整份覆盖会把你的设置改坏。
+<strong>怎么办（升级四步）</strong>：① 备份
+<code>config</code>、<code>数据</code>、<code>logs</code>（见 10.4）；②
+解包新包，<strong>保留你自己的</strong>
+<code>config/api-keys.json</code>、凭据、<code>数据/</code>、<code>logs/</code>；③
+合并配置——拿新包 <code>routing.json</code>
+与你的比对，<strong>只补新增块，不要整份覆盖</strong>（1.0.3.3
+新增上下文治理块、超时值也变了）；④
+重启并自检（<code>/health</code>、价格自证、一次小请求）。
+<strong>怎么办（回滚三步）</strong>：还原 <code>.bak</code> 文件 → 重启
+→ 再自检一次。<strong>数据不删、账本不清</strong>。</p>
+<p><strong>9.16 改了配置没生效</strong> <strong>现象</strong>：改完
+<code>routing.json</code>/<code>upstreams.json</code>/环境变量，行为照旧。
+<strong>原因</strong>：这些都是<strong>启动时读一次</strong>，运行中改了不会自动加载。
+<strong>怎么办</strong>：重启网关。例外：影子判定的
+<code>config/shadow_judge.json</code>
+是热加载；路由策略文件按修改时间热读（以包内说明为准）。改前照例先
+<code>.bak</code>。</p>
+<p><strong>9.17 <code>/admin</code> 打不开或 404</strong>
+<strong>现象</strong>：浏览器打开管理面 404，或连接被拒。
+<strong>原因</strong>：管理面只绑本机回环；对外<strong>只放行
+<code>/health</code> 与 <code>/v1/*</code></strong>，任何外部路径都
+404；端口随 <code>ROUTER_PORT</code>。
+<strong>怎么办</strong>：在<strong>网关那台机器上</strong>打开
+<code>http://127.0.0.1:18790/admin</code>；不要指望从外网打开；远程排查用
+SSH 转发到本机端口，别把管理面暴露出去。</p>
+<p><strong>9.18 换模型后，之前的上下文还在吗？</strong>
+<strong>现象</strong>：担心切成另一个模型之后，新模型不记得前面说过什么，任务要从头再来。
+<strong>原因</strong>：历史消息是<strong>客户端照常携带</strong>的，网关只替换「这一段由谁来答」，其余请求内容原样转发、默认不做裁剪（详见
+6.5）；B1
+边界纪律只约束「什么时候可以换」，不碰内容。真正会动上下文的是另外两个开关：阶梯裁剪
+<code>trim</code> 与上下文治理 <code>enforce</code>（默认分别是关与
+<code>shadow</code>）。
+<strong>怎么办</strong>：直接在同一个会话里换，不必重开会话、也不必重说一遍；换完后先让新模型复述「目标／已完成／下一步／不做什么」再继续。若发现上下文明显被截断，先查是否开了
+<code>trim</code>，或把 <code>context_governor</code> 从
+<code>enforce</code> 回 <code>shadow</code>（见 8.3、8.4），并看响应头
+<code>X-DSH-Trimmed</code>。</p>
+<hr />
+<p><a id="s10"></a></p>
+<h2 id="十安全与备份">十、安全与备份</h2>
+<h3 id="101-凭据三条铁律">10.1 凭据三条铁律</h3>
+<ol type="1">
+<li><strong>只放环境变量</strong>（或你本机的凭据文件），不写进 JSON
+配置、不进仓库、不进聊天记录、不进截图。</li>
+<li><strong>配置里只写变量名</strong>：<code>upstreams.json</code> 的
+<code>api_key_env</code>
+是变量名，不是密钥；<strong>密钥不进日志与账本</strong>，网关只在内存里用它，日志不打印请求体/响应体。</li>
+<li><strong>换人要换钥匙</strong>：人/设备离开就吊销并轮换客户端
+key，别只做口头交接。</li>
+</ol>
+<h3 id="102-账本与隐私">10.2 账本与隐私</h3>
+<p>账本 <code>数据/ledger.jsonl</code>
+<strong>每请求一行、只记特征不记正文</strong>：记的是长度类特征（字符数、token
+估算、消息条数）、状态、耗时、token
+用量；不记消息正文、prompt、工具参数、图片内容，上游错误也只记状态码/异常类型。所以：<strong>账本能给你对账，但不能用来回放你说过的话</strong>——这是设计上的取舍。</p>
+<h3 id="103-管理面只在内网">10.3 管理面只在内网</h3>
+<p>管理面（<code>/admin</code>、<code>/admin/live</code>、<code>/admin/review</code>
+与 <code>/router/*</code>
+那组只读接口）<strong>只在内网</strong>，默认只绑本机回环；对外只放行
+<code>/health</code> 与
+<code>/v1/*</code>。确实要让别的机器接入，请走「反向代理＋白名单只放行
+<code>/health</code> 与
+<code>/v1/*</code>」，不要把管理面一起开出去。开源包里没有现成的公网方案（<strong>待确认</strong>，见
+11.6）。</p>
+<h3 id="104-改之前先备份">10.4 改之前先备份</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router/gateway</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="va">STAMP</span><span class="op">=</span><span class="va">$(</span><span class="fu">date</span> <span class="at">-Iseconds</span><span class="va">)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-</span><span class="va">$STAMP</span><span class="st">&quot;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config upstreams.json <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-</span><span class="va">$STAMP</span><span class="st">&quot;</span>/</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> 数据 <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-</span><span class="va">$STAMP</span><span class="st">&quot;</span>/ <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="fu">true</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-</span><span class="va">$STAMP</span><span class="st">&quot;</span></span></code></pre></div>
+<p><strong>你会看到</strong>：备份目录里有
+<code>config/</code>、<code>upstreams.json</code>、<code>数据/</code>——这就是你的回滚点。</p>
+<h3 id="105-回滚三步">10.5 回滚三步</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router/gateway</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 还原（&lt;备份名&gt; 换成你的目录名）</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-&lt;备份名&gt;/config/routing.json&quot;</span>   config/routing.json</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-&lt;备份名&gt;/config/upstreams.json&quot;</span> config/upstreams.json</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 重启：前台 Ctrl+C 后重新 python3 main.py；用进程管理器的 restart 你的服务</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> main.py</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 另开终端自检</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool <span class="kw">|</span> <span class="fu">head</span> <span class="at">-5</span></span></code></pre></div>
+<p><strong>注意</strong>：回滚只还原文件、不清账本。账本是你的历史事实，别为了「看起来干净」删它。</p>
+<h3 id="106-对外分享前检查四件事">10.6 对外分享前检查四件事</h3>
+<p>① 配置里没有密钥明文（只应有变量名）；②
+账本不含正文（本来就只记特征，抽查两行确认）；③ 截图遮住了 key
+与内网地址；④ 文档里不写你不想公开的上游名与价格。</p>
+<hr />
+<p><a id="s11"></a></p>
+<h2 id="十一附录">十一、附录</h2>
+<h3 id="111-端点速查">11.1 端点速查</h3>
+<table>
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>路径</th>
+<th>作用</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>GET</td>
+<td><code>/health</code></td>
+<td>健康、熔断、价格自证</td>
+<td><strong>不需要 key</strong></td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/v1/models</code></td>
+<td>虚拟模型＋上游模型清单</td>
+<td>需要 key（本机无钥匙模式除外）</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/v1/route/capabilities</code></td>
+<td>档位与模型能力清单</td>
+<td>需要 key</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/v1/route/prices</code></td>
+<td>价格目录（已定价/本地/未定价）</td>
+<td>需要 key</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/v1/route/functions</code>、<code>/v1/route/strategies</code></td>
+<td>功能路由与策略（只读）</td>
+<td>需要 key</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/v1/route/plan</code></td>
+<td>生成分段计划＋估价（<strong>无副作用</strong>）</td>
+<td>需要 <code>plan</code> 权限</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td><code>/v1/route/annotation</code></td>
+<td>回写执行结果（带 usage 时回差额）</td>
+<td>需要 <code>plan</code> 权限</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/v1/chat/completions</code></td>
+<td>对话（OpenAI 兼容，支持流式）</td>
+<td>需要 <code>chat</code> 权限</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td><code>/v1/completions</code></td>
+<td>补全（旧式）</td>
+<td>需要 <code>chat</code> 权限</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/v1/embeddings</code>、<code>/v1/rerank</code></td>
+<td>向量 / 重排透传</td>
+<td>需要 <code>chat</code> 权限</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/v1/route/report</code></td>
+<td>预估 vs 实付＋账本实账</td>
+<td>需要 key</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/v1/route/replay</code></td>
+<td>只读复算（0 执行 0 写账）</td>
+<td>需要 key</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/v1/route/discipline</code></td>
+<td>边界纪律只读聚合</td>
+<td>需要 key</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/v1/route/shadow</code></td>
+<td>影子判定统计</td>
+<td>开 B4 后才有内容</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/health.shadow</code></td>
+<td>影子判定健康子页</td>
+<td>仅开启时出现</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>管理面那组（<code>/admin</code>、<code>/admin/live</code>、<code>/admin/review</code>、<code>/router/ledger</code>、<code>/router/stats</code>、<code>/router/config</code>）<strong>只在内网</strong>，不在对外放行范围内。</p>
+</blockquote>
+<h3 id="112-错误码速查">11.2 错误码速查</h3>
+<table>
+<thead>
+<tr class="header">
+<th>状态</th>
+<th><code>type</code> / <code>code</code></th>
+<th>什么时候出现</th>
+<th>你该怎么办</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>401</td>
+<td><code>authentication_error</code> / <code>unauthorized</code></td>
+<td>key 缺失或不匹配</td>
+<td>检查 <code>Authorization: Bearer</code>；换了 key 要重启客户端</td>
+</tr>
+<tr class="even">
+<td>429</td>
+<td><code>rate_limit_error</code> /
+<code>rate_limit_exceeded</code></td>
+<td>这把 key 的每分钟上限超了（带 <code>Retry-After</code>）</td>
+<td>等 <code>retry_after</code> 秒，或申请更高 rpm</td>
+</tr>
+<tr class="odd">
+<td>400</td>
+<td><code>invalid_request_error</code> /
+<code>context_window_exceeded</code></td>
+<td>输入超模型窗口（<code>enforce</code> 下）</td>
+<td>精简上下文或换更大窗口模型</td>
+</tr>
+<tr class="even">
+<td>413</td>
+<td><code>payload_too_large</code></td>
+<td>仅当 <code>error.allow_413=true</code>；默认回 400</td>
+<td>同上；默认不用管</td>
+</tr>
+<tr class="odd">
+<td>503</td>
+<td><code>service_unavailable</code> ＋ <code>local_unavailable</code> /
+<code>local_vram_insufficient</code></td>
+<td>本地模型装不下显存</td>
+<td>改走云端候选，或等本地卸载</td>
+</tr>
+<tr class="even">
+<td>502</td>
+<td><code>upstream_error</code></td>
+<td>上游失败且无可用候选</td>
+<td>稍后重试；看 <code>/health</code> 上游状态</td>
+</tr>
+<tr class="odd">
+<td>熔断</td>
+<td><code>circuit_open:&lt;秒&gt;</code></td>
+<td>某上游连续失败被熔断</td>
+<td>等熔断窗口结束；看 <code>/health</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="113-配置文件字段速查">11.3 配置文件字段速查</h3>
+<table>
+<thead>
+<tr class="header">
+<th>文件</th>
+<th>关键字段</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>config/upstreams.json</code></td>
+<td><code>upstreams[].id</code>/<code>base_url</code>/<code>api_key_env</code>/<code>max_rpm</code>；<code>models.&lt;模型&gt;.context_window</code>/<code>.max_tokens</code>/<code>.vision</code>/<code>.tier</code></td>
+<td>有哪些上游、怎么连、每个模型能吃多长</td>
+</tr>
+<tr class="even">
+<td><code>config/routing.json</code></td>
+<td><code>virtual_models</code>、<code>routes</code>（时段×级别候选链）、<code>strategies</code>（<code>fast</code>/<code>strong</code>）、<code>complexity</code>、<code>peak</code>、<code>breaker</code>、<code>timeouts</code>、<code>context_governor</code>、<code>hint</code>、<code>ledger.path</code></td>
+<td>怎么选、何时算高峰、出错怎么退</td>
+</tr>
+<tr class="odd">
+<td><code>config/pricebook.json</code></td>
+<td><code>models.&lt;模型&gt;.offers[].price.input/output/cache_hit</code>（<code>peak</code>/<code>offpeak</code>）、<code>rules.peak_rule</code>、<code>currency</code></td>
+<td>每个模型多少钱（价格只以这一份为准）</td>
+</tr>
+<tr class="even">
+<td><code>config/api-keys.json</code></td>
+<td><code>required</code>、<code>keys[].scopes</code>（<code>plan</code>/<code>chat</code>）、<code>keys[].rpm</code>、<code>keys[].revoked_at</code></td>
+<td>谁能用、能用哪些接口、多快</td>
+</tr>
+</tbody>
+</table>
+<h3 id="114-环境变量速查">11.4 环境变量速查</h3>
+<table>
+<thead>
+<tr class="header">
+<th>变量</th>
+<th>作用</th>
+<th>默认</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt;上游&gt;_API_KEY</code>（名字以 <code>api_key_env</code>
+为准）</td>
+<td>某家上游的真实密钥</td>
+<td>无</td>
+</tr>
+<tr class="even">
+<td><code>ROUTER_HOST</code> / <code>ROUTER_PORT</code></td>
+<td>改监听地址/端口（起隔离实例用）</td>
+<td><code>127.0.0.1</code> / <code>18790</code></td>
+</tr>
+<tr class="odd">
+<td><code>ROUTER_API_KEY</code></td>
+<td>单钥匙入口鉴权（设了就要带 Bearer）</td>
+<td>空＝关</td>
+</tr>
+<tr class="even">
+<td><code>ROUTER_PRICE_ATTEST</code></td>
+<td>价格单源自证</td>
+<td><code>1</code>（开）</td>
+</tr>
+<tr class="odd">
+<td><code>ROUTER_CTX_GOVERNOR</code></td>
+<td>上下文治理模式（<code>off</code>/<code>shadow</code>/<code>enforce</code>）</td>
+<td>取配置文件，出厂 <code>shadow</code></td>
+</tr>
+<tr class="even">
+<td><code>ROUTER_B1_DISCIPLINE</code> /
+<code>ROUTER_B3_AUTOMATION</code></td>
+<td>B1 / B3 开关</td>
+<td><code>1</code> / <code>1</code></td>
+</tr>
+<tr class="odd">
+<td><code>ROUTER_B4_SHADOW</code> / <code>ROUTER_B5_PASSTHROUGH</code> /
+<code>ROUTER_B5_PASSTHROUGH_KEYS</code></td>
+<td>B4 影子判定 / B5 总闸 / 限定钥匙</td>
+<td>关 / 关 / 空</td>
+</tr>
+<tr class="even">
+<td><code>WB_API_KEYS_REQUIRED</code></td>
+<td>强制开启 per-key 校验（优先于文件里的 <code>required</code>）</td>
+<td>跟随文件</td>
+</tr>
+</tbody>
+</table>
+<h3 id="115-版本与变更摘要10328-组能力各一句">11.5
+版本与变更摘要（1.0.3.3，8 组能力各一句）</h3>
+<table>
+<thead>
+<tr class="header">
+<th>组</th>
+<th>一句话</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B1 边界纪律</td>
+<td>计划每段带只读边界说明；同轮工具轮换模型只记不拦</td>
+</tr>
+<tr class="even">
+<td>B2 报告与回放</td>
+<td>预估 vs 实付的报告＋只读复算的回放，复算不执行不写账</td>
+</tr>
+<tr class="odd">
+<td>B3 自动化档位</td>
+<td>L1/L2/L3 只改「确认节奏」，不改选哪个模型；不传＝现状</td>
+</tr>
+<tr class="even">
+<td>B4 影子判定</td>
+<td>影子模型异步判档，只记录、不改选模，默认关、热加载</td>
+</tr>
+<tr class="odd">
+<td>B5 只读直通</td>
+<td>只读兼容入口，默认关，要环境变量＋key 两道开关</td>
+</tr>
+<tr class="even">
+<td>R4/R5 上下文治理</td>
+<td>给输入算预算、超窗回结构化 400、413 与裁剪各有独立开关</td>
+</tr>
+<tr class="odd">
+<td>A0/L5 价格单源</td>
+<td>价格只以 <code>pricebook.json</code> 为准，默认自证覆盖与偏差</td>
+</tr>
+<tr class="even">
+<td>观测</td>
+<td>账本记 <code>ctx_gov</code>，响应头给窗口/预算/已用/裁剪/档位</td>
+</tr>
+</tbody>
+</table>
+<p><strong>出厂验证口径（发布方数据）</strong>：价格自证
+<strong>27/27</strong>、drift 0；当前部署接入 <strong>5
+家</strong>上游（云端＋本地）；<strong>3 种入口</strong>（DSH Pro 插件 /
+DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
+个用例两段全绿；异机压测 <strong>2166 请求 / 0 失败</strong>；能力分
+<strong>8 组</strong>；账本<strong>只记特征、不记正文</strong>。</p>
+<h3 id="116-待确认--未验证清单">11.6 待确认 / 未验证清单</h3>
+<table>
+<thead>
+<tr class="header">
+<th>项</th>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>开源仓库地址与许可证</td>
+<td><strong>待确认</strong></td>
+<td>由发布方确定；本书不写具体许可证名与仓库地址</td>
+</tr>
+<tr class="even">
+<td>开源初版系统要求</td>
+<td><strong>部分未验证</strong></td>
+<td>Linux/容器已验证；<strong>Windows/macOS 原生安装未验证</strong></td>
+</tr>
+<tr class="odd">
+<td>开源版管理面板默认账号</td>
+<td><strong>待确认</strong></td>
+<td>生产环境由管理员自设，开源版默认值待定；确认前只在本机打开管理面</td>
+</tr>
+<tr class="even">
+<td>上游名单与价格表</td>
+<td><strong>随你自配</strong></td>
+<td>本书不承诺任何具体价格与上游清单</td>
+</tr>
+<tr class="odd">
+<td>插件公开下载渠道</td>
+<td><strong>待确认</strong></td>
+<td>取决于仓库地址；目前以发布包 <code>plugins-1.0.3.3.tar.gz</code>
+为准</td>
+</tr>
+<tr class="even">
+<td>公网接入方案</td>
+<td><strong>未包含</strong></td>
+<td>开源包只保证「只绑回环＋只放行 <code>/health</code> 与
+<code>/v1/*</code>」；要对外请自建反向代理与白名单</td>
+</tr>
+</tbody>
+</table>
+<h3 id="117-术语小词典">11.7 术语小词典</h3>
+<table>
+<thead>
+<tr class="header">
+<th>词</th>
+<th>白话</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>上游 / 候选链</td>
+<td>真正干活的那家大模型服务（云端或你本机）／一段任务可依次尝试的模型名单</td>
+</tr>
+<tr class="even">
+<td>虚拟模型</td>
+<td><code>auto</code>/<code>auto-fast</code>/<code>auto-strong</code>
+这类名字，代表「让网关选」</td>
+</tr>
+<tr class="odd">
+<td>计划 / 回写</td>
+<td>切段＋选谁＋估价（不花钱）／把真实用量填回计划（对账）</td>
+</tr>
+<tr class="even">
+<td>账本</td>
+<td>每请求一行的记录，只记特征不记正文</td>
+</tr>
+<tr class="odd">
+<td>熔断 / RPM / 峰谷</td>
+<td>连续失败后暂停该上游一段时间／每分钟请求上限／上游的忙时段（贵）与闲时段（便宜）</td>
+</tr>
+<tr class="even">
+<td>shadow / enforce / 灰度</td>
+<td>只观察不干预／真正按规则拦截／新能力先只记录再真正执行</td>
+</tr>
+</tbody>
+</table>
+<h3 id="118-本书来源">11.8 本书来源</h3>
+<ul>
+<li>事实表：（内部编制资料，不随包）</li>
+<li>网关文档：<code>README.md</code>、<code>README.md</code>（网关代码树内）</li>
+<li>版本文档：<code>变更说明-1.0.3.3.md</code>、<code>开关开启与观察.md</code>、<code>交付说明-1.0.3.3-发对侧.md</code></li>
+<li>样例配置：<code>sample-config/upstreams.json</code>、<code>sample-config/routing.json</code>；字段另行核对
+<code>config/pricebook.json</code>、<code>config/api-keys.json</code></li>
+<li>其余细节以交付包内 <code>docs-1.0.3.3/</code> 与
+<code>README.md</code> 为准</li>
+</ul>
+<hr />
+<p><a id="s12"></a></p>
+<h2 id="十二编者自检">十二、编者自检</h2>
+<h3 id="121-内容来源对照">12.1 内容来源对照</h3>
+<table>
+<thead>
+<tr class="header">
+<th>章节</th>
+<th>主要来源</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>一、二章</td>
+<td>事实表 §0 命名与发布状态、§1 一句话定位、§2 组成、§3 核心问题、§4
+四步链、§7 差异对比（只比决策单位/开关/钱的口径/形态）、§11 待确认</td>
+</tr>
+<tr class="even">
+<td>三、安装前准备</td>
+<td>事实表 §11-2（系统要求未验证口径）、§2（Python
+3.12、两个依赖、18790）、§8.2</td>
+</tr>
+<tr class="odd">
+<td>四、安装</td>
+<td>事实表 §8.1 安装步骤、§2 服务形态；期望输出取自
+<code>README.md</code> 启动与 <code>/health</code>；回归判据取自
+<code>run-tests.sh</code> 头部说明</td>
+</tr>
+<tr class="even">
+<td>五、模型配置</td>
+<td>事实表 §8.2、§11-4；字段名取自
+<code>sample-config/upstreams.json</code>、<code>sample-config/routing.json</code>、<code>config/pricebook.json</code>、<code>config/api-keys.json</code>；价格命令取自
+<code>scripts/price_sync.py</code>、<code>scripts/price-attest.py</code>
+头部说明</td>
+</tr>
+<tr class="odd">
+<td>六、七章</td>
+<td>事实表 §4、§5、§9
+三种入口、§8.2、§8.3；计划与回写必填项、<code>estimate_delta</code>、<code>pricing.policy</code>、<code>estimate_basis</code>、<code>partial</code>、计划状态
+TTL 取自 <code>router_plan.py</code>；插件交互取自
+<code>dsh-wb-pro-0.2.0/README.md</code> 与
+<code>变更说明-1.0.3.3.md</code>；6.5
+的换模时机（<code>switch_on</code>＝<code>new_user_message</code>/<code>context_rebuild</code>、<code>tool_turns_frozen</code>、豁免项）与转发原则取自
+<code>router_plan.py</code>、<code>README.md</code>；7.7 的页面分区取自
+<code>admin.html</code>、<code>admin-live.html</code></td>
+</tr>
+<tr class="even">
+<td>八、开关与灰度</td>
+<td>事实表 §5（8 组能力与默认值）；逐项开启方法/观察指标/回滚取自
+<code>开关开启与观察.md</code>；上下文治理口径取自
+<code>变更说明-1.0.3.3.md</code></td>
+</tr>
+<tr class="odd">
+<td>九、常见问题</td>
+<td>事实表 §8.4 错误码表；本地 503 细节与熔断时长取自
+<code>README.md</code>；计划过期取自
+<code>router_plan.py</code>；其余为安装运维常识（不引入新数字）</td>
+</tr>
+<tr class="even">
+<td>十、十一章</td>
+<td>事实表 §10、§6「只记特征不记正文」、§8.3 端点、§8.4 错误码、§5
+能力组、§6 硬数字、§11 待确认；字段速查来自样例配置与
+<code>ROUTER_*</code> 环境变量（见 <code>开关开启与观察.md</code>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="122-本书标注为待确认--未验证的部分">12.2 本书标注为「待确认 /
+未验证」的部分</h3>
+<ol type="1">
+<li>开源仓库地址与许可证（不写具体名称）；</li>
+<li>Windows / macOS 原生安装未验证；</li>
+<li>开源版管理面板默认账号；</li>
+<li>上游名单与价格表随用户自配，不承诺具体价格；</li>
+<li>插件公开下载渠道（依赖仓库地址）／公网接入方案（开源包未包含，需自建反向代理与白名单）。</li>
+</ol>
+<h3 id="123-自检结果">12.3 自检结果</h3>
+<table>
+<thead>
+<tr class="header">
+<th>检查项</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FAQ 条数</td>
+<td><strong>18 条</strong>（9.1–9.18），满足 ≥15；覆盖 401、429、400
+<code>context_window_exceeded</code>、413、503（<code>local_unavailable</code>/<code>local_vram_insufficient</code>）、502、熔断
+<code>circuit_open</code>、启动失败/端口占用、价格缺失或对不上、计划卡不出现/点了没反应、流式中断、账本找不到、换
+key 不生效、升级与回滚、换模型后上下文是否还在</td>
+</tr>
+<tr class="even">
+<td>目录锚点</td>
+<td><strong>12 个</strong>目录条目，逐个对应 <code>id=&quot;s1&quot;…&quot;s12&quot;</code>
+与 12 个章节标题，一一一致</td>
+</tr>
+<tr class="odd">
+<td>硬数字</td>
+<td>只用事实表 §6 的 27/27、5 家、3 种入口、568、2166 请求/0 失败、8
+组、只记特征不记正文；其余为操作参数（状态码、270/600
+秒、1024、0.2、<code>127.0.0.1:18790</code>、Python 3.12、24
+小时计划状态、60 秒本地冷却、20 秒等待上限），均出自事实表 §2/§5/§8
+与上述 repo 文档</td>
+</tr>
+<tr class="even">
+<td>禁用表述</td>
+<td>自 grep
+结果：无星号计数、无百分比数值、无许可证名称、无排名或独占类夸张表述；效果承诺类词只出现在
+1.4「不做此类承诺」的否定句与本行说明中；未写具体单价（价格示例已标注「结构示意」）</td>
+</tr>
+<tr class="odd">
+<td>命令与路径</td>
+<td>命令全在代码块内；路径统一
+<code>~/wb-router</code>（＝安装目录）相对写法，未写死发布方本机绝对路径；本机绝对路径仅出现在
+11.8 来源</td>
+</tr>
+<tr class="even">
+<td>行数统计</td>
+<td><code>wc -l</code> 实测 <strong>926 行</strong>（按本轮修订口径 ≤940
+行）</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

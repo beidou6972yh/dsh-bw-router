@@ -1,0 +1,8 @@
+{
+  "name": "wb-max-mcp",
+  "version": "0.1.0",
+  "description": "WB 模型路由决策器 MCP server：wb_route_plan / wb_route_execute / wb_route_health",
+  "type": "module",
+  "bin": { "wb-max-mcp": "./server.mjs", "wb-max": "./bin/wb-max.mjs" },
+  "engines": { "node": ">=20" }
+}

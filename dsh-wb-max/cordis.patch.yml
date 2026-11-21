@@ -1,0 +1,4 @@
+# dsh bundle patch: WB 路由（Max）host 半；客户端在 dist/client/client.js。
+- insert:
+    - id: dsh-wb-max
+      name: 'dsh-wb-max'

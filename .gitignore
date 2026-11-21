@@ -1,0 +1,16 @@
+node_modules/
+*.tgz
+*.log
+npm-debug.log*
+.DS_Store
+coverage/
+
+# 运行/构建产物
+__pycache__/
+*.pyc
+数据/
+logs/
+node_modules/
+*.tgz
+*.log
+.bak-*

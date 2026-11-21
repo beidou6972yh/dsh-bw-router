@@ -1,0 +1,1419 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>模型路由网关 · 供应商管理</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --line:#e3e6ea; --text:#1c2430; --muted:#69727d; --accent:#2563eb; --ok:#0a7b3e; --bad:#b42318; --warn:#a15c00; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.55 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+  header { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:16px 22px; background:#0f172a; color:#fff; }
+  header h1 { font-size:17px; margin:0; font-weight:600; }
+  header .meta { color:#a9b4c4; font-size:12px; }
+  header .spacer { flex:1; }
+  header input { width:180px; padding:6px 8px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#e2e8f0; }
+  main { max-width:1180px; margin:18px auto 60px; padding:0 16px; display:grid; gap:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .card-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .card-head h2 { font-size:15px; margin:0; }
+  .card-head .spacer { flex:1; }
+  button { font:inherit; padding:6px 12px; border-radius:7px; border:1px solid var(--line); background:#fff; color:var(--text); cursor:pointer; }
+  button:hover { border-color:#b9c0c9; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.danger { color:var(--bad); border-color:#f0c2bd; }
+  button.small { padding:3px 8px; font-size:12px; }
+  button:disabled { opacity:.5; cursor:default; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { border-bottom:1px solid var(--line); padding:7px 8px; text-align:left; vertical-align:middle; }
+  th { color:var(--muted); font-weight:500; font-size:12px; white-space:nowrap; }
+  td.num, th.num { text-align:right; }
+  .tablewrap { overflow:auto; max-height:52vh; border:1px solid var(--line); border-radius:8px; }
+  .formgrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 14px; margin-bottom:10px; }
+  .formgrid label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--muted); }
+  .formgrid label.wide { grid-column:span 2; }
+  .formgrid input, .formgrid select { padding:6px 8px; border:1px solid var(--line); border-radius:6px; font:inherit; color:var(--text); background:#fff; }
+  .row { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:10px; }
+  .muted { color:var(--muted); font-size:12px; }
+  .badge { display:inline-block; padding:1px 6px; border-radius:999px; font-size:11px; background:#eef2f7; color:#40505f; margin-left:4px; }
+  .badge.warn { background:#fff4e5; color:var(--warn); }
+  .badge.ok { background:#e7f6ec; color:var(--ok); }
+  .badge.bad { background:#fdecea; color:var(--bad); }
+  .mstate { font-weight:600; }
+  .mstate.ok { color:var(--ok); } .mstate.bad { color:var(--bad); } .mstate.warn { color:var(--warn); }
+  #log { margin:0; max-height:180px; overflow:auto; background:#0f172a; color:#cbd5e1; padding:10px; border-radius:8px; font-size:12px; white-space:pre-wrap; }
+  .statusbar { display:flex; gap:14px; flex-wrap:wrap; color:var(--muted); font-size:12px; }
+  .hidden { display:none !important; }
+  .kv { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; }
+  @media (max-width:760px){ .formgrid { grid-template-columns:1fr; } .formgrid label.wide { grid-column:span 1; } }
+  .layer { position:fixed; inset:0; background:rgba(15,23,42,.55); display:flex; align-items:center; justify-content:center; z-index:60; padding:16px; }
+  .layer.hidden { display:none; }
+  .loginCard { background:#fff; border-radius:12px; padding:20px 22px; width:min(94vw,380px); display:grid; gap:10px; box-shadow:0 20px 50px rgba(0,0,0,.25); }
+  .loginCard h2 { font-size:17px; margin:0 0 4px; }
+  .loginCard label { display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--muted); }
+  .loginCard input { padding:8px 10px; border:1px solid var(--line); border-radius:7px; font:inherit; }
+  .err { color:var(--bad); font-size:12px; min-height:16px; margin:0; }
+  .warnbanner { background:#fff4e5; color:#7a4b00; border:1px solid #f0d3a0; padding:8px 12px; border-radius:8px; margin-bottom:12px; font-size:13px; }
+  .tabs { display:flex; gap:6px; margin:10px 0; flex-wrap:wrap; }
+  .tabs button { border-radius:8px; }
+  .tabs button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .strat-section { margin:6px 0 14px; }
+  .strat-section h3 { font-size:13px; margin:10px 0 4px; color:var(--muted); }
+  .chain { display:flex; flex-wrap:wrap; gap:6px; align-items:center; min-height:36px; padding:6px; border:1px dashed var(--line); border-radius:8px; }
+  .chip { display:inline-flex; align-items:center; gap:4px; background:#eef2f7; border:1px solid #dbe3ec; border-radius:999px; padding:3px 8px; font-size:12px; }
+  .chip button { border:none; background:transparent; padding:0 2px; cursor:pointer; color:#40505f; font-size:12px; }
+  .chip button:hover { color:var(--bad); }
+  .chain select { padding:4px 6px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:12px; max-width:260px; }
+  .stagerow { display:grid; grid-template-columns:110px 1fr; gap:8px; align-items:start; margin:6px 0; }
+  .stagerow .lbl { font-size:12px; color:var(--muted); padding-top:8px; }
+  .funcrow { display:grid; grid-template-columns:190px 1fr; gap:8px; align-items:start; margin:6px 0; border-bottom:1px dashed var(--line); padding-bottom:8px; }
+  .funcrow .lbl { font-size:12px; padding-top:8px; }
+  .badge.chat { background:#e7f6ec; color:var(--ok); }
+  .badge.nochat { background:#fdecea; color:var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>模型路由网关 · 供应商管理</h1>
+  <span class="meta" id="gwMeta">—</span>
+  <span class="spacer"></span>
+  <span class="meta" id="userLabel"></span>
+  <button id="changeBtn" class="small hidden">修改登录</button>
+  <button id="logoutBtn" class="small hidden">退出</button>
+  <button id="liveBtn" class="small" onclick="location.href='/admin/live'">运行状态</button>
+  <button id="refreshBtn" class="small">刷新</button>
+</header>
+
+<div class="layer" id="loginLayer">
+  <form class="loginCard" id="loginForm">
+    <h2>管理登录</h2>
+    <label>用户名<input id="loginUser" value="admin" autocomplete="username"></label>
+    <label>密码<input id="loginPass" type="password" autocomplete="current-password" placeholder="默认 admin"></label>
+    <p class="err" id="loginMsg"></p>
+    <button class="primary" type="submit">登录</button>
+    <p class="muted">默认用户名/密码：admin / admin；登录后可修改。</p>
+  </form>
+</div>
+
+<div class="layer hidden" id="credLayer">
+  <form class="loginCard" id="credForm">
+    <h2>修改用户名 / 密码</h2>
+    <label>当前密码<input id="curPass" type="password" autocomplete="current-password"></label>
+    <label>新用户名<input id="newUser" autocomplete="username"></label>
+    <label>新密码（至少 6 位）<input id="newPass" type="password" autocomplete="new-password"></label>
+    <label>确认新密码<input id="newPass2" type="password" autocomplete="new-password"></label>
+    <p class="err" id="credMsg"></p>
+    <div class="row"><button class="primary" type="submit">保存</button><button type="button" id="credCancel">取消</button></div>
+  </form>
+</div>
+
+<main id="appMain" class="hidden">
+  <div id="pwdWarn" class="warnbanner hidden">当前为默认密码 admin/admin，请尽快点右上角「修改登录」。</div>
+  <section class="card">
+    <div class="card-head">
+      <h2>供应商</h2>
+      <span class="spacer"></span>
+      <button id="addBtn" class="primary">＋ 新增供应商</button>
+    </div>
+    <div id="upstreamList" class="tablewrap"></div>
+    <p class="muted">保存后即时生效（显式 <span class="kv">model=供应商/模型</span> 可调用）；是否进入 auto 链仍由 routing.json 决定。</p>
+  </section>
+
+  <section class="card" id="strategyCard">
+    <div class="card-head">
+      <h2>路由策略</h2>
+      <span class="spacer"></span>
+      <button id="stratDefaults">载入默认</button>
+      <button id="stratSave" class="primary">保存策略</button>
+    </div>
+    <p class="muted">四条策略：价格优先 <span class="kv">model=auto-cost</span> ｜ 能力优先 <span class="kv">model=auto-capability</span> ｜ 预设功能 <span class="kv">model=auto-function</span> ＋ 请求头 <span class="kv">X-DSH-Route-Function</span> ｜ 推荐 <span class="kv">model=auto-recommend</span> ＋ 请求头 <span class="kv">X-DSH-Route-Mode: price|capability|preset</span>（默认 price）。保存后网关热读，无需重启。虚拟模型只在网关与插件后台识别/调度，不在 DSH 前台体现。</p>
+    <div class="tabs" id="stratTabs">
+      <button data-tab="cost" class="active">价格优先</button>
+      <button data-tab="capability">能力优先</button>
+      <button data-tab="function">预设功能</button>
+      <button data-tab="recommend">推荐</button>
+    </div>
+    <div id="stratMsg" class="muted"></div>
+    <div id="stratBody"></div>
+  </section>
+
+  <section class="card" id="wbCard">
+    <div class="card-head">
+      <h2>WB 路由 · API Key / 自动学习</h2>
+      <span class="spacer"></span>
+      <label class="muted" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="autoLearnToggle"> 自动学习（默认开）</label>
+    </div>
+    <p class="muted">API key 只显示一次；scope 目前为 plan/chat，admin 仍用用户名密码。自动学习写 learnedOverrides，不改 L1/L2/L3 主链。</p>
+    <div class="row">
+      <input id="keyName" placeholder="客户端名（如 dsh-wb-max）" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px">
+      <label class="muted"><input type="checkbox" id="scopePlan" checked> plan</label>
+      <label class="muted"><input type="checkbox" id="scopeChat" checked> chat</label>
+      <input id="keyRpm" type="number" min="1" value="600" style="width:90px;padding:6px 8px;border:1px solid var(--line);border-radius:6px">
+      <button id="keyCreate" class="primary">签发 API key</button>
+      <label class="muted" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="keyRequired"> 强制所有 /v1 API 带 key</label>
+    </div>
+    <div id="keyMsg" class="muted" style="margin:6px 0"></div>
+    <div id="keyList" class="tablewrap" style="max-height:28vh"></div>
+    <h3 style="font-size:13px;margin:14px 0 6px;color:var(--muted)">learnedOverrides</h3>
+    <div id="learnedList" class="tablewrap" style="max-height:28vh"></div>
+  </section>
+
+  <section class="card hidden" id="editCard">
+    <div class="card-head">
+      <h2 id="editTitle">新增供应商</h2>
+      <span class="spacer"></span>
+      <button id="cancelBtn">取消</button>
+    </div>
+    <div class="formgrid">
+      <label>ID（小写英数/_.-，保存后不可改）<input id="fId" placeholder="new-prov"></label>
+      <label>显示名<input id="fLabel" placeholder="显示名"></label>
+      <label>max_rpm<input id="fRpm" type="number" min="1" value="50"></label>
+      <label class="wide">Base URL（OpenAI 兼容，通常以 /v1 结尾）<input id="fBase" placeholder="https://api.example.com/v1"></label>
+      <label>API Key（编辑时留空=保持原值）<input id="fKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+      <label>api_key_env（可留空自动生成）<input id="fEnv" placeholder="UP_NEW_PROV_API_KEY"></label>
+      <label>状态 / 提示<input id="fNote" disabled value=""></label>
+    </div>
+    <div class="row">
+      <button id="probeBtn">读取模型清单</button>
+      <button id="addModelBtn">手动加一行</button>
+      <span id="probeMsg" class="muted"></span>
+    </div>
+    <div class="tablewrap" style="margin-top:10px">
+      <table id="modelTable">
+        <thead><tr>
+          <th style="width:34px">含</th><th>模型 ID</th><th>标签</th><th class="num">上下文</th><th class="num">输出上限</th>
+          <th style="width:48px">视觉</th><th style="width:48px">工具</th><th>tier</th><th>状态</th><th style="width:170px">操作</th>
+        </tr></thead>
+        <tbody id="modelBody"></tbody>
+      </table>
+    </div>
+    <div class="row">
+      <button id="saveBtn" class="primary">保存供应商</button>
+      <span id="saveMsg" class="muted"></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>日志</h2><span class="spacer"></span><span class="statusbar" id="statusbar"></span></div>
+    <pre id="log"></pre>
+  </section>
+</main>
+
+<script>
+"use strict";
+const S = {
+  upstreams: [],
+  editing: null,
+  models: [],
+  user: null,
+  strategies: null,
+  functionsCatalog: [],
+  strategyTab: "cost",
+  busy: false,
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const now = () => new Date().toLocaleTimeString("zh-CN", { hour12: false });
+
+function log(msg, kind) {
+  const line = `[${now()}] ${msg}`;
+  const el = $("log");
+  el.textContent = line + "\n" + el.textContent;
+  if (el.textContent.length > 20000) el.textContent = el.textContent.slice(0, 20000);
+  if (kind) console.log(kind, msg);
+}
+function setStatus(text) { $("statusbar").textContent = text || ""; }
+
+async function api(path, body) {
+  const headers = { "Accept": "application/json" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  const res = await fetch(path, { method: body === undefined ? "GET" : "POST", headers, body: body === undefined ? undefined : JSON.stringify(body) });
+  let data = null;
+  try { data = await res.json(); } catch (_) { data = null; }
+  if (res.status === 401) { showLogin(); throw new Error((data && data.error && data.error.message) || "请先登录"); }
+  if (!res.ok || (data && data.error)) {
+    let msg = (data && data.error && (data.error.message || data.error.code)) || ("HTTP " + res.status);
+    if (data && Array.isArray(data.errors) && data.errors.length && !String(msg).includes("策略校验失败")) {
+      msg += "：" + data.errors.join("；");
+    }
+    throw new Error(msg);
+  }
+  return data;
+}
+
+/* ---------------- 登录 / 凭据 ---------------- */
+function showLogin() {
+  $("appMain").classList.add("hidden");
+  $("loginLayer").classList.remove("hidden");
+  $("changeBtn").classList.add("hidden");
+  $("logoutBtn").classList.add("hidden");
+  $("userLabel").textContent = "";
+}
+function showApp() {
+  $("loginLayer").classList.add("hidden");
+  $("appMain").classList.remove("hidden");
+  $("changeBtn").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+}
+function setPwdWarn(on) { $("pwdWarn").classList.toggle("hidden", !on); }
+function setUser(user) {
+  S.user = user;
+  $("userLabel").textContent = "已登录：" + (user?.username || "");
+  setPwdWarn(!!user?.default_password);
+}
+async function refreshMe() {
+  try {
+    const d = await api("/admin/api/me");
+    setUser(d); showApp(); await load();
+  } catch (_) { /* api() 已显示登录层 */ }
+}
+$("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true; $("loginMsg").textContent = "登录中…";
+  try {
+    const d = await api("/admin/api/login", { username: $("loginUser").value.trim(), password: $("loginPass").value });
+    $("loginPass").value = ""; $("loginMsg").textContent = "";
+    setUser(d); showApp(); await load();
+  } catch (err) { $("loginMsg").textContent = err.message; }
+  finally { btn.disabled = false; }
+});
+$("logoutBtn").onclick = async () => { try { await api("/admin/api/logout", {}); } catch (_) {} location.reload(); };
+$("changeBtn").onclick = () => {
+  $("credMsg").textContent = ""; $("curPass").value = ""; $("newPass").value = ""; $("newPass2").value = "";
+  $("newUser").value = S.user?.username || "";
+  $("credLayer").classList.remove("hidden");
+};
+$("credCancel").onclick = () => $("credLayer").classList.add("hidden");
+$("credForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if ($("newPass").value !== $("newPass2").value) { $("credMsg").textContent = "两次输入的新密码不一致"; return; }
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true; $("credMsg").textContent = "保存中…";
+  try {
+    const d = await api("/admin/api/change-credentials", {
+      current_password: $("curPass").value,
+      new_username: $("newUser").value.trim(),
+      new_password: $("newPass").value,
+    });
+    setUser(d);
+    $("credLayer").classList.add("hidden");
+    log("登录凭据已修改，旧会话已失效");
+    alert("已保存。下次请用新用户名/密码登录。");
+  } catch (err) { $("credMsg").textContent = err.message; }
+  finally { btn.disabled = false; }
+});
+
+/* ---------------- 路由策略 ---------------- */
+function modelKeys() {
+  const out = [];
+  for (const u of S.upstreams) {
+    for (const m of Object.keys(u.models || {})) {
+      const key = `${u.id}/${m}`;
+      if (!out.includes(key)) out.push(key);
+    }
+  }
+  return out;
+}
+function getPath(path) {
+  let cur = S.strategies;
+  for (const part of String(path).split(".")) {
+    if (!cur || typeof cur !== "object") return null;
+    cur = cur[part];
+  }
+  return Array.isArray(cur) ? cur : null;
+}
+function setPath(path, value) {
+  const parts = String(path).split(".");
+  let cur = S.strategies;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (!cur[parts[i]] || typeof cur[parts[i]] !== "object") cur[parts[i]] = {};
+    cur = cur[parts[i]];
+  }
+  cur[parts[parts.length - 1]] = value;
+}
+function addChip(path, model) {
+  if (!model) return;
+  const chain = getPath(path) || [];
+  if (!chain.includes(model)) chain.push(model);
+  setPath(path, chain);
+  renderStrategies();
+}
+function removeChip(path, index) {
+  const chain = (getPath(path) || []).slice();
+  chain.splice(index, 1);
+  setPath(path, chain);
+  renderStrategies();
+}
+function moveChip(path, index, delta) {
+  const chain = (getPath(path) || []).slice();
+  const j = index + delta;
+  if (j < 0 || j >= chain.length) return;
+  [chain[index], chain[j]] = [chain[j], chain[index]];
+  setPath(path, chain);
+  renderStrategies();
+}
+function chainEditor(path) {
+  const chain = getPath(path) || [];
+  const used = new Set(chain);
+  const options = modelKeys().filter((m) => !used.has(m)).map((m) => `<option value="${esc(m)}">${esc(m)}</option>`).join("");
+  const chips = chain.length
+    ? chain.map((m, i) => `<span class="chip" title="${esc(m)}">${esc(m)}
+        <button type="button" onclick="moveChip('${path}',${i},-1)" title="上移">↑</button>
+        <button type="button" onclick="moveChip('${path}',${i},1)" title="下移">↓</button>
+        <button type="button" onclick="removeChip('${path}',${i})" title="删除">×</button></span>`).join("")
+    : '<span class="muted">（空）</span>';
+  return `<div class="chain">${chips}
+    <select onchange="addChip('${path}', this.value); this.value=''">
+      <option value="">+ 添加模型</option>${options}
+    </select></div>`;
+}
+function stageLabel(stage) {
+  return { L1: "L1 简单", L2: "L2 普通", L3: "L3 重", image: "图片/视觉" }[stage] || stage;
+}
+function renderStrategies() {
+  if (!S.strategies) { $("stratBody").innerHTML = '<p class="muted">未载入策略。</p>'; return; }
+  for (const b of document.querySelectorAll("#stratTabs button")) b.classList.toggle("active", b.dataset.tab === S.strategyTab);
+  const body = $("stratBody");
+  if (S.strategyTab === "cost") {
+    const section = (title, prefix) => `<div class="strat-section"><h3>${title}</h3>${["L1", "L2", "L3", "image"].map((st) =>
+      `<div class="stagerow"><div class="lbl">${stageLabel(st)}</div>${chainEditor(`${prefix}.${st}`)}</div>`).join("")}</div>`;
+    body.innerHTML = section("高峰（工作日 09–12 / 14–18）", "cost.peak") + section("低峰（其余时段）", "cost.offpeak");
+  } else if (S.strategyTab === "capability") {
+    body.innerHTML = `<div class="strat-section"><h3>能力优先（最强组合，不计成本）</h3>${["L1", "L2", "L3", "image"].map((st) =>
+      `<div class="stagerow"><div class="lbl">${stageLabel(st)}</div>${chainEditor(`capability.${st}`)}</div>`).join("")}</div>`;
+  } else if (S.strategyTab === "recommend") {
+    const saved = (S.strategies.recommend || {});
+    const has = ["L1", "L2", "L3", "image"].some((st) => (saved[st] || []).length);
+    body.innerHTML = `<div class="strat-section">
+      <h3>推荐策略（结合供应商模型能力与单价，实时推荐）</h3>
+      <p class="muted">三种预设模式：<b>价格优先</b>（同档按有效单价升序，本地 0 元最优先）｜<b>能力优先</b>（strong→mid→cheap，同档内便宜的优先）｜<b>预设功能</b>（功能对口优先，同组内按价格）。请求用 <span class="kv">model=auto-recommend</span> ＋ <span class="kv">X-DSH-Route-Mode: price|capability|preset</span>（默认 price）。价未知的模型不参与排序、排到已知价之后，不猜价。</p>
+      <p class="muted">${has ? "下面是<b>已保存的覆盖链</b>（保存后以它优先，清空某档并保存即回到实时计算）。" : "当前无覆盖链，按实时计算推荐。可在下面调整后保存为覆盖链。"}</p>
+      ${["L1", "L2", "L3", "image"].map((st) =>
+        `<div class="stagerow"><div class="lbl">${stageLabel(st)}</div>${chainEditor(`recommend.${st}`)}</div>`).join("")}</div>`;
+  } else {
+    const saved = S.strategies.function || {};
+    const catalog = [...S.functionsCatalog];
+    for (const key of Object.keys(saved)) {
+      if (!catalog.some((f) => f.key === key)) catalog.push({ key, label: key, chat_compatible: true, custom: true });
+    }
+    const rows = catalog.map((f) => {
+      const badge = f.chat_compatible ? '<span class="badge chat">chat 可路由</span>' : '<span class="badge nochat">仅映射</span>';
+      return `<div class="funcrow"><div class="lbl"><b>${esc(f.label)}</b><div class="muted kv">${esc(f.key)} ${badge}</div></div>${chainEditor(`function.${f.key}`)}</div>`;
+    }).join("");
+    body.innerHTML = `<div class="strat-section"><div class="row" style="margin:4px 0 8px"><button type="button" id="stratAddFunc">＋ 新增功能</button>
+      <span class="muted">预设功能由请求头 <span class="kv">X-DSH-Route-Function: &lt;功能key&gt;</span> 触发；生成/向量/排序/音视频类当前只做映射，需客户端按该模型调用对应端点。</span></div>${rows || '<p class="muted">暂无功能。</p>'}</div>`;
+    $("stratAddFunc").onclick = () => {
+      const key = prompt("新功能 key（小写字母/数字/下划线，如 image_edit）：");
+      if (!key) return;
+      const k = key.trim().toLowerCase();
+      if (!/^[a-z][a-z0-9_]{1,31}$/.test(k)) { alert("key 格式不合法"); return; }
+      if (!S.strategies.function) S.strategies.function = {};
+      if (!S.strategies.function[k]) S.strategies.function[k] = [];
+      if (!S.functionsCatalog.some((f) => f.key === k)) S.functionsCatalog.push({ key: k, label: k, chat_compatible: true, custom: true });
+      renderStrategies();
+    };
+  }
+}
+async function loadStrategies() {
+  try {
+    const d = await api("/admin/api/strategies");
+    S.strategies = d.strategies || null;
+    S.functionsCatalog = d.functions || [];
+    $("stratMsg").textContent = d.saved ? `已保存策略：${d.path}` : "当前使用默认策略（未保存）；可编辑后保存。";
+    renderStrategies();
+  } catch (err) { $("stratMsg").textContent = "载入策略失败：" + err.message; }
+}
+document.querySelectorAll("#stratTabs button").forEach((b) => {
+  b.onclick = () => { S.strategyTab = b.dataset.tab; renderStrategies(); };
+});
+$("stratDefaults").onclick = async () => {
+  try {
+    const d = await api("/admin/api/strategies/defaults");
+    S.strategies = d.strategies; S.functionsCatalog = d.functions || [];
+    $("stratMsg").textContent = "已载入默认策略（尚未保存）。";
+    renderStrategies();
+  } catch (err) { $("stratMsg").textContent = "载入默认失败：" + err.message; }
+};
+$("stratSave").onclick = async () => {
+  $("stratMsg").textContent = "保存中…";
+  try {
+    const d = await api("/admin/api/strategies/save", { strategies: S.strategies });
+    S.strategies = d.strategies || S.strategies;
+    S.functionsCatalog = d.functions || S.functionsCatalog;
+    $("stratMsg").textContent = "策略已保存 ✅ 网关已热读（无需重启）。";
+    renderStrategies();
+    log("路由策略已保存");
+  } catch (err) {
+    $("stratMsg").textContent = "保存失败：" + err.message;
+    log("路由策略保存失败：" + err.message);
+  }
+};
+
+/* ---------------- 供应商列表 ---------------- */
+function renderList() {
+  const el = $("upstreamList");
+  if (!S.upstreams.length) { el.innerHTML = '<p class="muted" style="padding:10px">尚无供应商。</p>'; return; }
+  const rows = S.upstreams.map((u) => {
+    const key = u.has_key ? `<span class="badge ok">已配置</span>` : `<span class="badge bad">缺 key</span>`;
+    const src = u.key_source ? `<span class="badge">${esc(u.key_source)}</span>` : "";
+    const models = Object.keys(u.models || {});
+    return `<tr>
+      <td><b>${esc(u.id)}</b><div class="muted">${esc(u.label || "")}</div></td>
+      <td class="kv">${esc(u.base_url)}</td>
+      <td>${key}${src}<div class="muted kv">${esc(u.api_key_env || "")}</div></td>
+      <td class="num">${models.length}<div class="muted">${esc(models.slice(0, 3).join(", "))}${models.length > 3 ? " …" : ""}</div></td>
+      <td><button class="small" onclick="openEdit('${esc(u.id)}')">编辑</button>
+          <button class="small" onclick="testUpstream('${esc(u.id)}')">测试</button>
+          <button class="small danger" onclick="removeUpstream('${esc(u.id)}')">删除</button></td>
+    </tr>`;
+  }).join("");
+  el.innerHTML = `<table><thead><tr><th>ID / 名称</th><th>Base URL</th><th>密钥</th><th class="num">模型</th><th style="width:210px">操作</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function openAdd() {
+  S.editing = { id: "", label: "", base_url: "", api_key_env: "", max_rpm: 50, isNew: true };
+  S.models = [];
+  fillForm();
+  $("editTitle").textContent = "新增供应商";
+  $("fId").disabled = false;
+  $("fEnv").disabled = false;
+  $("fKey").value = "";
+  $("fNote").value = "填写 Base URL 与 Key 后点「读取模型清单」；也可手动加行。";
+  renderModels();
+  $("editCard").classList.remove("hidden");
+  $("editCard").scrollIntoView({ behavior: "smooth" });
+}
+
+function openEdit(id) {
+  const u = S.upstreams.find((x) => x.id === id);
+  if (!u) return;
+  S.editing = { id: u.id, label: u.label || "", base_url: u.base_url || "", api_key_env: u.api_key_env || "", max_rpm: u.max_rpm || 50, isNew: false };
+  S.models = Object.entries(u.models || {}).map(([mid, spec]) => ({
+    id: mid, label: spec.label || mid, context_window: spec.context_window || 131072,
+    max_tokens: spec.max_tokens || 8192, vision: !!spec.vision, tools: spec.tools !== false,
+    tier: spec.tier || "cheap", include: true, saved: true, guessed: {},
+  }));
+  fillForm();
+  $("editTitle").textContent = "编辑供应商 · " + u.id;
+  $("fId").disabled = true;
+  $("fEnv").disabled = true;
+  $("fKey").value = "";
+  $("fNote").value = u.has_key ? "已配置 key；留空则保持不变。" : "当前缺 key，请填写。";
+  renderModels();
+  $("editCard").classList.remove("hidden");
+  $("editCard").scrollIntoView({ behavior: "smooth" });
+}
+
+function fillForm() {
+  const e = S.editing;
+  $("fId").value = e.id; $("fLabel").value = e.label; $("fBase").value = e.base_url;
+  $("fEnv").value = e.api_key_env; $("fRpm").value = e.max_rpm;
+}
+function readForm() {
+  const e = S.editing;
+  e.id = $("fId").value.trim(); e.label = $("fLabel").value.trim();
+  e.base_url = $("fBase").value.trim(); e.api_key_env = $("fEnv").value.trim();
+  e.max_rpm = parseInt($("fRpm").value, 10) || 50;
+  return e;
+}
+
+/* ---------------- 编辑区模型表 ---------------- */
+function renderModels() {
+  const body = $("modelBody");
+  if (!S.models.length) { body.innerHTML = '<tr><td colspan="10" class="muted" style="padding:12px">还没有模型：点「读取模型清单」或「手动加一行」。</td></tr>'; return; }
+  body.innerHTML = S.models.map((m, i) => {
+    const guessed = [];
+    if (m.guessed && m.guessed.context) guessed.push("上下文推断");
+    if (m.guessed && m.guessed.caps) guessed.push("能力推断");
+    const g = guessed.length ? `<span class="badge warn">${guessed.join(" / ")}</span>` : "";
+    return `<tr>
+      <td><input type="checkbox" ${m.include ? "checked" : ""} onchange="S.models[${i}].include=this.checked"></td>
+      <td><input value="${esc(m.id)}" ${m.saved ? "readonly" : ""} onchange="S.models[${i}].id=this.value.trim()" style="width:100%"></td>
+      <td><input value="${esc(m.label || "")}" onchange="S.models[${i}].label=this.value.trim()" style="width:100%"></td>
+      <td><input type="number" min="1" value="${esc(m.context_window)}" onchange="S.models[${i}].context_window=parseInt(this.value||'0',10)||0" style="width:110px"></td>
+      <td><input type="number" min="1" value="${esc(m.max_tokens)}" onchange="S.models[${i}].max_tokens=parseInt(this.value||'0',10)||0" style="width:100px"></td>
+      <td><input type="checkbox" ${m.vision ? "checked" : ""} onchange="S.models[${i}].vision=this.checked"></td>
+      <td><input type="checkbox" ${m.tools ? "checked" : ""} onchange="S.models[${i}].tools=this.checked"></td>
+      <td><select onchange="S.models[${i}].tier=this.value">
+        <option value="cheap" ${m.tier === "cheap" ? "selected" : ""}>cheap</option>
+        <option value="strong" ${m.tier === "strong" ? "selected" : ""}>strong</option>
+        <option value="mid" ${m.tier === "mid" ? "selected" : ""}>mid</option>
+      </select></td>
+      <td>${m.state ? `<span class="mstate ${m.stateKind || ""}">${esc(m.state)}</span>` : g}</td>
+      <td><button class="small" onclick="probeCaps(${i})">探测能力</button>
+          <button class="small" onclick="testModel(${i})">测试</button>
+          <button class="small danger" onclick="S.models.splice(${i},1);renderModels()">删行</button></td>
+    </tr>`;
+  }).join("");
+}
+
+async function probeModels() {
+  readForm();
+  const e = S.editing;
+  if (!e.base_url) { alert("先填 Base URL"); return; }
+  const key = $("fKey").value.trim();
+  $("probeMsg").textContent = "读取中…";
+  try {
+    const data = await api("/admin/api/probe-models", {
+      base_url: e.base_url, api_key: key, id: e.isNew ? undefined : e.id, api_key_env: e.api_key_env || undefined,
+    });
+    if (!data.ok) throw new Error(data.error || "读取失败");
+    const prev = new Map(S.models.map((m) => [m.id, m]));
+    const rows = data.models.map((m) => {
+      const old = prev.get(m.id);
+      if (old) return { ...old, saved: true, label: old.label || m.label, guessed: m.guessed || {} };
+      return { id: m.id, label: m.label || m.id, context_window: m.context_window, max_tokens: m.max_tokens,
+               vision: m.vision, tools: m.tools, tier: m.tier || "cheap", include: true, saved: false, guessed: m.guessed || {} };
+    });
+    const seen = new Set(rows.map((m) => m.id));
+    for (const old of S.models) { if (old.manual && !seen.has(old.id)) rows.push(old); }
+    S.models = rows;
+    $("probeMsg").textContent = `读取到 ${data.count} 个模型（HTTP ${data.status}，${data.latency_ms}ms）；可逐项调整。`;
+    log(`读取模型清单：${data.count} 个（${data.latency_ms}ms）`);
+    renderModels();
+  } catch (err) {
+    $("probeMsg").textContent = "读取失败：" + err.message;
+    log("读取模型清单失败：" + err.message);
+  }
+}
+
+function addManualRow() {
+  const id = prompt("模型 ID（如 gpt-4o、deepseek-chat、provider_g/model-x）：");
+  if (!id) return;
+  S.models.push({ id: id.trim(), label: id.trim(), context_window: 131072, max_tokens: 8192, vision: false, tools: true, tier: "cheap", include: true, saved: false, manual: true, guessed: {} });
+  renderModels();
+}
+
+async function probeCaps(i) {
+  readForm();
+  const m = S.models[i];
+  if (!m || !S.editing.base_url) { alert("先填 Base URL"); return; }
+  m.state = "探测中…"; m.stateKind = "warn"; renderModels();
+  try {
+    const data = await api("/admin/api/probe-capabilities", {
+      base_url: S.editing.base_url, api_key: $("fKey").value.trim(),
+      id: S.editing.isNew ? undefined : S.editing.id, api_key_env: S.editing.api_key_env || undefined,
+      model: m.id,
+    });
+    m.tools = !!data.tools.supported;
+    m.vision = !!data.vision.supported;
+    m.state = `工具 ${m.tools ? "✓" : "✗"} / 视觉 ${m.vision ? "✓" : "✗"}`;
+    m.stateKind = m.tools || m.vision ? "ok" : "bad";
+    log(`能力探测 ${m.id}：tools=${m.tools}（${data.tools.verdict}, HTTP ${data.tools.status}），vision=${m.vision}（${data.vision.verdict}, HTTP ${data.vision.status}）`);
+  } catch (err) {
+    m.state = "探测失败"; m.stateKind = "bad";
+    log(`能力探测失败 ${m.id}：${err.message}`);
+  }
+  renderModels();
+}
+
+async function testModel(i) {
+  readForm();
+  const m = S.models[i];
+  if (!m) return;
+  m.state = "测试中…"; m.stateKind = "warn"; renderModels();
+  try {
+    const data = await api("/admin/api/test", {
+      base_url: S.editing.base_url, api_key: $("fKey").value.trim(),
+      id: S.editing.isNew ? undefined : S.editing.id, api_key_env: S.editing.api_key_env || undefined,
+      model: m.id,
+    });
+    if (data.ok) {
+      m.state = `200 · ${data.latency_ms}ms`; m.stateKind = "ok";
+      log(`测试 ${m.id}：200 ${data.latency_ms}ms，返回 model=${data.model || "?"}，内容=${JSON.stringify((data.content || "").slice(0, 40))}`);
+    } else {
+      m.state = `失败 ${data.status || ""}`; m.stateKind = "bad";
+      log(`测试 ${m.id}：HTTP ${data.status}，${data.error || ""}`);
+    }
+  } catch (err) {
+    m.state = "测试失败"; m.stateKind = "bad";
+    log(`测试失败 ${m.id}：${err.message}`);
+  }
+  renderModels();
+}
+
+async function saveUpstream() {
+  readForm();
+  const e = S.editing;
+  if (!e.id) { alert("先填 ID"); return; }
+  if (!e.base_url) { alert("先填 Base URL"); return; }
+  const models = {};
+  for (const m of S.models) {
+    if (!m.include) continue;
+    if (!m.id) continue;
+    models[m.id] = { context_window: m.context_window, max_tokens: m.max_tokens, vision: !!m.vision, tools: !!m.tools, tier: m.tier, label: m.label || m.id };
+  }
+  if (!Object.keys(models).length) { alert("至少保留一个模型（勾选或加行）"); return; }
+  $("saveBtn").disabled = true; $("saveMsg").textContent = "保存中…";
+  try {
+    const data = await api("/admin/api/save", {
+      upstream: { id: e.id, label: e.label || e.id, base_url: e.base_url, api_key_env: e.api_key_env || undefined, max_rpm: e.max_rpm, models },
+      api_key: $("fKey").value.trim() || undefined,
+    });
+    $("saveMsg").textContent = "已保存 ✅" + ((data.warnings && data.warnings.length) ? "（" + data.warnings.join("；") + "）" : "");
+    log(`保存供应商 ${e.id} 成功，备份 ${data.backup || "(无)"}`);
+    if (data.warnings && data.warnings.length) log("提示：" + data.warnings.join("；"));
+    S.upstreams = data.upstreams || [];
+    renderList();
+    await loadStrategies();
+    S.editing = null;
+    $("editCard").classList.add("hidden");
+  } catch (err) {
+    $("saveMsg").textContent = "保存失败：" + err.message;
+    log("保存失败：" + err.message);
+  } finally {
+    $("saveBtn").disabled = false;
+  }
+}
+
+async function removeUpstream(id) {
+  if (!confirm(`确定删除供应商 ${id}？只影响 upstreams.json/网关专属密钥，不动 routing.json。`)) return;
+  try {
+    const data = await api("/admin/api/delete", { id });
+    S.upstreams = data.upstreams || [];
+    renderList();
+    await loadStrategies();
+    log(`已删除供应商 ${id}`);
+  } catch (err) { alert("删除失败：" + err.message); log("删除失败：" + err.message); }
+}
+
+async function testUpstream(id) {
+  const u = S.upstreams.find((x) => x.id === id);
+  if (!u) return;
+  const ids = Object.keys(u.models || {});
+  if (!ids.length) { alert("该供应商没有模型"); return; }
+  const model = ids[0];
+  log(`测试供应商 ${id}（模型 ${model}）…`);
+  try {
+    const data = await api("/admin/api/test", { base_url: u.base_url, id: u.id, api_key_env: u.api_key_env, model });
+    if (data.ok) log(`✅ ${id}/${model}：200 ${data.latency_ms}ms，返回 model=${data.model || "?"}`);
+    else log(`❌ ${id}/${model}：HTTP ${data.status}，${data.error || ""}`);
+  } catch (err) { log(`❌ ${id}：${err.message}`); }
+}
+
+/* ---------------- WB 路由 API Key / 自动学习 ---------------- */
+async function loadWb() {
+  try {
+    const keys = await api("/admin/api/api-keys");
+    const box = $("keyList");
+    $("keyRequired").checked = !!keys.required;
+    const rows = (keys.keys || []).map((k) => `<tr>
+      <td>${k.name || ""}</td><td class="kv">${k.prefix || ""}…</td>
+      <td>${(k.scopes || []).join(",")}</td><td>${k.rpm || ""}</td>
+      <td>${k.revoked_at ? '<span class="badge bad">已吊销</span>' : '<span class="badge ok">有效</span>'}</td>
+      <td class="kv">${k.last_used_at || "—"}</td>
+      <td>
+        ${k.revoked_at ? "" : `<button class="small" data-rot="${k.id}">轮换</button> <button class="small danger" data-rev="${k.id}">吊销</button>`}
+      </td></tr>`).join("");
+    box.innerHTML = `<table><thead><tr><th>名称</th><th>前缀</th><th>scope</th><th>rpm</th><th>状态</th><th>最后使用</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="7" class="muted">尚无 API key</td></tr>'}</tbody></table>`;
+    box.querySelectorAll("[data-rev]").forEach((b) => b.onclick = async () => {
+      if (!confirm("吊销该 key？立即失效。")) return;
+      await api("/admin/api/api-keys/revoke", { id: b.dataset.rev }); log("key 已吊销"); loadWb();
+    });
+    box.querySelectorAll("[data-rot]").forEach((b) => b.onclick = async () => {
+      if (!confirm("轮换该 key？旧 token 立即失效。")) return;
+      const r = await api("/admin/api/api-keys/rotate", { id: b.dataset.rot });
+      alert("新 token（只显示一次）：\n" + r.token); log("key 已轮换"); loadWb();
+    });
+    const lr = await api("/admin/api/learned-overrides");
+    $("autoLearnToggle").checked = !!lr.auto_learn;
+    const rows2 = [];
+    for (const [strategy, caps] of Object.entries(lr.learned_overrides || {})) {
+      for (const [cap, row] of Object.entries(caps || {})) {
+        rows2.push(`<tr><td>${strategy}</td><td>${cap}</td><td class="kv">${row.function || "—"}</td><td class="kv">${row.model}</td><td>${row.source || ""}</td><td class="kv">${row.learned_at || ""}</td><td><button class="small danger" data-del="${strategy}|${cap}">删除</button></td></tr>`);
+      }
+    }
+    $("learnedList").innerHTML = `<table><thead><tr><th>策略</th><th>能力/节点</th><th>function</th><th>模型</th><th>来源</th><th>时间</th><th></th></tr></thead><tbody>${rows2.join("") || '<tr><td colspan="7" class="muted">尚无 learnedOverride</td></tr>'}</tbody></table>`;
+    $("learnedList").querySelectorAll("[data-del]").forEach((b) => b.onclick = async () => {
+      const [strategy, capability] = b.dataset.del.split("|");
+      if (!confirm(`删除 learnedOverride ${strategy}/${capability}？`)) return;
+      await api("/admin/api/learned-overrides/delete", { strategy, capability }); log("learnedOverride 已删除"); loadWb();
+    });
+  } catch (err) { log("WB 路由管理载入失败：" + err.message); }
+}
+
+$("keyCreate").onclick = async () => {
+  try {
+    const scopes = [];
+    if ($("scopePlan").checked) scopes.push("plan");
+    if ($("scopeChat").checked) scopes.push("chat");
+    if (!scopes.length) { alert("至少选一个 scope"); return; }
+    const r = await api("/admin/api/api-keys/create", { name: $("keyName").value || "client", scopes, rpm: Number($("keyRpm").value) || 600 });
+    prompt("API key（只显示一次，点确定后从剪贴板/记事本保存）：", r.token);
+    $("keyMsg").textContent = "已签发：" + (r.key.prefix || "") + "…（明文只显示一次）";
+    log("已签发 API key"); loadWb();
+  } catch (err) { $("keyMsg").textContent = "签发失败：" + err.message; }
+};
+$("keyRequired").onchange = async () => {
+  try { await api("/admin/api/api-keys/required", { required: $("keyRequired").checked }); log("API key 强制开关已更新"); }
+  catch (err) { $("keyRequired").checked = !$("keyRequired").checked; log("更新失败：" + err.message); }
+};
+$("autoLearnToggle").onchange = async () => {
+  try { await api("/admin/api/auto-learn", { enabled: $("autoLearnToggle").checked }); log("自动学习开关已更新"); }
+  catch (err) { $("autoLearnToggle").checked = !$("autoLearnToggle").checked; log("更新失败：" + err.message); }
+};
+/* ---------------- 启动 ---------------- */
+async function load() {
+  try {
+    const data = await api("/admin/api/upstreams");
+    S.upstreams = data.upstreams || [];
+    $("gwMeta").textContent = `网关 ${data.gateway.listen} ｜ ${S.upstreams.length} 家供应商 ｜ 密钥文件 ${data.paths.credentials_extra}`;
+    renderList();
+    log(`已载入 ${S.upstreams.length} 家供应商`);
+    await loadStrategies();
+    await loadWb();
+  } catch (err) { log("载入失败：" + err.message); }
+}
+
+$("refreshBtn").onclick = () => { if (S.user) load(); else showLogin(); };
+$("addBtn").onclick = openAdd;
+$("cancelBtn").onclick = () => { S.editing = null; $("editCard").classList.add("hidden"); };
+$("probeBtn").onclick = probeModels;
+$("addModelBtn").onclick = addManualRow;
+$("saveBtn").onclick = saveUpstream;
+refreshMe();
+</script>
+
+<!-- ===== UI v2 覆盖层 BEGIN（本块由 apply-admin-uiv2.mjs 生成，请勿手改） ===== -->
+<style id="v2CssInline">
+/* ============================================================================
+ * 模型路由网关 · 管理界面 UI v2 覆盖层（源文件）
+ * 建档 2026-11-17｜依据：SKILL「ui-consistency-redesign」G1 token + G2 组件 + G5 覆盖层
+ *
+ * 设计原则（铁律）：
+ *   1) 只做「覆盖」——所有选择器都挂在既有类名上，HTML 结构与后端契约一行不改；
+ *   2) 全部规则以 html[data-ui="v2"] 前缀 —— 摘掉该属性即 100% 回到旧版（新旧并存）；
+ *   3) 一条数据一行：单元格/徽标/按钮一律 nowrap，宁缩短文案不用省略号收场；
+ *   4) 可见文字 ≥12px（共享层「图表字号规范」硬线）；
+ *   5) 控件高度 小32 / 中36 / 触控44；移动端 ≤760px 表格转卡片列表。
+ * ========================================================================== */
+
+/* ── G1 token：字阶 6 档 / 语义色收敛 / 间距 5 档 / 圆角 4 档 ────────────── */
+html[data-ui="v2"] {
+  --v2-fs-caption: 12px;
+  --v2-fs-small: 13px;
+  --v2-fs-body: 14px;
+  --v2-fs-title: 17px;
+  --v2-sp-1: 4px;  --v2-sp-2: 8px;  --v2-sp-3: 12px; --v2-sp-4: 16px; --v2-sp-5: 24px;
+  --v2-r-xs: 4px;  --v2-r-sm: 8px;  --v2-r-md: 12px; --v2-r-lg: 16px;
+  --v2-h-sm: 32px; --v2-h-md: 36px; --v2-h-touch: 44px;
+  --v2-text: #1c2430;  --v2-text-2: #5b6472; --v2-text-3: #818a97;
+  --v2-bg: #f5f6f8;    --v2-surface: #ffffff; --v2-subtle: #f8fafc;
+  --v2-border: #e3e6ea; --v2-border-strong: #cfd5dd;
+  --v2-brand: #2563eb; --v2-brand-tint: #eef4ff; --v2-brand-strong: #1d4ed8;
+  --v2-ok: #0a7b3e;    --v2-ok-tint: #e7f6ec;
+  --v2-warn: #a15c00;  --v2-warn-tint: #fff4e5;
+  --v2-bad: #b42318;   --v2-bad-tint: #fdecea;
+  --v2-neutral-tint: #eef2f7;
+  --v2-ring: 0 0 0 3px rgba(37, 99, 235, .28);
+  --v2-sh-1: 0 1px 2px rgba(16, 24, 40, .04);
+  --v2-sh-2: 0 4px 12px rgba(16, 24, 40, .08);
+}
+
+/* ── 全局排版：字阶收敛，可见文字不低于 12px ───────────────────────────── */
+html[data-ui="v2"] body { font-size: var(--v2-fs-body); color: var(--v2-text); background: var(--v2-bg); }
+html[data-ui="v2"] .muted { color: var(--v2-text-2); font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] .kv { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+html[data-ui="v2"] header .meta { font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] .err { font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] .warnbanner { font-size: var(--v2-fs-small); border-radius: var(--v2-r-sm); }
+html[data-ui="v2"] .statusbar { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+
+/* 关键：消除 11px（原 .badge） */
+html[data-ui="v2"] .badge {
+  font-size: var(--v2-fs-caption);
+  height: 24px; line-height: 24px; padding: 0 var(--v2-sp-2);
+  display: inline-flex; align-items: center; gap: var(--v2-sp-1);
+  white-space: nowrap; flex: none; border-radius: 999px;
+  background: var(--v2-neutral-tint); color: var(--v2-text-2);
+}
+html[data-ui="v2"] .badge.ok { background: var(--v2-ok-tint); color: var(--v2-ok); }
+html[data-ui="v2"] .badge.bad { background: var(--v2-bad-tint); color: var(--v2-bad); }
+html[data-ui="v2"] .badge.warn { background: var(--v2-warn-tint); color: var(--v2-warn); }
+html[data-ui="v2"] .badge.chat { background: var(--v2-ok-tint); color: var(--v2-ok); }
+html[data-ui="v2"] .badge.nochat { background: var(--v2-bad-tint); color: var(--v2-bad); }
+
+/* ── 组件：按钮（小32 / 中36 / 触控44） ─────────────────────────────────── */
+html[data-ui="v2"] button {
+  font-size: var(--v2-fs-small);
+  min-height: var(--v2-h-sm);
+  padding: 0 var(--v2-sp-3);
+  border-radius: var(--v2-r-sm);
+  border: 1px solid var(--v2-border);
+  white-space: nowrap; flex: none;
+  transition: background .12s ease, border-color .12s ease;
+}
+html[data-ui="v2"] button:hover { border-color: var(--v2-border-strong); }
+html[data-ui="v2"] button:focus-visible { outline: none; box-shadow: var(--v2-ring); }
+html[data-ui="v2"] button.small { min-height: var(--v2-h-sm); padding: 0 var(--v2-sp-2); font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] button.primary {
+  min-height: var(--v2-h-md); padding: 0 var(--v2-sp-4);
+  font-size: var(--v2-fs-body); background: var(--v2-brand); border-color: var(--v2-brand);
+}
+html[data-ui="v2"] button.primary:hover { background: var(--v2-brand-strong); }
+html[data-ui="v2"] button.danger { color: var(--v2-bad); border-color: #f0c2bd; }
+html[data-ui="v2"] button:disabled { opacity: .5; }
+html[data-ui="v2"] header button { min-height: var(--v2-h-sm); }
+
+/* ── 组件：输入/下拉（≥32px） ───────────────────────────────────────────── */
+html[data-ui="v2"] input, html[data-ui="v2"] select {
+  min-height: var(--v2-h-sm);
+  border-radius: var(--v2-r-sm);
+  border: 1px solid var(--v2-border-strong);
+  font-size: var(--v2-fs-small);
+}
+html[data-ui="v2"] input:focus-visible, html[data-ui="v2"] select:focus-visible { outline: none; box-shadow: var(--v2-ring); }
+
+/* ── 组件：卡片与标题 ──────────────────────────────────────────────────── */
+html[data-ui="v2"] main { gap: var(--v2-sp-4); min-width: 0; max-width: 1360px; }
+html[data-ui="v2"] main > * { min-width: 0; }
+html[data-ui="v2"] .card {
+  border-radius: var(--v2-r-md); border-color: var(--v2-border);
+  padding: var(--v2-sp-4) var(--v2-sp-4); box-shadow: var(--v2-sh-1);
+  min-width: 0; max-width: 100%; overflow: hidden;
+}
+html[data-ui="v2"] .card-head { margin-bottom: var(--v2-sp-3); gap: var(--v2-sp-3); }
+html[data-ui="v2"] .card-head h2 { font-size: var(--v2-fs-body); font-weight: 600; white-space: nowrap; }
+
+/* ── 组件：表格（一条一行，不折行，列不塌陷） ─────────────────────────── */
+/* 原 max-height:52vh + overflow:auto 保留；补 max-width 防窄屏撑破 */
+html[data-ui="v2"] .tablewrap { max-width: 100%; min-width: 0; overflow-x: auto; border-radius: var(--v2-r-sm); border-color: var(--v2-border); }
+html[data-ui="v2"] table { border-collapse: collapse; }
+html[data-ui="v2"] th {
+  font-size: var(--v2-fs-caption); font-weight: 500; color: var(--v2-text-2);
+  background: var(--v2-subtle); white-space: nowrap;
+  padding: var(--v2-sp-2) var(--v2-sp-3);
+  position: sticky; top: 0; z-index: 1;
+}
+html[data-ui="v2"] td {
+  font-size: var(--v2-fs-small);
+  padding: var(--v2-sp-2) var(--v2-sp-3);
+  white-space: nowrap; vertical-align: middle;
+  border-bottom: 1px solid var(--v2-border);
+}
+html[data-ui="v2"] tr:hover td { background: var(--v2-subtle); }
+html[data-ui="v2"] td.num, html[data-ui="v2"] th.num { text-align: right; font-variant-numeric: tabular-nums; }
+/* 行内多行的副标题（如 ID 下的中文名）允许为独立行，但自身不折 */
+html[data-ui="v2"] td .muted { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+/* 操作列按钮成组、不折行 */
+html[data-ui="v2"] td .rowops, html[data-ui="v2"] td:last-child { white-space: nowrap; }
+
+/* ── 组件：状态徽标（色点 + 文字双编码） ──────────────────────────────── */
+html[data-ui="v2"] .mstate { display: inline-flex; align-items: center; gap: var(--v2-sp-1); white-space: nowrap; }
+html[data-ui="v2"] .mstate::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none;
+}
+html[data-ui="v2"] .mstate.ok { color: var(--v2-ok); }
+html[data-ui="v2"] .mstate.bad { color: var(--v2-bad); }
+html[data-ui="v2"] .mstate.warn { color: var(--v2-warn); }
+
+/* ── 组件：Tab（原 .tabs 只做了圆角） ──────────────────────────────────── */
+html[data-ui="v2"] .tabs { gap: var(--v2-sp-1); align-items: center; }
+html[data-ui="v2"] .tabs button {
+  min-height: var(--v2-h-sm); padding: 0 var(--v2-sp-3);
+  border-radius: var(--v2-r-sm); font-size: var(--v2-fs-small); color: var(--v2-text-2);
+  background: transparent; border-color: transparent;
+}
+html[data-ui="v2"] .tabs button:hover { background: var(--v2-neutral-tint); }
+html[data-ui="v2"] .tabs button.active {
+  background: var(--v2-brand-tint); border-color: transparent;
+  color: var(--v2-brand); font-weight: 600;
+}
+
+/* ── 组件：链路 chip（一条一项，控件 ≥32px） ───────────────────────────── */
+html[data-ui="v2"] .chain { gap: var(--v2-sp-2); min-height: 48px; padding: var(--v2-sp-2); border-radius: var(--v2-r-sm); align-items: center; }
+html[data-ui="v2"] .chip {
+  min-height: 36px; height: 36px; padding: 0 2px 0 var(--v2-sp-2);
+  border-radius: 999px; font-size: var(--v2-fs-small);
+  white-space: nowrap; flex: 0 0 auto; max-width: 100%; gap: var(--v2-sp-1);
+}
+html[data-ui="v2"] .chip button {
+  min-width: var(--v2-h-sm); min-height: var(--v2-h-sm); width: var(--v2-h-sm); height: var(--v2-h-sm);
+  border-radius: 50%; font-size: var(--v2-fs-body); line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+html[data-ui="v2"] .chain select { min-height: var(--v2-h-sm); flex: 0 0 auto; max-width: 260px; font-size: var(--v2-fs-caption); }
+
+/* ── 组件：策略页分组行 ────────────────────────────────────────────────── */
+html[data-ui="v2"] .stagerow { gap: var(--v2-sp-3); align-items: center; }
+html[data-ui="v2"] .stagerow .lbl { font-size: var(--v2-fs-caption); color: var(--v2-text-2); white-space: nowrap; }
+html[data-ui="v2"] .strat-section h3 { font-size: var(--v2-fs-small); color: var(--v2-text-2); white-space: nowrap; }
+html[data-ui="v2"] .funcrow { gap: var(--v2-sp-3); }
+html[data-ui="v2"] .funcrow .lbl { font-size: var(--v2-fs-caption); }
+
+/* ── 组件：表单（不折行标签 + ≥32px 控件） ─────────────────────────────── */
+html[data-ui="v2"] .formgrid label { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+html[data-ui="v2"] .row { gap: var(--v2-sp-3); align-items: center; }
+
+/* ── 组件：日志与登录层 ────────────────────────────────────────────────── */
+html[data-ui="v2"] #log { font-size: var(--v2-fs-caption); border-radius: var(--v2-r-sm); line-height: 1.6; }
+html[data-ui="v2"] .loginCard { border-radius: var(--v2-r-lg); padding: var(--v2-sp-5); box-shadow: var(--v2-sh-2); }
+html[data-ui="v2"] .loginCard h2 { font-size: var(--v2-fs-title); }
+html[data-ui="v2"] .loginCard label { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+
+/* ── 移动端：≤760px 表格转卡片列表（一条数据一张卡、字段各占一行、零横向溢出） ── */
+@media (max-width: 900px) {
+  html[data-ui="v2"] .tablewrap { overflow: visible; max-height: none; border: 0; }
+  html[data-ui="v2"] .tablewrap table,
+  html[data-ui="v2"] .tablewrap thead,
+  html[data-ui="v2"] .tablewrap tbody,
+  html[data-ui="v2"] .tablewrap tr,
+  html[data-ui="v2"] .tablewrap td { display: block; width: auto; }
+  html[data-ui="v2"] .tablewrap thead { display: none; }
+  html[data-ui="v2"] .tablewrap tr {
+    border: 1px solid var(--v2-border); border-radius: var(--v2-r-sm);
+    padding: var(--v2-sp-2); margin-bottom: var(--v2-sp-2); background: #fff;
+  }
+  html[data-ui="v2"] .tablewrap td {
+    border-bottom: 0; padding: var(--v2-sp-1) 0; white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  html[data-ui="v2"] .tablewrap td.num { text-align: left; }
+  html[data-ui="v2"] .tablewrap td::before {
+    content: attr(data-label); display: inline-block; min-width: 72px;
+    color: var(--v2-text-3); font-size: var(--v2-fs-caption); margin-right: var(--v2-sp-2);
+  }
+  html[data-ui="v2"] .tablewrap td:first-child::before { display: none; }
+  /* 触控：移动端主操作 ≥44px */
+  html[data-ui="v2"] button, html[data-ui="v2"] button.small { min-height: var(--v2-h-touch); }
+  html[data-ui="v2"] button.primary { min-height: var(--v2-h-touch); }
+  html[data-ui="v2"] .chip button { min-width: var(--v2-h-touch); min-height: var(--v2-h-touch); width: var(--v2-h-touch); height: var(--v2-h-touch); }
+  html[data-ui="v2"] .chip { height: auto; min-height: var(--v2-h-touch); }
+  html[data-ui="v2"] .chain { overflow-x: auto; flex-wrap: nowrap; }
+  html[data-ui="v2"] header { flex-wrap: wrap; height: auto; padding: var(--v2-sp-3); row-gap: var(--v2-sp-2); }
+  html[data-ui="v2"] main { padding: 0 var(--v2-sp-3); }
+}
+
+/* ── 组件：供应商余额（一等数据，色+文双编码） ─────────────────────────── */
+html[data-ui="v2"] .v2-bal {
+  display: inline-flex; align-items: center; gap: var(--v2-sp-1);
+  font-size: var(--v2-fs-caption); font-variant-numeric: tabular-nums;
+  white-space: nowrap; padding: 2px var(--v2-sp-2); border-radius: 999px;
+  background: var(--v2-neutral-tint); color: var(--v2-text-2);
+}
+html[data-ui="v2"] .v2-bal-ok { background: var(--v2-ok-tint); color: var(--v2-ok); font-weight: 600; }
+html[data-ui="v2"] .v2-bal-local { background: var(--v2-brand-tint); color: var(--v2-brand); }
+html[data-ui="v2"] .v2-bal-unavailable,
+html[data-ui="v2"] .v2-bal-none { background: var(--v2-neutral-tint); color: var(--v2-text-3); }
+html[data-ui="v2"] .v2-bal-error { background: var(--v2-bad-tint); color: var(--v2-bad); }
+html[data-ui="v2"] td.v2-bal-td { text-align: left; }
+/* 供应商表列宽约束：长文本不折行、超宽时表格内滚动（列宽上限防顶满整页） */
+html[data-ui="v2"] #upstreamList td:nth-child(2) { max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+html[data-ui="v2"] #upstreamList td:nth-child(3) { max-width: 172px; overflow: hidden; }
+html[data-ui="v2"] #upstreamList td:nth-child(4) { width: 108px; }
+html[data-ui="v2"] #upstreamList td:nth-child(5) { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+html[data-ui="v2"] #upstreamList td:last-child button { margin-right: 2px; }
+
+/* ── 版本开关（顶栏右侧，v2 JS 注入） ──────────────────────────────────── */
+html[data-ui="v2"] #v2Switch {
+  background: #1e293b; border-color: #334155; color: #e2e8f0;
+  font-size: var(--v2-fs-caption);
+}
+</style>
+<script id="v2BalInline">
+window.__BALANCES__ = {"fetched_at":"2026-11-22T00:00:04+08:00","items":[],"locked":true,"notice":"余额在登录后由 /admin/api/balances 拉取；本文件不含任何金额"};
+</script>
+<script id="v2JsInline">
+/* ============================================================================
+ * 模型路由网关 · 管理界面 UI v2 交互层（源文件）
+ * 建档 2026-11-17｜依据：SKILL「ui-consistency-redesign」G5 覆盖层实施
+ *
+ * 与 admin-v2.css 配套。铁律：
+ *   1) 不改原 admin.html 的 <script> 业务逻辑一行；只做「包装 / 监听 / 增强」；
+ *   2) 一切交给 v2 的行为都必须能通过 localStorage('admin.ui')='v1' 一键回到旧版；
+ *   3) 覆盖层失败不得影响旧版可用（全部 try/catch 包裹，出错自动退回旧版）。
+ * ========================================================================== */
+(function () {
+  "use strict";
+
+  var KEY = "admin.ui";
+  var V2 = "v2", V1 = "v1";
+
+  function readPref() {
+    try { return localStorage.getItem(KEY) === V1 ? V1 : V2; } catch (e) { return V2; }
+  }
+  function writePref(v) {
+    try { localStorage.setItem(KEY, v); } catch (e) {}
+  }
+
+  /* ── 0. 开关闸门：非 v2 直接退出，DOM 一个字节都不动 ─────────────────── */
+  var pref = readPref();
+  document.documentElement.setAttribute("data-ui", pref);
+  if (pref !== V2) return;
+
+  var q = function (s, r) { return (r || document).querySelector(s); };
+  var qa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* ── 1. toast：包装 alert，不再打断（原逻辑仍可调用 alert） ───────────── */
+  var toastBox = null;
+  function ensureToastBox() {
+    if (toastBox) return toastBox;
+    toastBox = document.createElement("div");
+    toastBox.id = "v2ToastBox";
+    toastBox.setAttribute("aria-live", "polite");
+    toastBox.style.cssText = [
+      "position:fixed", "right:24px", "bottom:24px", "z-index:9999",
+      "display:flex", "flex-direction:column", "gap:8px", "align-items:flex-end",
+      "pointer-events:none", "max-width:min(92vw,420px)"
+    ].join(";");
+    document.body.appendChild(toastBox);
+    return toastBox;
+  }
+  function toast(msg, kind) {
+    var box = ensureToastBox();
+    var el = document.createElement("div");
+    var bg = kind === "bad" ? "#b42318" : (kind === "warn" ? "#a15c00" : "#0f172a");
+    el.textContent = String(msg == null ? "" : msg);
+    el.style.cssText = [
+      "background:" + bg, "color:#fff", "border-radius:8px",
+      "padding:10px 12px", "font-size:13px", "line-height:1.5",
+      "box-shadow:0 8px 24px rgba(15,23,42,.18)", "max-width:100%",
+      "white-space:pre-wrap", "word-break:break-word", "opacity:0",
+      "transition:opacity .16s ease"
+    ].join(";");
+    box.appendChild(el);
+    requestAnimationFrame(function () { el.style.opacity = "1"; });
+    setTimeout(function () {
+      el.style.opacity = "0";
+      setTimeout(function () { el.remove(); }, 200);
+    }, kind === "bad" ? 6000 : 3600);
+  }
+  try {
+    window.__v2NativeAlert = window.alert;
+    window.alert = function (msg) { toast(msg); };
+  } catch (e) {}
+
+  /* ── 2. 移动端卡片列表：给表格单元格补 data-label（配合 v2.css 的 ::before） ── */
+  var LABEL_BY_INDEX = {
+    upstreamList: ["", "健康", "Base URL", "密钥", "模型", "操作"],
+    keyList: ["名称", "前缀", "scope", "rpm", "状态", "最后使用", "操作"],
+    learnedList: ["策略", "能力/节点", "function", "模型", "来源", "时间", "操作"]
+  };
+  var cellLabel = {};   // 表头文本缓存：按表格容器 id 记录
+
+  function labelize(container) {
+    if (!container) return;
+    var table = q("table", container);
+    if (!table) return;
+    var heads = qa("thead th", table).map(function (th) { return th.textContent.trim(); });
+    if (heads.length) cellLabel[container.id] = heads;
+    var labels = heads.length ? heads : (LABEL_BY_INDEX[container.id] || []);
+    if (!labels.length) return;
+    qa("tbody tr", table).forEach(function (tr) {
+      qa("td", tr).forEach(function (td, i) {
+        if (!td.hasAttribute("data-label")) td.setAttribute("data-label", labels[i] || "");
+      });
+    });
+  }
+
+  var OBSERVE = ["upstreamList", "keyList", "learnedList"];
+  function watchTables() {
+    OBSERVE.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      labelize(el);
+      try {
+        new MutationObserver(function () { labelize(el); })
+          .observe(el, { childList: true, subtree: true });
+      } catch (e) {}
+    });
+  }
+
+  /* ── 2b. 供应商余额列（消费注入快照 window.__BALANCES__，不改原 renderList） ── */
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function balanceMap() {
+    var snap = window.__BALANCES__;
+    if (!snap || !Array.isArray(snap.items)) return { map: new Map(), at: "" };
+    var m = new Map();
+    snap.items.forEach(function (it) { if (it && it.id) m.set(it.id, it); });
+    return { map: m, at: snap.fetched_at || "" };
+  }
+  function decorateBalances() {
+    var wrap = document.getElementById("upstreamList");
+    if (!wrap) return;
+    var table = q("table", wrap);
+    if (!table) return;
+    var bag = balanceMap();
+    if (!bag.map.size) return;
+
+    var headRow = q("thead tr", table);
+    if (headRow && !q(".v2-bal-th", headRow)) {
+      var th = document.createElement("th");
+      th.className = "v2-bal-th";
+      th.textContent = "余额/套餐";
+      headRow.insertBefore(th, headRow.children[3] || headRow.lastElementChild);   // 插在「密钥」之后
+    }
+
+    qa("tbody tr", table).forEach(function (tr) {
+      if (q(".v2-bal-td", tr)) return;
+      var idEl = q("td b", tr);
+      var id = idEl ? idEl.textContent.trim() : "";
+      var it = bag.map.get(id);
+      var td = document.createElement("td");
+      td.className = "v2-bal-td";
+      if (!it) {
+        td.innerHTML = '<span class="v2-bal v2-bal-none" title="未取到余额/套餐快照">—</span>';
+      } else {
+        var cls = "v2-bal v2-bal-" + (it.state || "none");
+        td.innerHTML = '<span class="' + cls + '" title="' + esc(it.detail || "") + '">' +
+          esc(it.display || "—") + "</span>";
+      }
+      tr.insertBefore(td, tr.children[3] || tr.lastElementChild);
+    });
+
+    // 卡片头补「更新于」，让数据新鲜度可见（不假装实时）
+    var card = wrap.closest(".card");
+    if (card && bag.at && !q(".v2-bal-note", card)) {
+      var note = document.createElement("p");
+      note.className = "muted v2-bal-note";
+      note.style.marginTop = "8px";
+      note.textContent = "余额/套餐更新于 " + bag.at.slice(5, 16).replace("T", " ") +
+        "（快照，非实时；由 scripts/balance_refresh.py 刷新）";
+      card.appendChild(note);
+    }
+    // ── Q1-1（2026-11-18）：新鲜度徽标 ─────────────────────────────────────
+    // 背景：余额快照曾经因为 cron 里 node 找不到而静默停在 24 小时前，页面照样显示旧数字。
+    // 现在：>60 分钟即显示「陈旧」红标；>24 小时显示「严重陈旧」；并给出建议动作。
+    // 只做展示，不改任何数据。
+    if (card && !q(".v2-bal-stale", card)) {
+      var ageMin = NaN;
+      if (bag.at) { var t = Date.parse(bag.at); if (!isNaN(t)) ageMin = (Date.now() - t) / 60000; }
+      var badge = document.createElement("span");
+      badge.className = "v2-bal-stale";
+      badge.style.marginLeft = "8px";
+      badge.style.padding = "1px 6px";
+      badge.style.borderRadius = "4px";
+      badge.style.fontSize = "12px";
+      badge.style.display = "inline-block";
+      if (!isFinite(ageMin)) {
+        badge.style.background = "#6b7280"; badge.style.color = "#fff";
+        badge.textContent = "无时间戳";
+        badge.title = "快照没有 fetched_at，无法判断新鲜度";
+      } else if (ageMin > 24 * 60) {
+        badge.style.background = "#b91c1c"; badge.style.color = "#fff";
+        badge.textContent = "严重陈旧 " + Math.round(ageMin / 60) + " 小时前";
+        badge.title = "余额/套餐快照超过 24 小时未更新，请检查 scripts/balance-cron.sh 的日志";
+      } else if (ageMin > 60) {
+        badge.style.background = "#d97706"; badge.style.color = "#fff";
+        badge.textContent = "陈旧 " + Math.round(ageMin) + " 分钟前";
+        badge.title = "余额/套餐快照超过 60 分钟未更新，请检查 scripts/balance-cron.sh 的日志";
+      } else {
+        badge.style.background = "#047857"; badge.style.color = "#fff";
+        badge.textContent = Math.round(ageMin) + " 分钟前";
+        badge.title = "余额/套餐快照较新（≤60 分钟）";
+      }
+      if (card) card.appendChild(badge);
+    }
+  }
+
+  /* ── 3. 类型/危险动作的视觉分组：给操作列与危险按钮加语义类（不改行为） ── */
+  function markDanger() {
+    qa("button").forEach(function (b) {
+      var t = (b.textContent || "").trim();
+      if (!/删除|卸载|吊销|停用|重置|清空/.test(t)) return;
+      if (!b.classList.contains("danger")) b.classList.add("danger");
+    });
+  }
+
+  /* ── 4. 顶栏版本开关：新旧并存，一键互切（无需重启） ─────────────────── */
+  function installSwitch() {
+    var header = q("header");
+    if (!header || q("#v2Switch")) return;
+    var btn = document.createElement("button");
+    btn.id = "v2Switch";
+    btn.className = "small";
+    btn.type = "button";
+    btn.textContent = "回到旧版";
+    btn.title = "切换管理界面外观（无需重启；新版为覆盖层，旧版功能完全保留）";
+    btn.onclick = function () {
+      writePref(V1);
+      location.reload();
+    };
+    header.appendChild(btn);
+  }
+
+  /* ── 5. 旧版入口提示：若当前是 v1，注入「试用新版」按钮 ───────────────── */
+  function installV1Switch() {
+    // 本函数在 v1 分支不会执行（上面已 return），保留给 apply 脚本说明用途。
+  }
+
+  /* ── 5b. N3（2026-11-19）：余额改由「登录后的 API」拉取 ──────────────────
+   * 背景：静态页/未登录响应里原本直接带 `window.__BALANCES__` 的余额金额明文
+   *   （人民币与美元余额都在），未登录 curl 即可读到；而 /admin/api/balances 是 401。
+   * 现在：页面里的 __BALANCES__ 只留骨架（fetched_at + 空 items）；金额一律由本函数
+   *   在已登录会话下 GET /admin/api/balances 注入。401 / 网络失败 ⇒ 保持骨架，不显示任何数字。
+   * 只在拿到非空 items 时才渲染，避免把空壳当"余额为 0"。
+   */
+  var _balFetched = false;
+  function refreshBalancesFromApi() {
+    if (_balFetched) return;
+    try {
+      if (!window.fetch) return;
+      fetch("/admin/api/balances", { credentials: "same-origin", headers: { accept: "application/json" } })
+        .then(function (r) {
+          if (!r.ok) return null;                  // 未登录 401 ⇒ 骨架保持
+          return r.json();
+        })
+        .then(function (doc) {
+          if (!doc || !doc.items || !doc.items.length) return;
+          window.__BALANCES__ = doc;
+          _balFetched = true;
+          try { decorateBalances(); } catch (e) {}
+        })
+        .catch(function () { /* 网络失败：保持骨架，不报错、不伪造 */ });
+    } catch (e) {}
+  }
+
+  /* ── 5c. N8③（2026-11-19）：面板补「插件状态」「backlog」只读区块 ────────
+   * 均为只读展示，不提供任何操作按钮；数据来自登录后的管理 API。
+   * 失败就显示「不可用」，绝不假装有数据。
+   */
+  var _panelDone = false;
+  function _roRow(label, value, color) {
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td");
+    td1.style.whiteSpace = "nowrap";
+    td1.textContent = label;
+    var td2 = document.createElement("td");
+    if (color) td2.style.color = color;
+    td2.textContent = String(value == null || value === "" ? "—" : value);
+    tr.appendChild(td1); tr.appendChild(td2);
+    return tr;
+  }
+  function installReadonlyPanels() {
+    if (_panelDone) return;
+    var main = document.getElementById("appMain");
+    if (!main || main.classList.contains("hidden")) return;   // 未登录：不渲染
+    var card = document.createElement("section");
+    card.className = "card";
+    card.id = "v2ReadonlyCard";
+    var head = document.createElement("div");
+    head.className = "card-head";
+    var h2 = document.createElement("h2");
+    h2.textContent = "插件状态 · backlog（只读）";
+    head.appendChild(h2);
+    card.appendChild(head);
+    var wrap = document.createElement("div");
+    wrap.className = "tablewrap";
+    var table = document.createElement("table");
+    table.id = "v2ReadonlyTable";
+    var tbody = document.createElement("tbody");
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    card.appendChild(wrap);
+    var note = document.createElement("p");
+    note.className = "muted";
+    note.style.marginTop = "8px";
+    note.textContent = "只读；数据来自 /admin/api/plugin-status 与 /admin/api/backlog。";
+    card.appendChild(note);
+    var logCard = document.getElementById("log");
+    var logSection = logCard ? logCard.closest("section") : null;
+    if (logSection && logSection.parentNode === main) main.insertBefore(card, logSection);
+    else main.appendChild(card);
+    _panelDone = true;
+    _loadReadonly();
+  }
+  function _loadReadonly() {
+    var tbody = document.querySelector("#v2ReadonlyTable tbody");
+    if (!tbody) return;
+    function jget(url) {
+      return fetch(url, { credentials: "same-origin", headers: { accept: "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; });
+    }
+    Promise.all([jget("/admin/api/plugin-status"), jget("/admin/api/backlog")]).then(function (res) {
+      var ps = res[0], bl = res[1];
+      if (!tbody) return;
+      tbody.textContent = "";
+      if (ps && ps.ok) {
+        var c = ps.counts || {};
+        var bad = (c.empty_mount || 0) + (c.dangling_symlink || 0);
+        tbody.appendChild(_roRow("插件装配（profile=" + (ps.profile || "?") + "）",
+          "目录 " + (c.dirs || 0) + "｜挂载 " + (c.mounted || 0) + "｜未挂载 " + (c.unmounted || 0) +
+          "｜空挂载 " + (c.empty_mount || 0) + "｜悬空 " + (c.dangling_symlink || 0),
+          bad ? "#b91c1c" : null));
+        tbody.appendChild(_roRow("未挂载清单", (ps.unmounted || []).join(", ") || "无"));
+        tbody.appendChild(_roRow("装配审计", ps.verdict || "—"));
+        tbody.appendChild(_roRow("采样时间", (ps.at || "") + "（" + (ps.source || "") + "）"));
+      } else {
+        tbody.appendChild(_roRow("插件状态", "不可用（未登录或接口失败）", "#b91c1c"));
+      }
+      if (bl && bl.ok) {
+        tbody.appendChild(_roRow("网关 backlog", (bl.listen_backlog == null ? "—" : bl.listen_backlog) +
+          "（来源 " + (bl.listen_backlog_source || "?") + "）"));
+        tbody.appendChild(_roRow("运行时长", (bl.uptime_s == null ? "—" : Math.round(bl.uptime_s) + " 秒")));
+      } else {
+        tbody.appendChild(_roRow("网关 backlog", "不可用（未登录或接口失败）", "#b91c1c"));
+      }
+    });
+  }
+
+  /* ── 6. 启动（全部包裹，失败不影响旧版） ─────────────────────────────── */
+  function boot() {
+    try { installSwitch(); } catch (e) {}
+    try { watchTables(); } catch (e) {}
+    try { markDanger(); } catch (e) {}
+    try { decorateBalances(); } catch (e) {}
+    try { refreshBalancesFromApi(); } catch (e) {}
+    try { installReadonlyPanels(); } catch (e) {}
+    try {
+      // 策略页等异步渲染后可能出现新表格，做一次低频兜底
+      setInterval(function () {
+        try {
+          watchTables(); markDanger(); decorateBalances();
+          refreshBalancesFromApi(); installReadonlyPanels();
+        } catch (e) {}
+      }, 2500);
+    } catch (e) {}
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+
+  /* 供以外调试：v2 版本号 */
+  window.__ADMIN_UI_V2__ = "261117.1";
+})();
+
+/* ============================================================================
+ * v1 分支的「试用新版」入口：独立小段，只在 data-ui=v1 时注入，
+ * 保证切回旧版后仍能一键切回新版（双向可逆）。
+ * ========================================================================== */
+(function () {
+  "use strict";
+  var V2 = "v2", V1 = "v1";
+  var cur = null;
+  try { cur = localStorage.getItem("admin.ui"); } catch (e) {}
+  if (cur === V1) {
+    // 旧版界面：注入一个不改变任何样式的入口按钮
+    function add() {
+      var header = document.querySelector("header");
+      if (!header || document.getElementById("v2Switch")) return;
+      var btn = document.createElement("button");
+      btn.id = "v2Switch";
+      btn.className = "small";
+      btn.type = "button";
+      btn.textContent = "试用新版";
+      btn.title = "启用 UI v2 覆盖层（可随时切回）";
+      btn.onclick = function () {
+        try { localStorage.setItem("admin.ui", V2); } catch (e) {}
+        location.reload();
+      };
+      header.appendChild(btn);
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add);
+    else add();
+  }
+})();
+</script>
+<!-- ===== UI v2 覆盖层 END ===== -->
+</body>
+</html>

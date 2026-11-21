@@ -1,0 +1,58 @@
+# cordis.patch.yml — the tester's profile shape, with anchors/aliases.
+- id: mcp-searxng
+  name: '@org/dsh-mcp-client'
+  config:
+    serverName: searxng
+- id: retry-defaults
+  name: '@org/dsh-retry'
+  config:
+    retryPolicy: &zzRetryPolicy
+      maxAttempts: 3
+      backoffMs: 250
+      jitter: true
+- id: forward-consumer
+  name: '@org/dsh-forward-consumer'
+  config:
+    retryPolicy: *laterPolicy
+    marker: kept
+- id: llm-pi-ai
+  name: "@org/dsh-llm-pi-ai"
+  config:
+    providers:
+      local-ollama:
+        displayName: 本地 Ollama（锚点样例）
+        api: openai-completions
+        baseURL: http://127.0.0.1:11434/v1
+        models:
+          - id: ornith-sysmarshal-v1.3:128k
+            name: Ornith SysMarshal v1.3
+            contextWindow: 131072
+            maxTokens: 8192
+            input:
+              - text
+              - image
+          - id: model-c1:local
+            name: Model_C1 (local)
+            contextWindow: 131072
+            maxTokens: 8192
+      freellmapi:
+        displayName: FreeLLMAPI 免费池网关
+        models:
+          - id: auto
+            name: FreeLLMAPI Auto
+            contextWindow: 65536
+            maxTokens: 16384
+- id: retry-consumer
+  name: '@org/dsh-retry-consumer'
+  config:
+    retryPolicy: *zzRetryPolicy
+- id: later-policy
+  name: '@org/dsh-later-policy'
+  config:
+    policy: &laterPolicy
+      timeoutMs: 9000
+- id: agent-default-model
+  name: "@org/dsh-agent-default-model"
+  config:
+    provider: local-ollama
+    model: ornith-sysmarshal-v1.3:128k

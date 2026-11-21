@@ -1,0 +1,46 @@
+{
+  "name": "dsh-wb-max",
+  "version": "0.2.0",
+  "description": "WB 路由 · Max：DSH 调用 WB 模型路由决策器（网关）的 Max 模式前端",
+  "type": "module",
+  "license": "MIT",
+  "author": "beidou6972家的大灰狼 & 金灵龟家的小棒",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json",
+    "./client": {
+      "types": "./dist/plugin/client.d.ts",
+      "default": "./dist/client/client.js"
+    }
+  },
+  "files": [
+    "dist",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20",
+    "dsh": "^0.2.1-rc.2"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@org/dsh-api-session-controller",
+        "@org/dsh-api-remotes",
+        "@org/dsh-client-locale",
+        "@org/dsh-client-ui-commands",
+        "@org/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>WB-Router-Agent-Install</title>
+  <style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">:root{--fg:#1f2328;--muted:#57606a;--line:#d0d7de;--bg:#ffffff;--code:#f6f8fa;--accent:#0b6bcb;}
+html{-webkit-text-size-adjust:100%;}
+body{max-width:900px;margin:0 auto;padding:16px 16px 48px;color:var(--fg);background:var(--bg);
+font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;}
+h1{font-size:26px;line-height:1.3;margin:8px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--accent);}
+h2{font-size:21px;margin:28px 0 10px;padding-top:8px;border-top:1px solid var(--line);}
+h3{font-size:18px;margin:20px 0 8px;}
+h4{font-size:16px;margin:16px 0 6px;}
+p,li{font-size:16px;}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;
+background:var(--code);padding:1px 5px;border-radius:4px;word-break:break-word;}
+pre{background:var(--code);padding:12px;border-radius:8px;overflow-x:auto;border:1px solid var(--line);}
+pre code{background:none;padding:0;font-size:13.5px;line-height:1.6;white-space:pre;}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;margin:12px 0;font-size:14.5px;}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;}
+th{background:var(--code);font-weight:600;}
+blockquote{margin:12px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#f3f8ff;color:#243b53;}
+blockquote p{margin:4px 0;}
+a{color:var(--accent);}
+hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
+</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">WB-Router-Agent-Install</h1>
+</header>
+<h1 id="wb-模型路由网关--agent-安装说明可直接投喂给-agent">WB
+模型路由网关 · Agent 安装说明（可直接投喂给 Agent）</h1>
+<blockquote>
+<p><strong>给 Agent
+的话</strong>：这是一份可执行安装任务书。请严格按步骤做，每步有「期望」与「失败怎么办」。
+你不需要读源码；<strong>不许跳步、不许改包外文件、不许把密钥打印到输出里</strong>。
+目标：让用户在一台 Linux 机器/容器上把网关跑起来，并能看到「计划 → 确认
+→ 执行 → 对账」这条链路。</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>项</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>产品</td>
+<td>WB 模型路由网关 v1.0.3.3（OpenAI 兼容，自托管）</td>
+</tr>
+<tr class="even">
+<td>用户画像</td>
+<td>无编码基础；不会读日志也能看懂你的回报</td>
+</tr>
+<tr class="odd">
+<td>交付包</td>
+<td><code>gateway-1.0.3.3.tar.gz</code>、<code>plugins-1.0.3.3.tar.gz</code>、<code>skill-mcp-1.0.3.3.tar.gz</code></td>
+</tr>
+<tr class="even">
+<td>完成判据</td>
+<td>见 §5（4 条全过才算装好）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-开工前先问用户三个问题一次问完别反复打扰">1.
+开工前：先问用户三个问题（一次问完，别反复打扰）</h2>
+<ol type="1">
+<li><strong>模型服务地址</strong>：你有哪个 OpenAI 兼容的模型服务（云端
+API 或本地/局域网模型都行，本地常见如 Ollama 的
+<code>http://&lt;局域网IP&gt;:11434/v1</code>、vLLM 的
+<code>http://&lt;IP&gt;:8000/v1</code>）？地址是什么（一般以
+<code>/v1</code> 结尾）？</li>
+<li><strong>密钥</strong>：对应的密钥是什么？（让用户自己填进环境变量；你<strong>不要</strong>把密钥写进任何文件、不要
+echo）</li>
+<li><strong>装到哪个目录 + 用哪几个模型</strong>：默认建议
+<code>~/wb-router</code>；模型名要让用户给准确的（如
+<code>deepseek-chat</code>、<code>qwen3-8b</code>）。</li>
+</ol>
+<blockquote>
+<p>用户答不上「密钥/服务地址」⇒
+停下来告诉用户：「还差一个模型服务，没有它网关装了也不会跑」，不要自己编地址去试。</p>
+</blockquote>
+<h2 id="2-环境检查全部通过再往下">2. 环境检查（全部通过再往下）</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span>                 <span class="co"># 期望 3.12.x</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip <span class="at">--version</span>          <span class="co"># 没有就 python3 -m ensurepip 或装 python3-pip</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-ltn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-q</span> <span class="st">&#39;:18790 &#39;</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> PORT_BUSY <span class="kw">||</span> <span class="bu">echo</span> PORT_FREE   <span class="co"># 期望 PORT_FREE</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-1</span>           <span class="co"># 至少留 2GB</span></span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th>不通过</th>
+<th>怎么办</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Python &lt; 3.12</td>
+<td>告诉用户需要 3.12，或按发行版装 <code>python3.12</code>；别用
+3.8/3.9 硬跑</td>
+</tr>
+<tr class="even">
+<td>没有 pip</td>
+<td><code>python3 -m ensurepip --upgrade</code> 或系统包管理器</td>
+</tr>
+<tr class="odd">
+<td>18790 被占</td>
+<td><code>ss -ltnp | grep 18790</code>
+看是谁；是旧实例就停掉，别杀别人的进程</td>
+</tr>
+<tr class="even">
+<td>磁盘 &lt; 2GB</td>
+<td>告诉用户空间不够，先清理</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-安装照抄root-改成用户选的目录">3.
+安装（照抄；<code>$ROOT</code> 改成用户选的目录）</h2>
+<h3 id="31-解包">3.1 解包</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">ROOT</span><span class="op">=</span>~/wb-router</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.3.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.3.tar.gz</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.3.tar.gz</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>    <span class="co"># 期望：gateway  plugins  skill-mcp</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-f</span> gateway/main.py <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="at">-d</span> gateway/config <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> PKG_OK</span></code></pre></div>
+<h3 id="32-装依赖">3.2 装依赖</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">--user</span> PyYAML requests</span></code></pre></div>
+<p>期望：<code>Successfully installed ...</code>；失败就贴错误原文给用户，别重复重试三次以上。</p>
+<h3 id="33-写配置两处必改改前先备份">3.3
+写配置（两处必改，改前先备份）</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/upstreams.json config/upstreams.json.bak</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/routing.json   config/routing.json.bak</span></code></pre></div>
+<p><strong>（a）<code>config/upstreams.json</code></strong> ——
+把样例里的占位换成用户给的真实值。单个上游的结构是：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;my-cloud&quot;</span><span class="fu">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;base_url&quot;</span><span class="fu">:</span> <span class="st">&quot;https://你的服务地址/v1&quot;</span><span class="fu">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;api_key_env&quot;</span><span class="fu">:</span> <span class="st">&quot;MY_KEY_A&quot;</span><span class="fu">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;max_rpm&quot;</span><span class="fu">:</span> <span class="dv">60</span><span class="fu">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;models&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;你的模型名&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;context_window&quot;</span><span class="fu">:</span> <span class="dv">128000</span><span class="fu">,</span> <span class="dt">&quot;max_tokens&quot;</span><span class="fu">:</span> <span class="dv">8192</span><span class="fu">,</span> <span class="dt">&quot;vision&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span> <span class="dt">&quot;tier&quot;</span><span class="fu">:</span> <span class="st">&quot;cheap&quot;</span> <span class="fu">}</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;label&quot;</span><span class="fu">:</span> <span class="st">&quot;我的云端模型&quot;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>规则：<code>models</code>
+的键必须与上游真实模型名<strong>逐字一致</strong>；<code>api_key_env</code>
+只是<strong>变量名</strong>，不是密钥；不确定的字段（<code>vision</code>、<code>tier</code>）可先按
+<code>false</code>/<code>cheap</code>
+保守填。<strong>本地服务若不需要密钥，可填任意占位值，但
+<code>api_key_env</code> 字段不要删。</strong></p>
+<p><strong>（b）<code>config/routing.json</code></strong> ——
+只需把候选链里的 <code>上游/模型</code> 换成上面写的值，出现在
+<code>routes</code>、<code>strategies</code> 两处（以及
+<code>capability_meta</code>、<code>hint.tiers</code>，如果存在）。不要整份重写，不要改
+<code>context_governor</code>（保持默认 <code>shadow</code>）。</p>
+<p>改完自检 JSON 合法：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool config/upstreams.json <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> UPSTREAMS_OK</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool config/routing.json   <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> ROUTING_OK</span></code></pre></div>
+<h3 id="34-放密钥只进环境变量">3.4 放密钥（只进环境变量）</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MY_KEY_A</span><span class="op">=</span><span class="st">&#39;用户提供的密钥&#39;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">${MY_KEY_A</span><span class="op">:+</span>KEY_SET<span class="va">}</span><span class="st">&quot;</span>        <span class="co"># 期望输出 KEY_SET；不要 echo 密钥本身</span></span></code></pre></div>
+<p>要给长期运行用，就把这行写进用户自己的启动脚本（systemd
+<code>Environment=</code> 或 supervisor
+<code>environment=</code>），<strong>不要</strong>写进仓库里的任何文件。</p>
+<h3 id="35-启动">3.5 启动</h3>
+<p>前台试跑（先确认能起来）：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> main.py</span></code></pre></div>
+<p>期望：打印一行「凭据已加载：N 个
+ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</code>
+可停。</p>
+<blockquote>
+<p>需要常驻时，交给用户环境里现成的进程管理器（supervisor 服务名建议
+<code>router-gateway</code>，systemd
+单元同理）；<strong>不要</strong>自己发明开机自启方式。</p>
+</blockquote>
+<h3 id="36-自检另开终端">3.6 自检（另开终端）</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool <span class="kw">|</span> <span class="fu">head</span> <span class="at">-30</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/v1/models <span class="kw">|</span> <span class="fu">head</span> <span class="at">-c</span> 400</span></code></pre></div>
+<p>期望：</p>
+<ol type="1">
+<li><code>/health</code> 里 <code>&quot;ok&quot;: true</code>；</li>
+<li>用户配的每个上游 <code>&quot;state&quot;: &quot;ok&quot;</code>；</li>
+<li><code>/v1/models</code> 里能看到
+<code>auto</code>、<code>auto-fast</code>、<code>auto-strong</code>。</li>
+</ol>
+<h3 id="37-真调一次会花一点钱先问用户同意">3.7
+真调一次（会花一点钱，先问用户同意）</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/smoke.py     <span class="co"># 期望：打印 HTTP 码/耗时/返回模型，无 4xx/5xx</span></span></code></pre></div>
+<h2 id="4-可选管理面板与密钥">4. 可选：管理面板与密钥</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 本机打开（只在内网）：  http://127.0.0.1:18790/admin</span></span></code></pre></div>
+<p>首登后在「API keys」里新建一把给用户自己用（选
+<code>scopes=plan,chat</code>，设
+<code>rpm</code>）；<strong>明文只显示一次</strong>，让用户当场存好。
+自用/内网联调也可以先在 <code>config/api-keys.json</code> 里把
+<code>required</code> 设为
+<code>false</code>，<strong>但交付给用户前必须改回
+<code>true</code></strong> 并配一把 key——否则等于没有鉴权。</p>
+<h2 id="5-完成判据4-条全过才算装好">5. 完成判据（4 条全过才算装好）</h2>
+<ol type="1">
+<li><code>curl /health</code> 返回 <code>ok: true</code>，且每个上游
+<code>state: ok</code>；</li>
+<li><code>/v1/models</code> 能列出 3
+个虚拟模型（<code>auto</code>/<code>auto-fast</code>/<code>auto-strong</code>）；</li>
+<li><code>scripts/smoke.py</code> 真调成功（不是 401/4xx/5xx）；</li>
+<li>打开 <code>/admin</code>
+能登录（或按发布说明给出默认账号）且页面不报错。</li>
+</ol>
+<h2 id="6-禁止事项违反即视为任务失败">6.
+禁止事项（违反即视为任务失败）</h2>
+<ol type="1">
+<li>不把密钥写进任何文件、不 echo、不进日志、不进回报。</li>
+<li>不把 <code>/admin</code>、<code>/router/*</code>
+暴露到公网；对外只放行 <code>/health</code> 与 <code>/v1/*</code>。</li>
+<li>不改系统级配置、不装系统服务、不动别人的进程和端口。</li>
+<li>不删用户数据（<code>数据/</code>、<code>logs/</code>、<code>config/*.bak</code>
+都不许删）。</li>
+<li>不在没得到用户同意时真调付费模型。</li>
+</ol>
+<h2 id="7-出问题怎么处理">7. 出问题怎么处理</h2>
+<table>
+<thead>
+<tr class="header">
+<th>现象</th>
+<th>最可能原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ModuleNotFoundError: yaml</code></td>
+<td>依赖没装/装到了别的解释器</td>
+<td>用<strong>同一个</strong> <code>python3</code>
+装：<code>python3 -m pip install PyYAML requests</code></td>
+</tr>
+<tr class="even">
+<td><code>凭据已加载：0 个 ref</code></td>
+<td><code>api_key_env</code> 名字与 export 的不一致</td>
+<td>逐字比对（区分大小写），改完重启</td>
+</tr>
+<tr class="odd">
+<td>启动直接退出、无报错</td>
+<td>端口被占 / 配置解析失败</td>
+<td><code>python3 -m json.tool config/routing.json</code>；<code>ss -ltn | grep 18790</code></td>
+</tr>
+<tr class="even">
+<td><code>/health</code> 里某上游 <code>state != ok</code></td>
+<td>地址错、网络不通、key 错</td>
+<td>先用 <code>curl &lt;base_url&gt;/models</code>
+手工验证，再回头改配置</td>
+</tr>
+<tr class="odd">
+<td><code>/v1/models</code> 没有虚拟模型</td>
+<td><code>routing.json</code> 的 <code>virtual_models</code> 被改坏</td>
+<td>还原 <code>routing.json.bak</code>，只改候选链</td>
+</tr>
+<tr class="even">
+<td>计划里显示「0（待用户录入）」</td>
+<td>该模型没价格</td>
+<td>让用户补 <code>config/pricebook.json</code> 或先用有价格的模型</td>
+</tr>
+<tr class="odd">
+<td>401/403</td>
+<td>没带 key 或 key 被吊销</td>
+<td>用管理页确认 key 状态；换 key 后重启客户端</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-回滚">8. 回滚</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/upstreams.json.bak config/upstreams.json</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/routing.json.bak   config/routing.json</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 重启进程；数据/ 与 logs/ 保留不动</span></span></code></pre></div>
+<h2 id="9-交给用户的回报格式就用这-6-行别多写">9.
+交给用户的回报格式（就用这 6 行，别多写）</h2>
+<pre><code>装好了：&lt;安装目录&gt;，当前可用模型 &lt;N&gt; 个（&lt;列表前三个&gt;）
+访问地址：http://127.0.0.1:18790 （管理面 /admin，只在本机/内网可开）
+自检：/health ok；上游 &lt;N&gt;/&lt;N&gt; ok；冒烟请求通过
+你还需要做的一件事：&lt;例如：把价格补到 config/pricebook.json&gt;
+怎么用：在 DSH 里选 auto / auto-fast / auto-strong，先「生成计划」再「确认开工」
+出问题先看：日志 logs/，或把 /health 的输出发我</code></pre>
+<hr />
+<p><em>版本 1.0.3.3；更多细节见同目录《使用说明书》（26 页）与包内
+<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.3/</code>。</em></p>
+</body>
+</html>

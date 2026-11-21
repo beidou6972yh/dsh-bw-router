@@ -1,0 +1,5 @@
+# dsh bundle patch: inserts this plugin into a profile's layer stack.
+# 安装即生效：`dsh plugin --profile web add dsh-bw-router` 之后无需再手写 patch 行。
+- insert:
+    - id: dsh-bw-router
+      name: 'dsh-bw-router/dsh'

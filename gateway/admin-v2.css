@@ -1,0 +1,233 @@
+/* ============================================================================
+ * 模型路由网关 · 管理界面 UI v2 覆盖层（源文件）
+ * 建档 2026-11-17｜依据：SKILL「ui-consistency-redesign」G1 token + G2 组件 + G5 覆盖层
+ *
+ * 设计原则（铁律）：
+ *   1) 只做「覆盖」——所有选择器都挂在既有类名上，HTML 结构与后端契约一行不改；
+ *   2) 全部规则以 html[data-ui="v2"] 前缀 —— 摘掉该属性即 100% 回到旧版（新旧并存）；
+ *   3) 一条数据一行：单元格/徽标/按钮一律 nowrap，宁缩短文案不用省略号收场；
+ *   4) 可见文字 ≥12px（共享层「图表字号规范」硬线）；
+ *   5) 控件高度 小32 / 中36 / 触控44；移动端 ≤760px 表格转卡片列表。
+ * ========================================================================== */
+
+/* ── G1 token：字阶 6 档 / 语义色收敛 / 间距 5 档 / 圆角 4 档 ────────────── */
+html[data-ui="v2"] {
+  --v2-fs-caption: 12px;
+  --v2-fs-small: 13px;
+  --v2-fs-body: 14px;
+  --v2-fs-title: 17px;
+  --v2-sp-1: 4px;  --v2-sp-2: 8px;  --v2-sp-3: 12px; --v2-sp-4: 16px; --v2-sp-5: 24px;
+  --v2-r-xs: 4px;  --v2-r-sm: 8px;  --v2-r-md: 12px; --v2-r-lg: 16px;
+  --v2-h-sm: 32px; --v2-h-md: 36px; --v2-h-touch: 44px;
+  --v2-text: #1c2430;  --v2-text-2: #5b6472; --v2-text-3: #818a97;
+  --v2-bg: #f5f6f8;    --v2-surface: #ffffff; --v2-subtle: #f8fafc;
+  --v2-border: #e3e6ea; --v2-border-strong: #cfd5dd;
+  --v2-brand: #2563eb; --v2-brand-tint: #eef4ff; --v2-brand-strong: #1d4ed8;
+  --v2-ok: #0a7b3e;    --v2-ok-tint: #e7f6ec;
+  --v2-warn: #a15c00;  --v2-warn-tint: #fff4e5;
+  --v2-bad: #b42318;   --v2-bad-tint: #fdecea;
+  --v2-neutral-tint: #eef2f7;
+  --v2-ring: 0 0 0 3px rgba(37, 99, 235, .28);
+  --v2-sh-1: 0 1px 2px rgba(16, 24, 40, .04);
+  --v2-sh-2: 0 4px 12px rgba(16, 24, 40, .08);
+}
+
+/* ── 全局排版：字阶收敛，可见文字不低于 12px ───────────────────────────── */
+html[data-ui="v2"] body { font-size: var(--v2-fs-body); color: var(--v2-text); background: var(--v2-bg); }
+html[data-ui="v2"] .muted { color: var(--v2-text-2); font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] .kv { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+html[data-ui="v2"] header .meta { font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] .err { font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] .warnbanner { font-size: var(--v2-fs-small); border-radius: var(--v2-r-sm); }
+html[data-ui="v2"] .statusbar { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+
+/* 关键：消除 11px（原 .badge） */
+html[data-ui="v2"] .badge {
+  font-size: var(--v2-fs-caption);
+  height: 24px; line-height: 24px; padding: 0 var(--v2-sp-2);
+  display: inline-flex; align-items: center; gap: var(--v2-sp-1);
+  white-space: nowrap; flex: none; border-radius: 999px;
+  background: var(--v2-neutral-tint); color: var(--v2-text-2);
+}
+html[data-ui="v2"] .badge.ok { background: var(--v2-ok-tint); color: var(--v2-ok); }
+html[data-ui="v2"] .badge.bad { background: var(--v2-bad-tint); color: var(--v2-bad); }
+html[data-ui="v2"] .badge.warn { background: var(--v2-warn-tint); color: var(--v2-warn); }
+html[data-ui="v2"] .badge.chat { background: var(--v2-ok-tint); color: var(--v2-ok); }
+html[data-ui="v2"] .badge.nochat { background: var(--v2-bad-tint); color: var(--v2-bad); }
+
+/* ── 组件：按钮（小32 / 中36 / 触控44） ─────────────────────────────────── */
+html[data-ui="v2"] button {
+  font-size: var(--v2-fs-small);
+  min-height: var(--v2-h-sm);
+  padding: 0 var(--v2-sp-3);
+  border-radius: var(--v2-r-sm);
+  border: 1px solid var(--v2-border);
+  white-space: nowrap; flex: none;
+  transition: background .12s ease, border-color .12s ease;
+}
+html[data-ui="v2"] button:hover { border-color: var(--v2-border-strong); }
+html[data-ui="v2"] button:focus-visible { outline: none; box-shadow: var(--v2-ring); }
+html[data-ui="v2"] button.small { min-height: var(--v2-h-sm); padding: 0 var(--v2-sp-2); font-size: var(--v2-fs-caption); }
+html[data-ui="v2"] button.primary {
+  min-height: var(--v2-h-md); padding: 0 var(--v2-sp-4);
+  font-size: var(--v2-fs-body); background: var(--v2-brand); border-color: var(--v2-brand);
+}
+html[data-ui="v2"] button.primary:hover { background: var(--v2-brand-strong); }
+html[data-ui="v2"] button.danger { color: var(--v2-bad); border-color: #f0c2bd; }
+html[data-ui="v2"] button:disabled { opacity: .5; }
+html[data-ui="v2"] header button { min-height: var(--v2-h-sm); }
+
+/* ── 组件：输入/下拉（≥32px） ───────────────────────────────────────────── */
+html[data-ui="v2"] input, html[data-ui="v2"] select {
+  min-height: var(--v2-h-sm);
+  border-radius: var(--v2-r-sm);
+  border: 1px solid var(--v2-border-strong);
+  font-size: var(--v2-fs-small);
+}
+html[data-ui="v2"] input:focus-visible, html[data-ui="v2"] select:focus-visible { outline: none; box-shadow: var(--v2-ring); }
+
+/* ── 组件：卡片与标题 ──────────────────────────────────────────────────── */
+html[data-ui="v2"] main { gap: var(--v2-sp-4); min-width: 0; max-width: 1360px; }
+html[data-ui="v2"] main > * { min-width: 0; }
+html[data-ui="v2"] .card {
+  border-radius: var(--v2-r-md); border-color: var(--v2-border);
+  padding: var(--v2-sp-4) var(--v2-sp-4); box-shadow: var(--v2-sh-1);
+  min-width: 0; max-width: 100%; overflow: hidden;
+}
+html[data-ui="v2"] .card-head { margin-bottom: var(--v2-sp-3); gap: var(--v2-sp-3); }
+html[data-ui="v2"] .card-head h2 { font-size: var(--v2-fs-body); font-weight: 600; white-space: nowrap; }
+
+/* ── 组件：表格（一条一行，不折行，列不塌陷） ─────────────────────────── */
+/* 原 max-height:52vh + overflow:auto 保留；补 max-width 防窄屏撑破 */
+html[data-ui="v2"] .tablewrap { max-width: 100%; min-width: 0; overflow-x: auto; border-radius: var(--v2-r-sm); border-color: var(--v2-border); }
+html[data-ui="v2"] table { border-collapse: collapse; }
+html[data-ui="v2"] th {
+  font-size: var(--v2-fs-caption); font-weight: 500; color: var(--v2-text-2);
+  background: var(--v2-subtle); white-space: nowrap;
+  padding: var(--v2-sp-2) var(--v2-sp-3);
+  position: sticky; top: 0; z-index: 1;
+}
+html[data-ui="v2"] td {
+  font-size: var(--v2-fs-small);
+  padding: var(--v2-sp-2) var(--v2-sp-3);
+  white-space: nowrap; vertical-align: middle;
+  border-bottom: 1px solid var(--v2-border);
+}
+html[data-ui="v2"] tr:hover td { background: var(--v2-subtle); }
+html[data-ui="v2"] td.num, html[data-ui="v2"] th.num { text-align: right; font-variant-numeric: tabular-nums; }
+/* 行内多行的副标题（如 ID 下的中文名）允许为独立行，但自身不折 */
+html[data-ui="v2"] td .muted { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px; }
+/* 操作列按钮成组、不折行 */
+html[data-ui="v2"] td .rowops, html[data-ui="v2"] td:last-child { white-space: nowrap; }
+
+/* ── 组件：状态徽标（色点 + 文字双编码） ──────────────────────────────── */
+html[data-ui="v2"] .mstate { display: inline-flex; align-items: center; gap: var(--v2-sp-1); white-space: nowrap; }
+html[data-ui="v2"] .mstate::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none;
+}
+html[data-ui="v2"] .mstate.ok { color: var(--v2-ok); }
+html[data-ui="v2"] .mstate.bad { color: var(--v2-bad); }
+html[data-ui="v2"] .mstate.warn { color: var(--v2-warn); }
+
+/* ── 组件：Tab（原 .tabs 只做了圆角） ──────────────────────────────────── */
+html[data-ui="v2"] .tabs { gap: var(--v2-sp-1); align-items: center; }
+html[data-ui="v2"] .tabs button {
+  min-height: var(--v2-h-sm); padding: 0 var(--v2-sp-3);
+  border-radius: var(--v2-r-sm); font-size: var(--v2-fs-small); color: var(--v2-text-2);
+  background: transparent; border-color: transparent;
+}
+html[data-ui="v2"] .tabs button:hover { background: var(--v2-neutral-tint); }
+html[data-ui="v2"] .tabs button.active {
+  background: var(--v2-brand-tint); border-color: transparent;
+  color: var(--v2-brand); font-weight: 600;
+}
+
+/* ── 组件：链路 chip（一条一项，控件 ≥32px） ───────────────────────────── */
+html[data-ui="v2"] .chain { gap: var(--v2-sp-2); min-height: 48px; padding: var(--v2-sp-2); border-radius: var(--v2-r-sm); align-items: center; }
+html[data-ui="v2"] .chip {
+  min-height: 36px; height: 36px; padding: 0 2px 0 var(--v2-sp-2);
+  border-radius: 999px; font-size: var(--v2-fs-small);
+  white-space: nowrap; flex: 0 0 auto; max-width: 100%; gap: var(--v2-sp-1);
+}
+html[data-ui="v2"] .chip button {
+  min-width: var(--v2-h-sm); min-height: var(--v2-h-sm); width: var(--v2-h-sm); height: var(--v2-h-sm);
+  border-radius: 50%; font-size: var(--v2-fs-body); line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+html[data-ui="v2"] .chain select { min-height: var(--v2-h-sm); flex: 0 0 auto; max-width: 260px; font-size: var(--v2-fs-caption); }
+
+/* ── 组件：策略页分组行 ────────────────────────────────────────────────── */
+html[data-ui="v2"] .stagerow { gap: var(--v2-sp-3); align-items: center; }
+html[data-ui="v2"] .stagerow .lbl { font-size: var(--v2-fs-caption); color: var(--v2-text-2); white-space: nowrap; }
+html[data-ui="v2"] .strat-section h3 { font-size: var(--v2-fs-small); color: var(--v2-text-2); white-space: nowrap; }
+html[data-ui="v2"] .funcrow { gap: var(--v2-sp-3); }
+html[data-ui="v2"] .funcrow .lbl { font-size: var(--v2-fs-caption); }
+
+/* ── 组件：表单（不折行标签 + ≥32px 控件） ─────────────────────────────── */
+html[data-ui="v2"] .formgrid label { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+html[data-ui="v2"] .row { gap: var(--v2-sp-3); align-items: center; }
+
+/* ── 组件：日志与登录层 ────────────────────────────────────────────────── */
+html[data-ui="v2"] #log { font-size: var(--v2-fs-caption); border-radius: var(--v2-r-sm); line-height: 1.6; }
+html[data-ui="v2"] .loginCard { border-radius: var(--v2-r-lg); padding: var(--v2-sp-5); box-shadow: var(--v2-sh-2); }
+html[data-ui="v2"] .loginCard h2 { font-size: var(--v2-fs-title); }
+html[data-ui="v2"] .loginCard label { font-size: var(--v2-fs-caption); color: var(--v2-text-2); }
+
+/* ── 移动端：≤760px 表格转卡片列表（一条数据一张卡、字段各占一行、零横向溢出） ── */
+@media (max-width: 900px) {
+  html[data-ui="v2"] .tablewrap { overflow: visible; max-height: none; border: 0; }
+  html[data-ui="v2"] .tablewrap table,
+  html[data-ui="v2"] .tablewrap thead,
+  html[data-ui="v2"] .tablewrap tbody,
+  html[data-ui="v2"] .tablewrap tr,
+  html[data-ui="v2"] .tablewrap td { display: block; width: auto; }
+  html[data-ui="v2"] .tablewrap thead { display: none; }
+  html[data-ui="v2"] .tablewrap tr {
+    border: 1px solid var(--v2-border); border-radius: var(--v2-r-sm);
+    padding: var(--v2-sp-2); margin-bottom: var(--v2-sp-2); background: #fff;
+  }
+  html[data-ui="v2"] .tablewrap td {
+    border-bottom: 0; padding: var(--v2-sp-1) 0; white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  html[data-ui="v2"] .tablewrap td.num { text-align: left; }
+  html[data-ui="v2"] .tablewrap td::before {
+    content: attr(data-label); display: inline-block; min-width: 72px;
+    color: var(--v2-text-3); font-size: var(--v2-fs-caption); margin-right: var(--v2-sp-2);
+  }
+  html[data-ui="v2"] .tablewrap td:first-child::before { display: none; }
+  /* 触控：移动端主操作 ≥44px */
+  html[data-ui="v2"] button, html[data-ui="v2"] button.small { min-height: var(--v2-h-touch); }
+  html[data-ui="v2"] button.primary { min-height: var(--v2-h-touch); }
+  html[data-ui="v2"] .chip button { min-width: var(--v2-h-touch); min-height: var(--v2-h-touch); width: var(--v2-h-touch); height: var(--v2-h-touch); }
+  html[data-ui="v2"] .chip { height: auto; min-height: var(--v2-h-touch); }
+  html[data-ui="v2"] .chain { overflow-x: auto; flex-wrap: nowrap; }
+  html[data-ui="v2"] header { flex-wrap: wrap; height: auto; padding: var(--v2-sp-3); row-gap: var(--v2-sp-2); }
+  html[data-ui="v2"] main { padding: 0 var(--v2-sp-3); }
+}
+
+/* ── 组件：供应商余额（一等数据，色+文双编码） ─────────────────────────── */
+html[data-ui="v2"] .v2-bal {
+  display: inline-flex; align-items: center; gap: var(--v2-sp-1);
+  font-size: var(--v2-fs-caption); font-variant-numeric: tabular-nums;
+  white-space: nowrap; padding: 2px var(--v2-sp-2); border-radius: 999px;
+  background: var(--v2-neutral-tint); color: var(--v2-text-2);
+}
+html[data-ui="v2"] .v2-bal-ok { background: var(--v2-ok-tint); color: var(--v2-ok); font-weight: 600; }
+html[data-ui="v2"] .v2-bal-local { background: var(--v2-brand-tint); color: var(--v2-brand); }
+html[data-ui="v2"] .v2-bal-unavailable,
+html[data-ui="v2"] .v2-bal-none { background: var(--v2-neutral-tint); color: var(--v2-text-3); }
+html[data-ui="v2"] .v2-bal-error { background: var(--v2-bad-tint); color: var(--v2-bad); }
+html[data-ui="v2"] td.v2-bal-td { text-align: left; }
+/* 供应商表列宽约束：长文本不折行、超宽时表格内滚动（列宽上限防顶满整页） */
+html[data-ui="v2"] #upstreamList td:nth-child(2) { max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
+html[data-ui="v2"] #upstreamList td:nth-child(3) { max-width: 172px; overflow: hidden; }
+html[data-ui="v2"] #upstreamList td:nth-child(4) { width: 108px; }
+html[data-ui="v2"] #upstreamList td:nth-child(5) { max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+html[data-ui="v2"] #upstreamList td:last-child button { margin-right: 2px; }
+
+/* ── 版本开关（顶栏右侧，v2 JS 注入） ──────────────────────────────────── */
+html[data-ui="v2"] #v2Switch {
+  background: #1e293b; border-color: #334155; color: #e2e8f0;
+  font-size: var(--v2-fs-caption);
+}

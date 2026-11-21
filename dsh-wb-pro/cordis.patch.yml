@@ -1,0 +1,4 @@
+# dsh bundle patch: WB 路由（Pro）host 半；根入口 re-export apply/inject（见 dist/index.js）。
+- insert:
+    - id: dsh-wb-pro
+      name: 'dsh-wb-pro'

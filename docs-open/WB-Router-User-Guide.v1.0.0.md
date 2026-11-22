@@ -406,7 +406,7 @@ curl -sS http://127.0.0.1:18790/v1/chat/completions \
 
 ### 6.3 DSH 里点开就用（两种插件）
 
-**装插件**：解包 `plugins-1.0.3.3.tar.gz`，得到 `dsh-wb-pro-0.2.0` 与 `dsh-wb-max-0.2.0` 两个目录。把它们覆盖到你的 DSH 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次 DSH。
+**装插件**：解包 `plugins-1.0.3.3.tar.gz`，得到 `dsh-wb-pro-0.2.1` 与 `dsh-wb-max-0.2.1` 两个目录。把它们覆盖到你的 DSH 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次 DSH。
 
 > 插件公开下载：GitHub Release `v1.0.3.3` 资产 `plugins-1.0.3.3.tar.gz`（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.3 ）。
 
@@ -901,7 +901,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 | 三、安装前准备 | 事实表 §11-2（系统要求未验证口径）、§2（Python 3.12、两个依赖、18790）、§8.2 |
 | 四、安装 | 事实表 §8.1 安装步骤、§2 服务形态；期望输出取自 `README.md` 启动与 `/health`；回归判据取自 `run-tests.sh` 头部说明 |
 | 五、模型配置 | 事实表 §8.2、§11-4；字段名取自 `sample-config/upstreams.json`、`sample-config/routing.json`、`config/pricebook.json`、`config/api-keys.json`；价格命令取自 `scripts/price_sync.py`、`scripts/price-attest.py` 头部说明 |
-| 六、七章 | 事实表 §4、§5、§9 三种入口、§8.2、§8.3；计划与回写必填项、`estimate_delta`、`pricing.policy`、`estimate_basis`、`partial`、计划状态 TTL 取自 `router_plan.py`；插件交互取自 `dsh-wb-pro-0.2.0/README.md` 与 `变更说明-1.0.3.3.md`；6.5 的换模时机（`switch_on`＝`new_user_message`/`context_rebuild`、`tool_turns_frozen`、豁免项）与转发原则取自 `router_plan.py`、`README.md`；7.7 的页面分区取自 `admin.html`、`admin-live.html` |
+| 六、七章 | 事实表 §4、§5、§9 三种入口、§8.2、§8.3；计划与回写必填项、`estimate_delta`、`pricing.policy`、`estimate_basis`、`partial`、计划状态 TTL 取自 `router_plan.py`；插件交互取自 `dsh-wb-pro-0.2.1/README.md` 与 `变更说明-1.0.3.3.md`；6.5 的换模时机（`switch_on`＝`new_user_message`/`context_rebuild`、`tool_turns_frozen`、豁免项）与转发原则取自 `router_plan.py`、`README.md`；7.7 的页面分区取自 `admin.html`、`admin-live.html` |
 | 八、开关与灰度 | 事实表 §5（8 组能力与默认值）；逐项开启方法/观察指标/回滚取自 `开关开启与观察.md`；上下文治理口径取自 `变更说明-1.0.3.3.md` |
 | 九、常见问题 | 事实表 §8.4 错误码表；本地 503 细节与熔断时长取自 `README.md`；计划过期取自 `router_plan.py`；其余为安装运维常识（不引入新数字） |
 | 十、十一章 | 事实表 §10、§6「只记特征不记正文」、§8.3 端点、§8.4 错误码、§5 能力组、§6 硬数字、§11 待确认；字段速查来自样例配置与 `ROUTER_*` 环境变量（见 `开关开启与观察.md`） |

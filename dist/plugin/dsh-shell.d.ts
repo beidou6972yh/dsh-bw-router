@@ -22,6 +22,16 @@ import { PluginHost, RouterSession, type CompressionResult, type ContextCompress
  * pretending: a missing watcher reports `undefined`, a missing readCurrent
  * reports an empty model key.
  */
+/** The slice of the DSH `connection` service this plugin asks about. */
+export interface DshConnection {
+    /**
+     * Whether this request must be refused before any work happens.
+     *
+     * `undefined` means the host trusts the request; a number is the status to
+     * answer with. Anything else is treated as a refusal (see `guardRequest`).
+     */
+    requestRejection?(req: DshHttpRequest): unknown;
+}
 /** The slice of a DSH host this plugin needs. Everything optional is honest. */
 export interface DshHostContext {
     webServer?: {
@@ -31,6 +41,14 @@ export interface DshHostContext {
             handler: (req: DshHttpRequest, res: DshHttpResponse) => void | Promise<void>;
         }): unknown;
     };
+    /**
+     * The connection-trust service, used exactly as `dsh-host-open-in-app` uses it.
+     *
+     * Optional in this type because the plugin must keep working on a host that
+     * does not offer it — but such a host is treated as *untrusting*, never as
+     * permissive (see `guardRequest`).
+     */
+    connection?: DshConnection;
     effect?: (fn: () => (() => void) | void) => unknown;
     /** Session id, when the host hands one to the plugin context. */
     sessionId?: string;
@@ -242,7 +260,12 @@ export interface DshHttpResponse {
 }
 export declare const PLUGIN_NAME = "dsh-bw-router";
 /**
- * Injects the web server; without it the plugin has no HTTP surface.
+ * Injects the web server and the connection-trust service.
+ *
+ * `connection` is declared because this plugin now refuses untrusted requests
+ * before doing any work (`ctx.connection.requestRejection`), which is the check
+ * the DSH plugin market asks of plugins that register HTTP routes; the sibling
+ * plugin `dsh-host-open-in-app` injects the same pair.
  *
  * The session/model-selection service is deliberately NOT injected: which name
  * a host registers it under differs between builds (`session` on the M0 host,
@@ -423,6 +446,22 @@ export declare function createRouter(ctx: DshHostContext): {
     deps: RouterDeps;
     handle: (request: RouterRequest) => Promise<RouterResponse>;
 };
+/**
+ * The DSH connection-trust gate. `true` means "already answered — stop here".
+ *
+ * DSH puts no Host/Origin check in front of the routes a plugin registers on
+ * `webServer`, so without this any page open in the user's browser could call
+ * `/router/*` on the local gateway. The market asks for the check explicitly,
+ * and the sibling Max/Pro routes ship the same one.
+ *
+ * Fail-closed by construction: a host that cannot be asked — no `connection`
+ * service, a throwing `requestRejection`, a non-numeric verdict — is treated as
+ * untrusting, so the route answers 403 instead of running unguarded. Only an
+ * explicit `undefined`, the host saying "this request is fine", lets the request
+ * through; that is what keeps a host which never implements the check working
+ * exactly as it did before.
+ */
+export declare function guardRequest(ctx: DshHostContext, req: DshHttpRequest, res: DshHttpResponse): boolean;
 /**
  * Cordis entry. Registers one prefix route and returns nothing: the ledger and
  * the plans live in the closure, so two hosts never share a run.

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 — 2026-11-22
+
+HTTP 路由接入 DSH 连接信任闸（DSH 插件市场对注册 HTTP 路由的插件提出的要求；Max/Pro 子包已按同一形状发布 0.2.1）。
+
+- **入口先过信任闸**：`/router/*` 的 handler 第一句问 `ctx.connection.requestRejection(req)`，未认证/未信任当场拒答（401/403），**不读请求体、不执行任何路由逻辑**。
+- **fail-closed**：连接服务缺失、`requestRejection` 抛错、或返回非数字（含 `null`）一律按不可信处理 → 403；只有宿主显式返回 `undefined`（表示信任）才放行，行为与 0.2.0 完全一致。
+- `inject` 改为 `['connection', 'webServer']`，与 `dsh-host-open-in-app` 同形。
+- **对直接调用方的影响**：用脚本/`curl` 直接打这些路由不再免检，需要 DSH 的浏览器认证或 API 凭据——这正是闸门的目的。
+- 测试：`test/dsh-shell.test.ts` 新增 9 条闸门用例（403 / 401 / 放行 / 服务缺失 / 抛错 / 垃圾值 / 经 `get()` 取服务 / 布尔返回 / 不读 body）；`test/m2-host-compat.test.ts` 显式覆盖「宿主无连接服务 → 403，绝不 200」。
+
 ## 0.2.0 — 2026-11-15
 
 发布阻塞修复版（首个带客户端触发的版本）。

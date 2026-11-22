@@ -11,9 +11,9 @@
 | 路径 | 是什么 |
 |---|---|
 | `gateway/` | Python 单进程、OpenAI 兼容的模型路由网关（规划 → 确认 → 逐段执行 → 回写真实花费） |
-| `dsh-wb-max/` | DSH Max 插件 0.2.0：网关形态的前端入口（计划卡、确认、会话内切模型） |
-| `dsh-wb-pro/` | DSH Pro 插件 0.2.0：DSH 原生规划的模型路由（不依赖网关） |
-| 仓库根（`dsh-bw-router`） | B&W（小棒 & 灰狼）联合插件 0.2.0；沿用历史发布名 |
+| `dsh-wb-max/` | DSH Max 插件 0.2.1：网关形态的前端入口（计划卡、确认、会话内切模型） |
+| `dsh-wb-pro/` | DSH Pro 插件 0.2.1：DSH 原生规划的模型路由（不依赖网关） |
+| 仓库根（`dsh-bw-router`） | B&W（小棒 & 灰狼）联合插件 0.2.1；沿用历史发布名 |
 | `skill-mcp/` | `wb-max-router` 技能与 `wb-max-mcp` MCP 服务 |
 | `docs-open/` | 使用说明书、快速上手、Agent 安装说明、开源海报（md/html/pdf） |
 | `release-notes-1.0.3.3/` | 变更说明、测试清单、开关与观察、包校验说明 |
@@ -46,14 +46,16 @@ ls   # gateway  plugins  skill-mcp
 
 ```sh
 # 联合插件（本仓根，历史发布名）
-dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v1.0.3.3/dsh-bw-router-0.2.0.tgz'
+dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v1.0.3.3/dsh-bw-router-0.2.1.tgz'
 
 # WB 路由 Max / Pro（Release 资产）
-dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v1.0.3.3/dsh-wb-max-0.2.0.tgz'
-dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v1.0.3.3/dsh-wb-pro-0.2.0.tgz'
+dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v1.0.3.3/dsh-wb-max-0.2.1.tgz'
+dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/releases/download/v1.0.3.3/dsh-wb-pro-0.2.1.tgz'
 ```
 
 装完重启一次承载插件的宿主（`dsh web`）。三个包都声明 `dsh.bundle`，装后自动启用。
+
+> 插件的 HTTP 路由在入口先过 DSH 连接信任检查（`ctx.connection.requestRejection`）：**未经 DSH 认证的请求会被当场拒掉（401/403）**，因此脚本或 `curl` 不能再用免检方式直连这些路由，需要 DSH 的浏览器认证或 API 凭据。
 
 ## 三、网关能力（1.0.3.3）
 
@@ -67,7 +69,7 @@ dsh plugin --profile web add 'https://github.com/beidou6972yh/dsh-bw-router/rele
 - **R4/R5 上下文治理**：`context_governor=shadow`（默认观测）；预算＝窗口−max(1024, ⌈0.2×窗口⌉)；超窗结构化 400；超时 read 270s / stream 600s；trim/413 默认关。
 - **观测**：账本 `ctx_gov` 与 `X-DSH-Context-*` / `X-DSH-Band` 响应头。
 
-## 四、仓库根插件：B&W dsh-bw-router（0.2.0）
+## 四、仓库根插件：B&W dsh-bw-router（0.2.1）
 
 **B&W = 小棒（B棒）× 灰狼（Wolf）** 合作的 DeepSeek Harness 模型路由插件：把任务拆成分段计划、按段挑模型、同一会话内切模型而不丢上下文；成本要么给出依据、要么明示不可用，绝不编数。
 
@@ -94,6 +96,7 @@ npm ci && npm test && npm run build
 ## 六、已知边界
 
 - 本仓 `dsh-wb-max/dist/client/client.js` 为**脱敏副本**：余额快照 `SNAP` 已清空（`items:[]`），不含任何真实金额。生产环境的余额注入属本地运维件，不随开源发布。
+- 信任闸为 **fail-closed**：宿主不提供 `connection` 服务、`requestRejection` 抛错或返回非数字（含 `null`）时，路由一律答 403 而不放行；只有宿主显式返回 `undefined` 才按 0.2.0 的行为放行。
 - `context_governor` 的 **enforce 灰度未开**（shadow 标定样本不足，需低峰窗口与数据）。
 - 明确不做：413 默认出口、精确 tokenizer、订阅额度穿透；B1 插件面 per-tool-call/turn-boundary（插件标准面无该事件，以网关 `discipline` 记账兜底）。
 

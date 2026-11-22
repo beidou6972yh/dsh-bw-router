@@ -119,7 +119,7 @@ hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
 模型路由网关（英文可用 WB Router）
 <strong>读者</strong>：不会写代码，但会解压文件、会复制粘贴命令的人
 <strong>一句话</strong>：把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。
-<strong>开源状态</strong>：准备开源；<strong>仓库地址与许可证待发布方确认</strong>（本书不写具体许可证名，也不写仓库地址）。</p>
+<strong>开源状态</strong>：<strong>已于 2026-11-22 开源</strong>；仓库 <code>https://github.com/beidou6972yh/dsh-bw-router</code>，许可证 <strong>MIT</strong>（详见 §11.6）。</p>
 </blockquote>
 <hr />
 <p><a id="toc"></a></p>
@@ -186,8 +186,9 @@ JSON 文本、会复制命令——<strong>不需要会写代码</strong>。</p>
 8.4）；你指望它自带模型或额度（它只连你已有的上游）；你想让它替你判断谁「更聪明」（它按你给的规则、窗口、价格、健康度选，不做效果排名）；你在
 Windows 或 macOS 原生环境（见 3.1）。</p>
 <h3 id="14-三个先划清的边界">1.4 三个先划清的边界</h3>
-<p>一是<strong>不承诺具体价格</strong>：上游名单与价格表随你自己配置，本书不写任何具体单价。二是<strong>不做效果承诺</strong>：不写准确率、不写省钱比例、不做「谁更强」的比较。三是<strong>开源信息待定</strong>：仓库地址、许可证、开源版面板默认账号都还没定，统一写「待确认」（清单见
-11.6）。</p>
+<p>一是<strong>不承诺具体价格</strong>：上游名单与价格表随你自己配置，本书不写任何具体单价。二是<strong>不做效果承诺</strong>：不写准确率、不写省钱比例、不做「谁更强」的比较。三是<strong>开源信息已定</strong>：仓库
+<code>https://github.com/beidou6972yh/dsh-bw-router</code>、许可证
+<strong>MIT</strong>；开源版面板默认账号见 11.6。</p>
 <hr />
 <p><a id="s2"></a></p>
 <h2 id="二它能帮你做什么">二、它能帮你做什么</h2>
@@ -823,8 +824,8 @@ key），跟上游密钥是两套，别混。</p>
 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次
 DSH。</p>
 <blockquote>
-<p>插件的公开下载渠道依赖仓库地址，<strong>待确认</strong>；目前以发布方给的
-<code>plugins-1.0.3.3.tar.gz</code> 为准。</p>
+<p>插件的公开下载渠道：<strong>GitHub Release</strong>
+（<code>plugins-1.0.3.3.tar.gz</code>，Release <code>v1.0.3.3</code>）。</p>
 </blockquote>
 <p><strong>用起来（Max，走网关）</strong>：① 在 DSH
 模型选择里选网关模型（<code>auto</code> / <code>auto-fast</code> /
@@ -850,8 +851,8 @@ Max 或直连。</p>
 <li>把 key 交给对方，按 6.7 填。</li>
 </ol>
 <blockquote>
-<p>管理面首次登录的账号密码：生产部署由管理员自设，<strong>开源版默认值待确认</strong>（见
-11.6）。确认前请只在本机打开管理面。</p>
+<p>管理面首次登录的账号密码：<strong>源码默认值 <code>admin/admin</code></strong>（见
+11.6）。<strong>首次登录后请立刻改口令</strong>；管理面只绑 <code>127.0.0.1</code>。</p>
 </blockquote>
 <h3 id="65-换模型不丢上下文">6.5 换模型不丢上下文</h3>
 <p><strong>一句话</strong>：同一段对话里换模型，不用重开会话、不用重说一遍——历史消息照常带上，网关只替换「这一段由谁来答」。</p>
@@ -1536,7 +1537,7 @@ key，别只做口头交接。</li>
 <code>/health</code> 与
 <code>/v1/*</code>。确实要让别的机器接入，请走「反向代理＋白名单只放行
 <code>/health</code> 与
-<code>/v1/*</code>」，不要把管理面一起开出去。开源包里没有现成的公网方案（<strong>待确认</strong>，见
+<code>/v1/*</code>」，不要把管理面一起开出去。开源包里没有现成的公网方案（<strong>未包含</strong>，见
 11.6）。</p>
 <h3 id="104-改之前先备份">10.4 改之前先备份</h3>
 <div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router/gateway</span>
@@ -1877,8 +1878,8 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 <tbody>
 <tr class="odd">
 <td>开源仓库地址与许可证</td>
-<td><strong>待确认</strong></td>
-<td>由发布方确定；本书不写具体许可证名与仓库地址</td>
+<td><strong>已定</strong></td>
+<td>仓库 <code>https://github.com/beidou6972yh/dsh-bw-router</code>；许可证 <strong>MIT</strong></td>
 </tr>
 <tr class="even">
 <td>开源初版系统要求</td>
@@ -1887,8 +1888,8 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 </tr>
 <tr class="odd">
 <td>开源版管理面板默认账号</td>
-<td><strong>待确认</strong></td>
-<td>生产环境由管理员自设，开源版默认值待定；确认前只在本机打开管理面</td>
+<td><strong>admin/admin（源码默认值）</strong></td>
+<td>首次登录后立刻改口令；管理面只绑 <code>127.0.0.1</code></td>
 </tr>
 <tr class="even">
 <td>上游名单与价格表</td>
@@ -1897,9 +1898,8 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 </tr>
 <tr class="odd">
 <td>插件公开下载渠道</td>
-<td><strong>待确认</strong></td>
-<td>取决于仓库地址；目前以发布包 <code>plugins-1.0.3.3.tar.gz</code>
-为准</td>
+<td><strong>GitHub Release</strong></td>
+<td><code>plugins-1.0.3.3.tar.gz</code> / Release <code>v1.0.3.3</code></td>
 </tr>
 <tr class="even">
 <td>公网接入方案</td>
@@ -2021,14 +2021,12 @@ TTL 取自 <code>router_plan.py</code>；插件交互取自
 </tr>
 </tbody>
 </table>
-<h3 id="122-本书标注为待确认--未验证的部分">12.2 本书标注为「待确认 /
-未验证」的部分</h3>
+<h3 id="122-本书标注为待确认--未验证的部分">12.2 本书标注为「未验证 /
+需你自配」的部分</h3>
 <ol type="1">
-<li>开源仓库地址与许可证（不写具体名称）；</li>
 <li>Windows / macOS 原生安装未验证；</li>
-<li>开源版管理面板默认账号；</li>
-<li>上游名单与价格表随用户自配，不承诺具体价格；</li>
-<li>插件公开下载渠道（依赖仓库地址）／公网接入方案（开源包未包含，需自建反向代理与白名单）。</li>
+<li>公网接入方案（开源包未包含，需自建反向代理与白名单）；</li>
+<li>上游名单与价格表随用户自配，不承诺具体价格。</li>
 </ol>
 <h3 id="123-自检结果">12.3 自检结果</h3>
 <table>
@@ -2062,7 +2060,7 @@ key 不生效、升级与回滚、换模型后上下文是否还在</td>
 <tr class="even">
 <td>禁用表述</td>
 <td>自 grep
-结果：无星号计数、无百分比数值、无许可证名称、无排名或独占类夸张表述；效果承诺类词只出现在
+结果：无星号计数、无百分比数值（许可证名 MIT 仅出现在 1.4 与 11.6 的既定事实陈述中）、无排名或独占类夸张表述；效果承诺类词只出现在
 1.4「不做此类承诺」的否定句与本行说明中；未写具体单价（价格示例已标注「结构示意」）</td>
 </tr>
 <tr class="odd">

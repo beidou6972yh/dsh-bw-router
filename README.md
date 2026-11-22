@@ -2,6 +2,10 @@
 
 **把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。**
 
+[![WB 模型路由 1.0.3.3 开源海报：专业人做专业事，又快又好还省钱](docs-open/WB-Router-Poster-web.png)](docs-open/WB-Router-Poster@2x.png)
+
+> 点海报看 2160×5120 原图（[直接下载](docs-open/WB-Router-Poster@2x.png)）｜可编辑源：[WB-Router-Poster.html](docs-open/WB-Router-Poster.html)
+
 本仓库是 **WB 模型路由 1.0.3.3** 的开源发布仓，含：
 
 | 路径 | 是什么 |

@@ -1,474 +1,494 @@
 {
- "version": 5,
- "timezone": "Asia/Shanghai",
- "token_estimate": {
-  "method": "输入 token ≈ ceil(字符数 / 2.2) + 图片数 × 1000；data:URL 图片不计字符，按固定成本粗估",
-  "chars_per_token": 2.2,
-  "image_tokens": 1000
- },
- "complexity": {
-  "l1_input_tokens": 4000,
-  "l1_output_tokens": 2000,
-  "l3_input_tokens": 32000,
-  "l3_output_tokens": 16000
- },
- "peak": {
-  "weekdays": [
-   1,
-   2,
-   3,
-   4,
-   5
-  ],
-  "windows": [
-   [
-    "09:00",
-    "12:00"
-   ],
-   [
-    "14:00",
-    "18:00"
-   ]
-  ]
- },
- "virtual_models": {
-  "auto": {
-   "strategy": "balanced"
+  "version": 5,
+  "timezone": "Asia/Shanghai",
+  "token_estimate": {
+    "method": "输入 token ≈ ceil(字符数 / 2.2) + 图片数 × 1000；data:URL 图片不计字符，按固定成本粗估",
+    "chars_per_token": 2.2,
+    "image_tokens": 1000
   },
-  "auto-fast": {
-   "strategy": "fast"
+  "complexity": {
+    "l1_input_tokens": 4000,
+    "l1_output_tokens": 2000,
+    "l3_input_tokens": 32000,
+    "l3_output_tokens": 16000
   },
-  "auto-strong": {
-   "strategy": "strong"
-  }
- },
- "routes": {
   "peak": {
-   "L1": [
-    "up-d/model-code",
-    "up-a/model-fast-0731",
-    "up-b/model-glm-flash",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ],
-   "L2": [
-    "up-d/model-code",
-    "up-a/model-fast-0731",
-    "up-b/model-glm-flash",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ],
-   "L3": [
-    "up-d/model-pro",
-    "up-d/model-seed",
-    "up-b/model-glm-strong",
-    "up-a/model-fast-0731",
-    "local-lan/model-decider_d"
-   ],
-   "image": [
-    "up-d/model-code",
-    "up-b/model-glm-flash",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ]
-  },
-  "offpeak": {
-   "L1": [
-    "up-d/model-code",
-    "up-a/model-fast-0731",
-    "up-b/model-glm-flash",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ],
-   "L2": [
-    "up-d/model-code",
-    "up-a/model-fast-0731",
-    "up-b/model-glm-flash",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ],
-   "L3": [
-    "up-d/model-pro",
-    "up-c/model-flash",
-    "up-b/model-glm-strong",
-    "up-a/model-fast-0731",
-    "local-lan/model-decider_d"
-   ],
-   "image": [
-    "up-d/model-code",
-    "up-b/model-glm-flash",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ]
-  }
- },
- "strategies": {
-  "fast": [
-   "up-d/model-code",
-   "up-a/model-fast-0731",
-   "up-b/model-glm-flash",
-   "up-b/model-glm-strong",
-   "local-lan/model-decider_d"
-  ],
-  "strong": {
-   "peak": {
-    "L1": [
-     "up-d/model-code",
-     "up-b/model-glm-strong",
-     "up-a/model-fast-0731",
-     "local-lan/model-decider_d"
+    "weekdays": [
+      1,
+      2,
+      3,
+      4,
+      5
     ],
-    "L2": [
-     "up-d/model-code",
-     "up-b/model-glm-strong",
-     "up-a/model-fast-0731",
-     "local-lan/model-decider_d"
-    ],
-    "L3": [
-     "up-d/model-code",
-     "up-d/model-pro",
-     "up-b/model-glm-strong",
-     "up-a/model-fast-0731",
-     "local-lan/model-decider_d"
-    ],
-    "image": [
-     "up-d/model-code",
-     "up-b/model-glm-flash",
-     "up-b/model-glm-strong",
-     "local-lan/model-decider_d"
+    "windows": [
+      [
+        "09:00",
+        "12:00"
+      ],
+      [
+        "14:00",
+        "18:00"
+      ]
     ]
-   },
-   "offpeak": {
-    "L1": [
-     "up-d/model-code",
-     "up-c/model-flash",
-     "up-b/model-glm-strong",
-     "up-a/model-fast-0731",
-     "local-lan/model-decider_d"
+  },
+  "virtual_models": {
+    "auto": {
+      "strategy": "balanced"
+    },
+    "auto-fast": {
+      "strategy": "fast"
+    },
+    "auto-strong": {
+      "strategy": "strong"
+    }
+  },
+  "routes": {
+    "peak": {
+      "L1": [
+        "up-d/model-code",
+        "up-a/model-fast-0731",
+        "up-b/model-glm-flash",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ],
+      "L2": [
+        "up-d/model-code",
+        "up-a/model-fast-0731",
+        "up-b/model-glm-flash",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ],
+      "L3": [
+        "up-d/model-pro",
+        "up-d/model-seed",
+        "up-b/model-glm-strong",
+        "up-a/model-fast-0731",
+        "local-lan/model-decider_d"
+      ],
+      "image": [
+        "up-d/model-code",
+        "up-b/model-glm-flash",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ]
+    },
+    "offpeak": {
+      "L1": [
+        "up-d/model-code",
+        "up-a/model-fast-0731",
+        "up-b/model-glm-flash",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ],
+      "L2": [
+        "up-d/model-code",
+        "up-a/model-fast-0731",
+        "up-b/model-glm-flash",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ],
+      "L3": [
+        "up-d/model-pro",
+        "up-c/model-flash",
+        "up-b/model-glm-strong",
+        "up-a/model-fast-0731",
+        "local-lan/model-decider_d"
+      ],
+      "image": [
+        "up-d/model-code",
+        "up-b/model-glm-flash",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ]
+    }
+  },
+  "strategies": {
+    "fast": [
+      "up-a/model-fast-0731",
+      "up-d/model-code",
+      "up-b/model-glm-flash",
+      "up-b/model-glm-strong",
+      "local-lan/model-decider_d"
     ],
-    "L2": [
-     "up-d/model-code",
-     "up-c/model-flash",
-     "up-b/model-glm-strong",
-     "up-a/model-fast-0731",
-     "local-lan/model-decider_d"
-    ],
-    "L3": [
-     "up-d/model-code",
-     "up-d/model-pro",
-     "up-b/model-glm-strong",
-     "up-a/model-fast-0731",
-     "local-lan/model-decider_d"
-    ],
-    "image": [
-     "up-d/model-code",
-     "up-b/model-glm-flash",
-     "up-b/model-glm-strong",
-     "local-lan/model-decider_d"
-    ]
-   },
-   "default": [
-    "up-d/model-code",
-    "up-d/model-pro",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ]
-  }
- },
- "max_attempts": 4,
- "breaker": {
-  "default_seconds": 600,
-  "auth_seconds": 3600
- },
- "afp": {
-  "enabled": false,
-  "upstream": "up-d",
-  "quota_path": "/srv/router-gateway/数据/quota-snapshot.json",
-  "rate_per_token": 0.0,
-  "reserve": 0.1,
-  "min_charge_afp": 1.0,
-  "stale_after_seconds": 7200,
-  "breaker_429_seconds": 300
- },
- "timeouts": {
-  "connect_seconds": 10,
-  "read_seconds": 270,
-  "stream_seconds": 600
- },
- "strip_fields_on_4xx": [
-  "stream_options",
-  "response_format",
-  "reasoning_effort",
-  "parallel_tool_calls",
-  "tool_choice",
-  "logprobs",
-  "top_logprobs",
-  "logit_bias",
-  "presence_penalty",
-  "frequency_penalty",
-  "seed",
-  "stop",
-  "user",
-  "n",
-  "service_tier",
-  "store",
-  "metadata",
-  "modalities",
-  "audio",
-  "prediction",
-  "web_search_options"
- ],
- "hint": {
-  "mode": "record",
-  "contract_version": 1,
-  "max_header_bytes": 8192,
-  "default_tier": "mid",
-  "reason_max_chars": 64,
-  "stage_max_chars": 64,
-  "session_max_chars": 128,
-  "confirm_required_keys": [
-   "goal",
-   "done",
-   "next",
-   "why",
-   "ctx"
+    "strong": {
+      "peak": {
+        "L1": [
+          "up-d/model-code",
+          "up-b/model-glm-strong",
+          "up-a/model-fast-0731",
+          "local-lan/model-decider_d"
+        ],
+        "L2": [
+          "up-d/model-code",
+          "up-b/model-glm-strong",
+          "up-a/model-fast-0731",
+          "local-lan/model-decider_d"
+        ],
+        "L3": [
+          "up-d/model-code",
+          "up-d/model-pro",
+          "up-b/model-glm-strong",
+          "up-a/model-fast-0731",
+          "local-lan/model-decider_d"
+        ],
+        "image": [
+          "up-d/model-code",
+          "up-b/model-glm-flash",
+          "up-b/model-glm-strong",
+          "local-lan/model-decider_d"
+        ]
+      },
+      "offpeak": {
+        "L1": [
+          "up-d/model-code",
+          "up-c/model-flash",
+          "up-b/model-glm-strong",
+          "up-a/model-fast-0731",
+          "local-lan/model-decider_d"
+        ],
+        "L2": [
+          "up-d/model-code",
+          "up-c/model-flash",
+          "up-b/model-glm-strong",
+          "up-a/model-fast-0731",
+          "local-lan/model-decider_d"
+        ],
+        "L3": [
+          "up-d/model-code",
+          "up-d/model-pro",
+          "up-b/model-glm-strong",
+          "up-a/model-fast-0731",
+          "local-lan/model-decider_d"
+        ],
+        "image": [
+          "up-d/model-code",
+          "up-b/model-glm-flash",
+          "up-b/model-glm-strong",
+          "local-lan/model-decider_d"
+        ]
+      },
+      "default": [
+        "up-d/model-code",
+        "up-d/model-pro",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ]
+    }
+  },
+  "max_attempts": 4,
+  "breaker": {
+    "default_seconds": 600,
+    "auth_seconds": 3600
+  },
+  "afp": {
+    "enabled": false,
+    "upstream": "up-d",
+    "quota_path": "/srv/router-gateway/数据/quota-snapshot.json",
+    "rate_per_token": 0.0,
+    "reserve": 0.1,
+    "min_charge_afp": 1.0,
+    "stale_after_seconds": 7200,
+    "breaker_429_seconds": 300
+  },
+  "timeouts": {
+    "connect_seconds": 10,
+    "read_seconds": 270,
+    "stream_seconds": 600
+  },
+  "strip_fields_on_4xx": [
+    "stream_options",
+    "response_format",
+    "reasoning_effort",
+    "parallel_tool_calls",
+    "tool_choice",
+    "logprobs",
+    "top_logprobs",
+    "logit_bias",
+    "presence_penalty",
+    "frequency_penalty",
+    "seed",
+    "stop",
+    "user",
+    "n",
+    "service_tier",
+    "store",
+    "metadata",
+    "modalities",
+    "audio",
+    "prediction",
+    "web_search_options"
   ],
-  "guard": {
-   "enabled": true,
-   "context_ratio_min": 0.8,
-   "check_keys": [
-    "goal",
-    "done",
-    "next",
-    "why",
-    "ctx"
-   ],
-   "max_header_bytes": 8192
+  "hint": {
+    "mode": "record",
+    "contract_version": 1,
+    "max_header_bytes": 8192,
+    "default_tier": "mid",
+    "reason_max_chars": 64,
+    "stage_max_chars": 64,
+    "session_max_chars": 128,
+    "confirm_required_keys": [
+      "goal",
+      "done",
+      "next",
+      "why",
+      "ctx"
+    ],
+    "guard": {
+      "enabled": true,
+      "context_ratio_min": 0.8,
+      "check_keys": [
+        "goal",
+        "done",
+        "next",
+        "why",
+        "ctx"
+      ],
+      "max_header_bytes": 8192
+    },
+    "tiers": {
+      "low": [
+        "up-b/model-glm-flash",
+        "up-a/model-fast-0731",
+        "local-lan/model-decider_d"
+      ],
+      "mid": [
+        "up-d/model-code",
+        "up-a/model-fast-0731",
+        "up-b/model-glm-flash",
+        "local-lan/model-decider_d"
+      ],
+      "high": [
+        "up-d/model-pro",
+        "up-d/model-seed",
+        "up-b/model-glm-strong",
+        "local-lan/model-decider_d"
+      ]
+    }
   },
-  "tiers": {
-   "low": [
-    "up-b/model-glm-flash",
-    "up-a/model-fast-0731",
-    "local-lan/model-decider_d"
-   ],
-   "mid": [
-    "up-d/model-code",
-    "up-a/model-fast-0731",
-    "up-b/model-glm-flash",
-    "local-lan/model-decider_d"
-   ],
-   "high": [
-    "up-d/model-pro",
-    "up-d/model-seed",
-    "up-b/model-glm-strong",
-    "local-lan/model-decider_d"
-   ]
+  "capability_meta": {
+    "currency_default": "CNY",
+    "models": {
+      "up-a/model-fast-0731": {
+        "provider": "up-a",
+        "tier": "cheap",
+        "modality": [
+          "text"
+        ],
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 1.0,
+            "offpeak": 0.6
+          },
+          "output_per_mtok": {
+            "peak": 2.0,
+            "offpeak": 1.2
+          },
+          "cache_hit_input_per_mtok": {
+            "peak": 0.02,
+            "offpeak": 0.01
+          }
+        },
+        "price_source": "样例价：仅演示分段与估价，接真实上游请按官方价更新"
+      },
+      "up-b/model-glm-flash": {
+        "provider": "up-b",
+        "tier": "cheap",
+        "modality": [
+          "text",
+          "vision"
+        ],
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 2.0,
+            "offpeak": 1.0
+          },
+          "output_per_mtok": {
+            "peak": 8.0,
+            "offpeak": 4.0
+          },
+          "cache_hit_input_per_mtok": {
+            "peak": 0.04,
+            "offpeak": 0.02
+          }
+        },
+        "price_source": "样例价：仅演示分段与估价，接真实上游请按官方价更新"
+      },
+      "up-b/model-glm-strong": {
+        "provider": "up-b",
+        "tier": "strong",
+        "modality": [
+          "text",
+          "vision"
+        ],
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 8.0,
+            "offpeak": 4.0
+          },
+          "output_per_mtok": {
+            "peak": 32.0,
+            "offpeak": 16.0
+          },
+          "cache_hit_input_per_mtok": {
+            "peak": 0.16,
+            "offpeak": 0.08
+          }
+        },
+        "price_source": "样例价：仅演示分段与估价，接真实上游请按官方价更新"
+      },
+      "up-c/model-flash": {
+        "provider": "up-c",
+        "tier": "cheap",
+        "modality": [
+          "text",
+          "vision"
+        ],
+        "price_source": "价格来源：改用你侧价目表填写；peak=工作日 09-12/14-18，offpeak=其余",
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 2,
+            "offpeak": 1
+          },
+          "output_per_mtok": {
+            "peak": 8,
+            "offpeak": 4
+          },
+          "cache_hit_input_per_mtok": {
+            "peak": 0.04,
+            "offpeak": 0.02
+          }
+        }
+      },
+      "up-d/model-code": {
+        "provider": "up-d",
+        "tier": "strong",
+        "modality": [
+          "text",
+          "vision"
+        ],
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 6.0,
+            "offpeak": 3.0
+          },
+          "output_per_mtok": {
+            "peak": 24.0,
+            "offpeak": 12.0
+          },
+          "cache_hit_input_per_mtok": {
+            "peak": 0.12,
+            "offpeak": 0.06
+          }
+        },
+        "price_source": "样例价：仅演示分段与估价，接真实上游请按官方价更新"
+      },
+      "up-d/model-pro": {
+        "provider": "up-d",
+        "tier": "strong",
+        "modality": [
+          "text"
+        ],
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 12.0,
+            "offpeak": 6.0
+          },
+          "output_per_mtok": {
+            "peak": 48.0,
+            "offpeak": 24.0
+          },
+          "cache_hit_input_per_mtok": {
+            "peak": 0.24,
+            "offpeak": 0.12
+          }
+        },
+        "price_source": "样例价：仅演示分段与估价，接真实上游请按官方价更新"
+      },
+      "up-d/model-seed": {
+        "provider": "up-d",
+        "tier": "strong",
+        "modality": [
+          "text",
+          "vision"
+        ],
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": null,
+            "offpeak": null
+          },
+          "output_per_mtok": {
+            "peak": null,
+            "offpeak": null
+          },
+          "cache_hit_input_per_mtok": null
+        }
+      },
+      "local-lan/model-decider_d": {
+        "provider": "local-lan",
+        "tier": "cheap",
+        "modality": [
+          "text",
+          "image"
+        ],
+        "context_window": 262144,
+        "max_tokens": 16384,
+        "price": {
+          "currency": "CNY",
+          "input_per_mtok": {
+            "peak": 0,
+            "offpeak": 0
+          },
+          "output_per_mtok": {
+            "peak": 0,
+            "offpeak": 0
+          }
+        }
+      }
+    }
+  },
+  "expose": {
+    "upstream_models": true
+  },
+  "ledger": {
+    "path": "数据/ledger.jsonl"
+  },
+  "_note": "本文件为脱敏样例：上游与模型名已替换为占位（up-a/up-b/up-c/up-d/local-lan），价格字段一律 null（未报价）、AFP 闸门默认关闭且额度路径为占位。部署前请按你侧上游改 routes / strategies / capability_meta 三处的 \"<上游>/<模型>\" 键，并自行填 price 与 afp 参数。字段含义见 README.md 第 7/9/11 节。",
+  "context_governor": {
+    "mode": "shadow",
+    "reserve_ratio": 0.2,
+    "min_reserve_tokens": 1024,
+    "min_budget_tokens": 256,
+    "estimate": {
+      "cjk_per_token": 1.0,
+      "non_cjk_per_token": 4.0,
+      "image_tokens": 1000
+    },
+    "local": {
+      "mode": "off",
+      "input_ratio": 0.9
+    },
+    "trim": {
+      "enabled": false,
+      "keep_recent_turns": 6,
+      "keep_images": 2,
+      "tool_result_max_chars": 8000,
+      "max_trims": 2
+    },
+    "error": {
+      "structured": true,
+      "status": 400,
+      "allow_413": false
+    },
+    "observability": {
+      "headers": true
+    },
+    "_note": "1.0.3.2 T1：预算参数只在这里；窗口值一律只读 upstreams.json（不在此块）。timeout 收回按 B0：local/non-stream p99 171.7s×1.5→270s；local/stream p99 78.9s→120s 但按设计下限 600 兜底；cloud 均 180s→270s 上限"
   }
- },
- "capability_meta": {
-  "currency_default": "CNY",
-  "models": {
-   "up-a/model-fast-0731": {
-    "provider": "up-a",
-    "tier": "cheap",
-    "modality": [
-     "text"
-    ],
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "output_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "cache_hit_input_per_mtok": null
-    }
-   },
-   "up-b/model-glm-flash": {
-    "provider": "up-b",
-    "tier": "cheap",
-    "modality": [
-     "text",
-     "vision"
-    ],
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "output_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "cache_hit_input_per_mtok": null
-    }
-   },
-   "up-b/model-glm-strong": {
-    "provider": "up-b",
-    "tier": "strong",
-    "modality": [
-     "text",
-     "vision"
-    ],
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "output_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "cache_hit_input_per_mtok": null
-    }
-   },
-   "up-c/model-flash": {
-    "provider": "up-c",
-    "tier": "cheap",
-    "modality": [
-     "text",
-     "vision"
-    ],
-    "price_source": "价格来源：改用你侧价目表填写；peak=工作日 09-12/14-18，offpeak=其余",
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": 2,
-      "offpeak": 1
-     },
-     "output_per_mtok": {
-      "peak": 8,
-      "offpeak": 4
-     },
-     "cache_hit_input_per_mtok": {
-      "peak": 0.04,
-      "offpeak": 0.02
-     }
-    }
-   },
-   "up-d/model-code": {
-    "provider": "up-d",
-    "tier": "strong",
-    "modality": [
-     "text",
-     "vision"
-    ],
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "output_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "cache_hit_input_per_mtok": null
-    }
-   },
-   "up-d/model-pro": {
-    "provider": "up-d",
-    "tier": "strong",
-    "modality": [
-     "text"
-    ],
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "output_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "cache_hit_input_per_mtok": null
-    }
-   },
-   "up-d/model-seed": {
-    "provider": "up-d",
-    "tier": "strong",
-    "modality": [
-     "text",
-     "vision"
-    ],
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "output_per_mtok": {
-      "peak": null,
-      "offpeak": null
-     },
-     "cache_hit_input_per_mtok": null
-    }
-   },
-   "local-lan/model-decider_d": {
-    "provider": "local-lan",
-    "tier": "cheap",
-    "modality": [
-     "text",
-     "image"
-    ],
-    "context_window": 262144,
-    "max_tokens": 16384,
-    "price": {
-     "currency": "CNY",
-     "input_per_mtok": {
-      "peak": 0,
-      "offpeak": 0
-     },
-     "output_per_mtok": {
-      "peak": 0,
-      "offpeak": 0
-     }
-    }
-   }
-  }
- },
- "expose": {
-  "upstream_models": true
- },
- "ledger": {
-  "path": "数据/ledger.jsonl"
- },
- "_note": "本文件为脱敏样例：上游与模型名已替换为占位（up-a/up-b/up-c/up-d/local-lan），价格字段一律 null（未报价）、AFP 闸门默认关闭且额度路径为占位。部署前请按你侧上游改 routes / strategies / capability_meta 三处的 \"<上游>/<模型>\" 键，并自行填 price 与 afp 参数。字段含义见 README.md 第 7/9/11 节。",
- "context_governor": {
-  "mode": "shadow",
-  "reserve_ratio": 0.2,
-  "min_reserve_tokens": 1024,
-  "min_budget_tokens": 256,
-  "estimate": {
-   "cjk_per_token": 1.0,
-   "non_cjk_per_token": 4.0,
-   "image_tokens": 1000
-  },
-  "local": {
-   "mode": "off",
-   "input_ratio": 0.9
-  },
-  "trim": {
-   "enabled": false,
-   "keep_recent_turns": 6,
-   "keep_images": 2,
-   "tool_result_max_chars": 8000,
-   "max_trims": 2
-  },
-  "error": {
-   "structured": true,
-   "status": 400,
-   "allow_413": false
-  },
-  "observability": {
-   "headers": true
-  },
-  "_note": "1.0.3.2 T1：预算参数只在这里；窗口值一律只读 upstreams.json（不在此块）。timeout 收回按 B0：local/non-stream p99 171.7s×1.5→270s；local/stream p99 78.9s→120s 但按设计下限 600 兜底；cloud 均 180s→270s 上限"
- }
 }

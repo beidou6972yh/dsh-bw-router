@@ -226,6 +226,87 @@ class TestRouterPlanMoney(_FxFixture):
         self.assertEqual(got["cost"], 0.015)
 
 
+class TestOfferCurrency(_FxFixture):
+    """1.0.3.6 币种支持：报价币种解析与三视图透出（默认 CNY，不猜）。"""
+
+    def test_default_is_cny(self):
+        offer = {"id": "u/m", "provider": "u",
+                 "price": {"input": {"offpeak": 1.0}, "output": {"offpeak": 4.0}}}
+        self.assertEqual(pr.offer_currency(offer), "CNY")
+
+    def test_offer_level_currency_wins(self):
+        offer = dict(_usd_offer(1.0, 4.0), price=dict(_usd_offer(1.0, 4.0)["price"],
+                                                      currency="CNY"))
+        self.assertEqual(pr.offer_currency(offer), "USD", "offer.currency 优先于 price.currency")
+
+    def test_price_level_currency(self):
+        offer = {"id": "u/m", "provider": "u",
+                 "price": {"currency": "usd",
+                           "input": {"offpeak": 1.0}, "output": {"offpeak": 4.0}}}
+        self.assertEqual(pr.offer_currency(offer), "USD", "price 层币种归一化为大写")
+
+    def test_meta_level_currency_and_bad_values(self):
+        self.assertEqual(pr.offer_currency({"meta": {"currency": "usd"}}), "USD")
+        self.assertEqual(pr.offer_currency({"currency": "   "}), "CNY")
+        self.assertEqual(pr.offer_currency({"currency": 7}), "CNY", "非字符串回落默认")
+        self.assertEqual(pr.offer_currency(None, default="RMB"), "RMB")
+
+    def test_views_carry_offer_currency(self):
+        offer = _usd_offer(1.0, 4.0)
+        self.assertEqual(pr.effective_price(offer)["currency"], "USD")
+        self.assertEqual(pr.list_price(offer)["currency"], "USD")
+        self.assertEqual(pr.best_case(offer)["currency"], "USD")
+        cny = {"id": "u/c", "provider": "u",
+               "price": {"input": {"offpeak": 1.0}, "output": {"offpeak": 4.0}}}
+        self.assertEqual(pr.effective_price(cny)["currency"], "CNY", "CNY 行为不变")
+
+
+class TestRouterPlanPricebookCurrency(_FxFixture):
+    """1.0.3.6：pricebook 分支的非 CNY 报价也走折算（此前只认 capability_meta 分支）。"""
+
+    def setUp(self):
+        super().setUp()
+        self._orig_gw = router_plan._GATEWAY
+        router_plan.set_gateway(_StubGateway(offer=_usd_offer(1.0, 4.0)))
+
+    def tearDown(self):
+        router_plan._GATEWAY = self._orig_gw
+        super().tearDown()
+
+    @staticmethod
+    def _info(currency: str = "USD") -> dict:
+        return {"id": "u/m", "price": {"currency": currency}}
+
+    def test_usd_offer_with_rate_converts_to_cny_3_decimals(self):
+        self._use_fx({"updated_at": "2026-11-17", "USDCNY": 7.12})
+        got = router_plan._price_for(self._info(), 12345, 678, "offpeak")
+        self.assertTrue(got["known"])
+        self.assertEqual(got["source"], "pricebook")
+        self.assertEqual(got["currency"], "CNY", "换算后口径必须是 CNY")
+        self.assertEqual(got["source_currency"], "USD")
+        self.assertEqual(got["cost"], round(0.015057 * 7.12, 3))
+        self.assertEqual(got["cost"], round(got["cost"], 3), "成本必须 3 位小数封顶")
+        self.assertIn("USD→CNY", got["notice"])
+
+    def test_usd_offer_without_rate_is_unknown(self):
+        self._use_fx({"updated_at": "2026-11-17", "USDCNY": None})
+        got = router_plan._price_for(self._info(), 12345, 678, "offpeak")
+        self.assertFalse(got["known"], "缺汇率必须价未知，不得猜价")
+        self.assertIsNone(got["cost"])
+        self.assertEqual(got["currency"], "USD")
+        self.assertEqual(got["unconverted_currency"], "USD")
+
+    def test_cny_offer_unchanged(self):
+        router_plan.set_gateway(_StubGateway(offer={
+            "id": "u/m", "provider": "u",
+            "price": {"input": {"offpeak": 1.0}, "output": {"offpeak": 4.0}}}))
+        got = router_plan._price_for(self._info("CNY"), 12345, 678, "offpeak")
+        self.assertTrue(got["known"])
+        self.assertEqual(got["currency"], "CNY")
+        self.assertEqual(got["cost"], 0.015)
+        self.assertNotIn("汇率换算", got["notice"])
+
+
 class TestRecommendPriceView(_FxFixture):
     def setUp(self):
         super().setUp()

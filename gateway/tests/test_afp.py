@@ -22,10 +22,12 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import time
 import unittest
+from unittest import mock
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -319,15 +321,49 @@ class TestSnapshotFileCache(unittest.TestCase):
     def test_missing_file_none(self):
         self.assertIsNone(router.afp_snapshot())
 
-    def test_read_and_mtime_cache(self):
-        self.path.write_text(json.dumps(snap_doc()), encoding="utf-8")
+    def test_read_and_content_cache(self):
+        """内容级缓存（1.0.3.6 改名，原名 test_read_and_mtime_cache）：只看内容字节，不看 mtime。"""
+        doc_a = json.dumps(snap_doc())
+        self.path.write_text(doc_a, encoding="utf-8")
         snap1 = router.afp_snapshot()
         self.assertIsNotNone(snap1)
         self.assertAlmostEqual(snap1["min_avail"], 7008.3, places=1)
-        # 覆写（mtime 变）→ 重读新值
+        # mtime 断言：把 mtime 改成明显不同（前移 10s），内容不变 ⇒ 命中缓存、不重新解析
+        st = self.path.stat()
+        os.utime(self.path, ns=(st.st_atime_ns, st.st_mtime_ns - 10_000_000_000))
+        self.assertNotEqual(self.path.stat().st_mtime_ns, st.st_mtime_ns, "mtime 必须已改变")
+        with mock.patch.object(router.json, "loads",
+                               side_effect=AssertionError("内容未变时不应重新解析")):
+            for _ in range(5):
+                self.assertIsNotNone(router.afp_snapshot())
+        # 内容变化 ⇒ 立即读到新值（mtime 可能不变也不影响）
         self.path.write_text(json.dumps(snap_doc(h5=(9999.0, 10000))), encoding="utf-8")
         snap2 = router.afp_snapshot()
         self.assertAlmostEqual(snap2["min_avail"], 1.0, places=1)
+
+    def test_same_mtime_same_size_content_change(self):
+        """对侧判据：同 mtime + 同 size + 原地覆盖，内容变 ⇒ 二读必新（r6 根治的边界）。"""
+        doc_a = json.dumps(snap_doc())
+        self.path.write_text(doc_a, encoding="utf-8")
+        st = self.path.stat()
+        self.assertIsNotNone(router.afp_snapshot())
+        doc_b = json.dumps(snap_doc(h5=(9999.0, 10000)))
+        if len(doc_b) < len(doc_a):                 # 补齐到同字节数（JSON 尾随空格合法）
+            doc_b = doc_b + " " * (len(doc_a) - len(doc_b))
+        self.path.write_text(doc_b, encoding="utf-8")
+        os.utime(self.path, ns=(st.st_atime_ns, st.st_mtime_ns))   # 强制同 mtime
+        self.assertEqual(self.path.stat().st_size, st.st_size)      # 断言同 size
+        snap2 = router.afp_snapshot()
+        self.assertAlmostEqual(snap2["min_avail"], 1.0, places=1)
+
+    def test_same_content_reuses_parsed(self):
+        """内容不变 ⇒ 复用解析结果（不重复 json.loads）。"""
+        self.path.write_text(json.dumps(snap_doc()), encoding="utf-8")
+        router.afp_snapshot()
+        with mock.patch.object(router.json, "loads",
+                               side_effect=AssertionError("内容未变时不应重复解析")):
+            for _ in range(50):
+                self.assertIsNotNone(router.afp_snapshot())
 
     def test_stale_file_none(self):
         old = (datetime.now(router.TZ) - timedelta(hours=8)).isoformat(timespec="seconds")
@@ -337,6 +373,15 @@ class TestSnapshotFileCache(unittest.TestCase):
     def test_bad_json_none(self):
         self.path.write_text("not json", encoding="utf-8")
         self.assertIsNone(router.afp_snapshot())
+
+    def test_bad_json_counts_missing_every_read(self):
+        """1.0.3.6 口径：坏内容**每次读取**都计 snapshot_missing（此前只计首次，统计偏少）。"""
+        self.path.write_text("not json", encoding="utf-8")
+        router._AFP_STATS["snapshot_missing"] = 0
+        for _ in range(3):
+            self.assertIsNone(router.afp_snapshot())
+        self.assertEqual(router._AFP_STATS["snapshot_missing"], 3,
+                         "同一坏内容重复读必须每次计数（只影响观测口径）")
 
 
 class TestStatsShape(unittest.TestCase):

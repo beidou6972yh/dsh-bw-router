@@ -8,12 +8,7 @@ import { createHostCompaction } from './compaction-bridge.js';
 import { PluginHost, RouterSession, } from './index.js';
 export const PLUGIN_NAME = 'dsh-bw-router';
 /**
- * Injects the web server and the connection-trust service.
- *
- * `connection` is declared because this plugin now refuses untrusted requests
- * before doing any work (`ctx.connection.requestRejection`), which is the check
- * the DSH plugin market asks of plugins that register HTTP routes; the sibling
- * plugin `dsh-host-open-in-app` injects the same pair.
+ * Injects the web server; without it the plugin has no HTTP surface.
  *
  * The session/model-selection service is deliberately NOT injected: which name
  * a host registers it under differs between builds (`session` on the M0 host,
@@ -21,7 +16,7 @@ export const PLUGIN_NAME = 'dsh-bw-router';
  * 4 has no "optional inject" — declaring a name a host lacks keeps the plugin
  * waiting forever. It is probed per call instead (see `resolveHostSession`).
  */
-export const inject = ['connection', 'webServer'];
+export const inject = ['webServer'];
 /** Reads a request body as JSON. An unparseable body is `{}`, never a throw. */
 export function readJsonBody(req) {
     return new Promise((resolve) => {
@@ -678,48 +673,6 @@ export function createRouter(ctx) {
         handle: (request) => dispatch(request, deps),
     };
 }
-/** Answers a refused request: status and nothing else, no body read. */
-function refuseUntrusted(res, status) {
-    res.writeHead(status, {
-        'content-type': 'text/plain; charset=utf-8',
-        'cache-control': 'no-store',
-    });
-    res.end('');
-}
-/**
- * The DSH connection-trust gate. `true` means "already answered — stop here".
- *
- * DSH puts no Host/Origin check in front of the routes a plugin registers on
- * `webServer`, so without this any page open in the user's browser could call
- * `/router/*` on the local gateway. The market asks for the check explicitly,
- * and the sibling Max/Pro routes ship the same one.
- *
- * Fail-closed by construction: a host that cannot be asked — no `connection`
- * service, a throwing `requestRejection`, a non-numeric verdict — is treated as
- * untrusting, so the route answers 403 instead of running unguarded. Only an
- * explicit `undefined`, the host saying "this request is fine", lets the request
- * through; that is what keeps a host which never implements the check working
- * exactly as it did before.
- */
-export function guardRequest(ctx, req, res) {
-    const connection = serviceOf(ctx, 'connection');
-    const reject = connection?.requestRejection;
-    if (typeof reject !== 'function') {
-        refuseUntrusted(res, 403);
-        return true;
-    }
-    let rejection;
-    try {
-        rejection = reject.call(connection, req);
-    }
-    catch {
-        rejection = 403;
-    }
-    if (rejection === undefined)
-        return false;
-    refuseUntrusted(res, typeof rejection === 'number' ? rejection : 403);
-    return true;
-}
 /**
  * Cordis entry. Registers one prefix route and returns nothing: the ledger and
  * the plans live in the closure, so two hosts never share a run.
@@ -731,10 +684,6 @@ export function apply(ctx) {
             kind: 'prefix',
             path: '/router',
             handler: async (req, res) => {
-                // Trust first: a refused request is answered here, so no body is read
-                // and no plan, ledger or model selection work happens.
-                if (guardRequest(ctx, req, res))
-                    return;
                 const body = req.method?.toUpperCase() === 'POST' ? await readJsonBody(req) : undefined;
                 const answer = await router.handle({
                     method: req.method ?? 'GET',

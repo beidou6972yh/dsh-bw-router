@@ -1,23 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""intern_decision_client.py —— 本地打分模型（原「书生·明决」点评：官方名 本地打分模型）
-在网关 side 的最小客户端（2026-11-21 用户令「接吧」）。
+"""intern_decision_client.py —— 本地打分模型（decision scorer）最小客户端
 
 为什么单独一个模块：该模型是**结构化打分模型**，不做 generate()、没有 chat 语义
-（官方 README 原文：does not call generate() or sample free-form text）。它读
-`<decision>` 占位符前一位的 logits，对候选符号 softmax，再按官方冻结温度校准。
+（模型说明原文：does not call generate() or sample free-form text）。它读
+`<decision>` 占位符前一位的 logits，对候选符号 softmax，再按冻结温度校准。
 所以本模块：
-  1) 照官方 inference.py + chat_template.jinja 手工渲染骨架 prompt；
+  1) 按模型说明与 chat 模板手工渲染骨架 prompt；
   2) 每个字段发一次 `/v1/completions`（max_tokens=1, logprobs=N, 采样全关）；
-  3) 候选内归一化 → 官方温度校准 → argmax 映射回选项值。
+  3) 候选内归一化 → 温度校准 → argmax 映射回选项值。
 
 与 `router_deciders.py` 的分工：本模块只负责"跟模型说话"，契约与记账留在调用方。
-服务入口：零刻按需代理 `18082` 的别名 `decide-id`（→ 预设 `decider_a`），
-**不是** LiteLLM 也不是 chat/completions。实测：四字段一次决策约 0.63 s。
+服务入口：一个只做打分、不做 generate 的本地推理端点（OpenAI 兼容 completions），
+**不是** chat/completions 语义。实测：四字段一次决策约 0.63 s。
 
-依据：`tools/decider_a-probe.py`（已自证：读位对齐 marker_pos-1、明显样例 6/6
-方向正确、梯度 E[score] 严格单调、官方温度下 argmax 7/7 保持）、
-
+依据：本机探针复核（读位对齐 marker_pos-1、明显样例方向正确、梯度严格单调、
+固定温度下 argmax 稳定）。
 """
 from __future__ import annotations
 

@@ -59,8 +59,11 @@ class ApiKeysCacheTest(unittest.TestCase):
             self.assertIsNotNone(api_keys.verify("Bearer " + tok))
             hot_samples.append(time.perf_counter() - t0)
         hot = min(hot_samples)
-        self.assertGreater(cold, 0.05)       # 冷路径确实跑了一次 PBKDF2
-        self.assertLess(hot, 0.02)           # 热路径不再跑
+        # 判据用**比值**而非宿主绝对耗时：旧写法 `cold > 0.05` 在快机器/低负载上会掉到 46ms
+        # 偶发红（2026-11-23 对侧复测 10 次中 2 次 ≤50ms，实测 46.8–90.7ms）。冷/热比仍能证明
+        # 「冷路径真跑了 PBKDF2、热路径没跑」，且不依赖宿主机速度。
+        self.assertGreater(cold, max(hot * 5, 1e-4))   # 冷 ≥ 热×5
+        self.assertLess(hot, 0.02)                     # 热路径不再跑
 
     def test_bad_token_fast_fail(self):
         self._create()

@@ -13,19 +13,22 @@
 #      patch 已有旧条目时只换软链、不重写 patch。
 #   3. 升级路径（patch 未改、无备份）自检失败时**不删软链**：还原安装前目标（原先
 #      没有软链才撤），文案按有无备份分支说明；旧版在这条路径上撤链 + 谎称「已还原
-#      patch」，比装之前更坏（发布回执）。
+#      patch」，比装之前更坏（灰狼回执 P2-5）。
 set -uo pipefail
+# 2026-11-23 修：say/step 必须先定义再使用——原脚本第 21 行先调 say，函数却在第 29 行才定义，
+# 一启动就报 `say: command not found`，解析回显那行根本打不出来（对侧复测第 9 项）。
+say(){ printf '%s\n' "$*"; }
+step(){ printf '\n== %s ==\n' "$*"; }
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-WB_HOME="${WB_HOME:-/opt/wb-router}"
+# 1.0.3.5：显式回显解析结果，装错目录时一眼能看出来
+DSH_HOME="${DSH_HOME:-/opt/wb-router}"
+say "· DSH home（可被 DSH_HOME 覆盖）：$DSH_HOME"
 PROFILE="${PROFILE:-web}"
-PROFILE_DIR="$WB_HOME/profiles/$PROFILE"
+PROFILE_DIR="$DSH_HOME/profiles/$PROFILE"
 PATCH="$PROFILE_DIR/cordis.patch.yml"
 LINK="$PROFILE_DIR/node_modules/dsh-bw-router"
 ENTRY="dsh-bw-router/dsh"
 MODE="${1:-}"
-
-say(){ printf '%s\n' "$*"; }
-step(){ printf '\n== %s ==\n' "$*"; }
 
 # 目标 patch 文件用的缩进（0 或 2 空格）。判不出来就按顶层 0 缩进。
 patch_indent(){
@@ -111,7 +114,7 @@ for f in "$PATCH" "$PROFILE_DIR"; do
   [ -e "$f" ] && say "  ✅ 存在: $f" || { say "  ❌ 缺失: $f"; exit 2; }
 done
 say "  项目根: $ROOT"
-say "  带 DSH 字段: $(grep -c '"dsh"' "$ROOT/package.json" 2>/dev/null || echo 0)（应为 1）"
+say "  带 DSH 字段: $(grep -cE '^  "dsh"[[:space:]]*:' "$ROOT/package.json" 2>/dev/null || echo 0)（应为 1，只数顶层字段）"
 say "  patch 缩进判定: '$(patch_indent)'（空=顶层 0 缩进）"
 
 step "1. 构建"

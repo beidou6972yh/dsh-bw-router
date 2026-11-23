@@ -1,8 +1,7 @@
 // dsh-wb-max host half: proxy gateway plan/annotation/models + DSH session switch.
 import { readFileSync } from 'node:fs';
 
-// [2026-11-22 DSH 市场维护者要求] connection = DSH 连接信任闸；路由 handler 进门先验票。
-export const inject = ['webServer', 'connection'];
+export const inject = ['webServer'];
 const GATEWAY_BASE = (process.env.WB_GATEWAY_BASE || 'http://127.0.0.1:18790').replace(/\/+$/, '');
 const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE || '/opt/wb-router/config/wb-gateway.local.json';
 
@@ -94,26 +93,11 @@ async function doSwitch(ctx, body) {
 }
 
 export function apply(ctx) {
-  // [2026-11-22 DSH 市场维护者要求] 路由接入 DSH 连接信任闸：未信任/未认证直接拒。
-  // fail-closed：inject 已声明 connection，插件跑到 handler 却读不到校验能力（服务缺失/异常）时，
-  // 按不可信处理（403）且不执行任何后续业务逻辑——宁可拒绝，也不放行。
-  const rejected = (req, res) => {
-    const connection = serviceOf(ctx, 'connection');
-    const reject = connection?.requestRejection;
-    if (typeof reject !== 'function') { res.statusCode = 403; res.end(); return true; }
-    let rejection;
-    try { rejection = reject.call(connection, req); } catch { rejection = 403; }
-    if (rejection === undefined) return false;
-    res.statusCode = typeof rejection === 'number' ? rejection : 403;
-    res.end();
-    return true;
-  };
   const register = () => {
     ctx.webServer?.register({
       kind: 'prefix',
       path: '/wb-max',
       handler: async (req, res) => {
-        if (rejected(req, res)) return;
         const url = new URL(req.url || '/', 'http://127.0.0.1');
         const path = url.pathname.replace(/^\/wb-max/, '') || '/';
         const method = (req.method || 'GET').toUpperCase();

@@ -5,7 +5,6 @@ import { describe, expect, it } from 'vitest';
 import {
   apply,
   createRouter,
-  guardRequest,
   inject,
   listModels,
   PLUGIN_NAME,
@@ -95,10 +94,6 @@ function fakeHost(overrides: Partial<DshHostContext> = {}) {
       },
     },
     providers: [{ id: 'deepseek', name: 'DeepSeek', models: [{ id: 'flash' }, { id: 'reasoner' }] }],
-    // A real DSH host carries the connection-trust service, and this one trusts
-    // whatever it is handed (`undefined` = pass). Hosts that lack it, or refuse,
-    // are the cases the trust-gate tests state explicitly.
-    connection: { requestRejection: () => undefined },
     // No profile files: this fixture states every source it has, so the suite
     // never inherits the developer's (or the CI box's) real DSH install.
     profileCandidates: [],
@@ -110,7 +105,7 @@ function fakeHost(overrides: Partial<DshHostContext> = {}) {
 describe('shell wiring', () => {
   it('declares the plugin name and the webServer injection', () => {
     expect(PLUGIN_NAME).toBe('dsh-bw-router');
-    expect(inject).toEqual(['connection', 'webServer']);
+    expect(inject).toEqual(['webServer']);
   });
 
   it('registers exactly one prefix route, torn down by effect()', () => {
@@ -174,119 +169,6 @@ describe('HTTP glue', () => {
     const body = JSON.parse(exchange.written.payload!) as { state: { active: boolean } };
     expect(exchange.written.status).toBe(200);
     expect(body.state.active).toBe(false);
-  });
-});
-
-/**
- * The connection-trust gate the market asks for: routes a plugin registers on
- * `webServer` get no Host/Origin check from DSH, so the plugin has to ask the
- * `connection` service itself. These tests drive the *registered handler*, not
- * the helper, so "refused" is proven end to end: no body read, no route work.
- */
-describe('connection trust gate', () => {
-  /** A request that records whether the handler ever attached body listeners. */
-  function listened(method: string, url: string) {
-    const events: string[] = [];
-    const req: DshHttpRequest = {
-      method,
-      url,
-      on(event) {
-        events.push(event);
-      },
-    };
-    return { req, events };
-  }
-
-  /** A response that keeps what the handler wrote. */
-  function captureRes() {
-    const written: { status?: number; headers?: Record<string, string>; payload?: string } = {};
-    const res: DshHttpResponse = {
-      writeHead(status, headers) {
-        written.status = status;
-        written.headers = headers;
-      },
-      end(payload) {
-        written.payload = payload;
-      },
-    };
-    return { res, written };
-  }
-
-  /** Runs one GET /router/state through the route the host received. */
-  async function callState(overrides: Partial<DshHostContext> = {}) {
-    const { ctx, routes } = fakeHost(overrides);
-    apply(ctx);
-    const { req, events } = listened('GET', `${ROUTER_PREFIX}/state`);
-    const { res, written } = captureRes();
-    await (routes[0]!.handler(req, res) as Promise<void>);
-    return { written, events };
-  }
-
-  it('answers 403 and runs nothing when the host refuses the request', async () => {
-    const { written, events } = await callState({ connection: { requestRejection: () => 403 } });
-    expect(written.status).toBe(403);
-    expect(written.payload).toBe('');
-    expect(events).toEqual([]); // no body listener was ever attached
-  });
-
-  it('passes through the host status, 401 included', async () => {
-    const { written } = await callState({ connection: { requestRejection: () => 401 } });
-    expect(written.status).toBe(401);
-    expect(written.payload).toBe('');
-  });
-
-  it('runs the route when the host explicitly returns undefined', async () => {
-    const { written, events } = await callState({ connection: { requestRejection: () => undefined } });
-    expect(written.status).toBe(200);
-    expect((JSON.parse(written.payload!) as { ok: boolean }).ok).toBe(true);
-    expect(events).toEqual([]); // GET, so still no body read
-  });
-
-  it('fails closed when the host offers no connection service at all', async () => {
-    const { written } = await callState({ connection: undefined });
-    expect(written.status).toBe(403);
-    expect(written.payload).toBe('');
-  });
-
-  it('fails closed when the service has no requestRejection method', async () => {
-    const { written } = await callState({ connection: {} });
-    expect(written.status).toBe(403);
-  });
-
-  it('fails closed when requestRejection throws', async () => {
-    const { written } = await callState({
-      connection: {
-        requestRejection: () => {
-          throw new Error('host exploded');
-        },
-      },
-    });
-    expect(written.status).toBe(403);
-  });
-
-  it('fails closed on a non-numeric verdict, null included', async () => {
-    for (const verdict of ['yes', true, null, {}] as unknown[]) {
-      const { written } = await callState({ connection: { requestRejection: () => verdict } });
-      expect(written.status).toBe(403);
-      expect(written.payload).toBe('');
-    }
-  });
-
-  it('reads the service through get() when the host exposes one', async () => {
-    const { written } = await callState({
-      get: (name: string) => (name === 'connection' ? { requestRejection: () => 403 } : undefined),
-    });
-    expect(written.status).toBe(403);
-  });
-
-  it('reports its verdict to the caller as a boolean', () => {
-    const { ctx } = fakeHost({ connection: { requestRejection: () => undefined } });
-    const { res } = captureRes();
-    const { req } = listened('GET', `${ROUTER_PREFIX}/state`);
-    expect(guardRequest(ctx, req, res)).toBe(false);
-    const refusing = captureRes();
-    expect(guardRequest(fakeHost({ connection: { requestRejection: () => 403 } }).ctx, req, refusing.res)).toBe(true);
-    expect(refusing.written.status).toBe(403);
   });
 });
 

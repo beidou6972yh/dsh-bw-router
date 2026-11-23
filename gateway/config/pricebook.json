@@ -1,0 +1,89 @@
+{
+  "schema": "wb-pricebook/1",
+  "currency": "CNY",
+  "generated_at": "2026-11-24T00:00:00+0800",
+  "note": "样例价目：仅供开箱演示分段与估价流程，不代表任何真实供应商价格；接真实上游后请按官方价更新。币种支持（1.0.3.6）：顶层 currency 是默认币种，单个 offer 可用 \"currency\" 覆盖（样例 model-usd-fast 即 USD 报价）；成本路径按 config/fx-rates.json 折算 CNY，缺汇率判「价未知」不猜价。",
+  "rules": {
+    "peak_rule": "sample",
+    "tz": "Asia/Shanghai"
+  },
+  "models": {
+    "model-fast-0731": {
+      "family": "model-fast-0731",
+      "offers": [
+        {
+          "provider": "up-a",
+          "model_id": "model-fast-0731",
+          "display": "sample fast",
+          "billing": "per_token",
+          "price": {
+            "input": {
+              "peak": 1.0,
+              "offpeak": 0.6
+            },
+            "cache_hit": {
+              "peak": 0.02,
+              "offpeak": 0.01
+            },
+            "output": {
+              "peak": 2.0,
+              "offpeak": 1.2
+            }
+          }
+        }
+      ]
+    },
+    "model-glm-flash": {
+      "family": "model-glm-flash",
+      "offers": [
+        {
+          "provider": "up-b",
+          "model_id": "model-glm-flash",
+          "display": "sample flash",
+          "billing": "per_token",
+          "price": {
+            "input": {
+              "peak": 2.0,
+              "offpeak": 1.0
+            },
+            "cache_hit": {
+              "peak": 0.04,
+              "offpeak": 0.02
+            },
+            "output": {
+              "peak": 8.0,
+              "offpeak": 4.0
+            }
+          }
+        }
+      ]
+    },
+    "model-usd-fast": {
+      "family": "model-usd-fast",
+      "note": "USD 报价样例（1.0.3.6 币种支持）：开箱即可验非 CNY 报价与 fx 折算；不接真实上游时为不可路由的比价样例。",
+      "offers": [
+        {
+          "provider": "up-c",
+          "model_id": "model-usd-fast",
+          "display": "sample usd fast",
+          "currency": "USD",
+          "billing": "per_token",
+          "price": {
+            "input": {
+              "peak": 0.2,
+              "offpeak": 0.15
+            },
+            "cache_hit": {
+              "peak": 0.02,
+              "offpeak": 0.01
+            },
+            "output": {
+              "peak": 0.8,
+              "offpeak": 0.6
+            }
+          }
+        }
+      ]
+    }
+  }
+}

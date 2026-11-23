@@ -116,7 +116,7 @@ AFP 感知分流（2026-11-12 管理员 17:0x 反馈①：火山 429 治理）
 熔断 600s 常开循环（skip:circuit_open），火山全链路 0 成功。机制：
 1. 配置 afp.enabled=true 时，对 afp.upstream（默认 ark-agentplan）在候选检查最前
    加一道闸门 afp_gate_check()：
-   - 额度快照（数据/额度快照.json，自动采集器每 30 分钟写）读不到或过期
+   - 额度快照（`afp.quota_path` 指定的 JSON，采集器周期写入）读不到或过期
      （> stale_after_seconds）⇒ 闸门放行（保守＝维持现状，读不到≠拒绝）；
    - 三窗口（h5/d7/d30）取最紧余额 avail=min(limit-used)（下夹 0）：
      avail<=0 ⇒ skip:afp_exhausted（含周/月额度打穿——429 同码不同文案，控制台读数为准）；
@@ -139,7 +139,7 @@ AFP 感知分流（2026-11-12 管理员 17:0x 反馈①：火山 429 治理）
 启动
 ----
     cd /opt/wb-router/projects/模型路由网关 && python3 main.py
-固定监听 127.0.0.1:8790。
+固定监听 127.0.0.1:18790。
 """
 
 from __future__ import annotations
@@ -222,7 +222,7 @@ EXTRA_CREDENTIALS_PATH = Path(
 
 # 端口可用环境变量覆盖（默认不变）；仅用于隔离联调/测试实例，生产行为不变
 HOST = os.environ.get("ROUTER_HOST") or "127.0.0.1"
-PORT = int(os.environ.get("ROUTER_PORT") or 8790)
+PORT = int(os.environ.get("ROUTER_PORT") or 18790)
 MAX_BODY_BYTES = 64 * 1024 * 1024  # 允许带大图/长上下文
 
 # --- 入口鉴权（可选，默认关）-------------------------------------------------
@@ -1187,7 +1187,7 @@ def reload_upstreams() -> dict:
 
 # ---------------------------------------------------------------------------
 # AFP 感知分流（2026-11-12 管理员 17:0x 反馈①：火山 429 治理）
-# 额度快照 = 数据/额度快照.json（自动采集器每 30 分钟写；文件以控制台读数
+# 额度快照 = `afp.quota_path` 指定的 JSON（采集器周期写入；文件以控制台读数
 # 为准——网关外还有直连消费者，本地累加必然漂移）。闸门只读快照＋估算，
 # 不开熔断、不阻塞请求、不产生 4xx/5xx。
 # ---------------------------------------------------------------------------
@@ -1262,7 +1262,12 @@ def _afp_parse_snapshot(doc: dict, now_ts: float) -> tuple[dict | None, str]:
 
 
 def afp_snapshot(now_ts: float | None = None) -> dict | None:
-    """读额度快照（带缓存：mtime 未变不重读盘，只按当前时刻重判新鲜度）。
+    """读额度快照（内容级缓存：原始字节未变则复用解析结果，变了立即重解析）。
+
+    1.0.3.5-r6（2026-11-23 根治）：缓存判据由「(mtime_ns, size) 元数据」改为「原始字节比较」，
+    消除「同 mtime 同 size 内容变却命中旧值」的边界（对侧复核保留项；虎虎已复现
+    「真实余额 0、缓存仍 8、闸门放行」）。代价：每请求一次 open+read（KB 级小文件，微秒量级），
+    内容未变时跳过 JSON 解析；写端非原子时读到半文件会解析失败 ⇒ None（保守放行，不猜价）。
 
     文件缺失/解析失败/结构不对/过期 ⇒ None（调用方一律放行）。
     """
@@ -1270,21 +1275,27 @@ def afp_snapshot(now_ts: float | None = None) -> dict | None:
     ts = time.time() if now_ts is None else now_ts
     with _AFP_LOCK:
         try:
-            mtime = AFP_QUOTA_PATH.stat().st_mtime
+            blob = AFP_QUOTA_PATH.read_bytes()
         except OSError:
             _AFP_STATS["snapshot_missing"] += 1
             _AFP_SNAPSHOT_CACHE = None
             return None
-        if _AFP_SNAPSHOT_CACHE and _AFP_SNAPSHOT_CACHE.get("mtime") == mtime:
-            raw = _AFP_SNAPSHOT_CACHE.get("raw")
+        cache = _AFP_SNAPSHOT_CACHE
+        if cache and cache.get("blob") == blob:
+            raw = cache.get("raw")
+            if raw is None:
+                # 1.0.3.6 口径：坏内容每次读取都计 snapshot_missing（此前只计首次，统计偏少）；
+                # 只影响观测口径，不改变「解析失败 ⇒ 保守放行」的行为。
+                _AFP_STATS["snapshot_missing"] += 1
+                return None
         else:
             try:
-                raw = json.loads(AFP_QUOTA_PATH.read_text(encoding="utf-8"))
+                raw = json.loads(blob.decode("utf-8"))
             except Exception:
                 _AFP_STATS["snapshot_missing"] += 1
-                _AFP_SNAPSHOT_CACHE = {"mtime": mtime, "raw": None}
+                _AFP_SNAPSHOT_CACHE = {"blob": blob, "raw": None}
                 return None
-            _AFP_SNAPSHOT_CACHE = {"mtime": mtime, "raw": raw}
+            _AFP_SNAPSHOT_CACHE = {"blob": blob, "raw": raw}
         if not raw:
             return None
         snap, why = _afp_parse_snapshot(raw, ts)
@@ -1698,6 +1709,20 @@ CAPABILITY_META_MODELS: dict[str, dict] = {
 CAPABILITY_CURRENCY_DEFAULT = str(_CAPABILITY_META.get("currency_default") or "CNY")
 CAPABILITY_PRICE_FIELDS = ("input_per_mtok", "output_per_mtok", "cache_hit_input_per_mtok")
 
+
+def _offer_currency(offer: dict, default: str | None = None) -> str:
+    """报价币种（1.0.3.6 币种支持）：offer.currency → offer.price.currency → offer.meta.currency → 默认。
+
+    口径与 router_strategies._recommend_price_view 一致；空/非字符串一律回落默认，不猜。
+    """
+    if not isinstance(offer, dict):
+        return (default or CAPABILITY_CURRENCY_DEFAULT).strip().upper()
+    _price = offer.get("price") if isinstance(offer.get("price"), dict) else {}
+    _meta = offer.get("meta") if isinstance(offer.get("meta"), dict) else {}
+    raw = offer.get("currency") or _price.get("currency") or _meta.get("currency")
+    cur = str(raw).strip().upper() if isinstance(raw, str) and raw.strip() else ""
+    return cur or (default or CAPABILITY_CURRENCY_DEFAULT).strip().upper()
+
 # 档位映射（tier → 候选链）。链内条目必须是已配置的 upstream/model，未配置的启动时剔除并告警。
 HINT_TIERS: dict[str, list[str]] = {}
 for _tier_name, _raw_chain in (_HINT_CFG.get("tiers") or {}).items():
@@ -1872,15 +1897,26 @@ def _price_has_number(block) -> bool:
     return False
 
 
-def price_state_of(candidate: str, provider: str | None, block) -> str:
-    """价格三态（1.0.2 口径）：local＝本地零价；priced＝有真实单价；unpriced＝待用户录入。
+LOCAL_PROVIDER_IDS = frozenset({"provider_b", "local-lan", "local", "localhost"})
 
-    判定顺序：先看 provider/前缀是不是本地；再看有没有任何数字；
-    绝不把「没填价」当成 0 元或免费。
+
+def _is_local_provider(pid: str, cid: str) -> bool:
+    """本地车道判定：provider 名命中本地集合，或候选前缀命中（1.0.3.5 起不再只认 provider_b）。"""
+    if pid in LOCAL_PROVIDER_IDS:
+        return True
+    head = cid.split("/", 1)[0] if cid else ""
+    return head in LOCAL_PROVIDER_IDS
+
+
+def price_state_of(candidate: str, provider: str | None, block) -> str:
+    """价格三态（1.0.3.5 口径）：local＝本地零价；priced＝有真实单价；unpriced＝待用户录入。
+
+    判定顺序：先看 provider/前缀是不是本地（本地集合见 LOCAL_PROVIDER_IDS）；
+    再看有没有任何数字；绝不把「没填价」当成 0 元或免费。
     """
     pid = str(provider or "").strip()
     cid = str(candidate or "")
-    if pid == "provider_b" or cid.startswith("provider_b/"):
+    if _is_local_provider(pid, cid):
         return "local"
     return "priced" if _price_has_number(block) else "unpriced"
 
@@ -1944,7 +1980,7 @@ def capability_model_entry(candidate: str) -> dict:
                 _out_block = _slot_from_offer(_raw.get("output_per_mtok") or _raw.get("output"))
                 _cache_block = _slot_from_offer(_raw.get("cache_hit_input_per_mtok") or _raw.get("cache_hit"))
                 if _in_block and _out_block:
-                    price_block = {"currency": "CNY", "input_per_mtok": _in_block,
+                    price_block = {"currency": _offer_currency(_offer), "input_per_mtok": _in_block,
                                    "output_per_mtok": _out_block}
                     if _cache_block:
                         price_block["cache_hit_input_per_mtok"] = _cache_block
@@ -1954,7 +1990,7 @@ def capability_model_entry(candidate: str) -> dict:
                     _prices = (_priced or {}).get("prices") or {}
                     _in, _out = _prices.get("input"), _prices.get("output")
                     if isinstance(_in, (int, float)) and isinstance(_out, (int, float)):
-                        price_block = {"currency": "CNY",
+                        price_block = {"currency": _offer_currency(_offer),
                                        "input_per_mtok": {"flat": float(_in)},
                                        "output_per_mtok": {"flat": float(_out)}}
                         if isinstance(_prices.get("cache_hit"), (int, float)):
@@ -2545,7 +2581,7 @@ def _derive_block_from_offer(offer: dict) -> tuple[dict | None, list[str]]:
     folded, errors = _fold_price_sets(_weekly_price_sets(offer))
     if folded.get("input") is None and folded.get("output") is None:
         return None, errors or ["no price numbers"]
-    return {"currency": CAPABILITY_CURRENCY_DEFAULT,
+    return {"currency": _offer_currency(offer),
             "input_per_mtok": folded.get("input"),
             "output_per_mtok": folded.get("output"),
             "cache_hit_input_per_mtok": folded.get("cache_hit")}, errors

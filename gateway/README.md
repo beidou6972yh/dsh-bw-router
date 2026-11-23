@@ -12,7 +12,7 @@ python3 main.py
 curl -s http://127.0.0.1:18790/health
 ```
 
-上游密钥通过 `upstreams.json` 里每个条目的 `api_key_env` 指定环境变量名读取；入口鉴权用 `config/api-keys.json`（Bearer），默认不随仓库提供，首次启动可自行生成。
+上游密钥通过 `upstreams.json` 里每个条目的 `api_key_env` 指定环境变量名读取；入口鉴权用 `config/api-keys.json`（Bearer）；仓库只带 `config/api-keys.example.json` 样例，首次启动会自动生成 `api-keys.json`（也可自行创建）。
 
 ## 接口
 

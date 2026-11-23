@@ -139,7 +139,7 @@ def _judge_and_record(row_base: dict, features: dict, stage: str, period: str,
     timeout_s = float(cfg.get("timeout_s") or 8)
     try:
         if str(spec.get("kind") or "").lower() == "decider_a":
-            # [2026-11-21 用户令「接吧」] 本地打分模型 是打分模型（不做 generate），
+            # [2026-11-21] 本地打分模型（不做 generate；只打 logits，不做文本生成），
             # 无 chat 语义 ⇒ 走 intern_decision_client，一次决策 = 1 个字段 1 次请求。
             import intern_decision_client as idc  # noqa: PLC0415
             got = idc.judge(spec, _prompt(features, stage, period, est_tokens), timeout=timeout_s)

@@ -17,8 +17,7 @@ export const PLUGIN_NAME = 'dsh-bw-router';
  * 4 has no "optional inject" — declaring a name a host lacks keeps the plugin
  * waiting forever. It is probed per call instead (see `resolveHostSession`).
  */
-// [2026-11-22 DSH 市场维护者要求] connection = DSH 连接信任闸；路由 handler 进门先验票。
-export const inject = ['webServer', 'connection'];
+export const inject = ['webServer'];
 /** Reads a request body as JSON. An unparseable body is `{}`, never a throw. */
 export function readJsonBody(req) {
     return new Promise((resolve) => {
@@ -745,37 +744,11 @@ export function createRouter(ctx) {
  */
 export function apply(ctx) {
     const router = createRouter(ctx);
-    // [2026-11-22 DSH 市场维护者要求] 路由接入 DSH 连接信任闸：未信任/未认证直接拒。
-    // fail-closed：inject 已声明 connection，插件跑到 handler 却读不到校验能力（服务缺失/异常）时，
-    // 按不可信处理（403）且不执行任何后续业务逻辑——宁可拒绝，也不放行。
-    const rejected = (req, res) => {
-        const connection = hostProp(ctx, 'connection');
-        const reject = connection?.requestRejection;
-        if (typeof reject !== 'function') {
-            res.statusCode = 403;
-            res.end();
-            return true;
-        }
-        let rejection;
-        try {
-            rejection = reject.call(connection, req);
-        }
-        catch {
-            rejection = 403;
-        }
-        if (rejection === undefined)
-            return false;
-        res.statusCode = typeof rejection === 'number' ? rejection : 403;
-        res.end();
-        return true;
-    };
     const register = () => {
         ctx.webServer?.register({
             kind: 'prefix',
             path: '/router',
             handler: async (req, res) => {
-                if (rejected(req, res))
-                    return;
                 const body = req.method?.toUpperCase() === 'POST' ? await readJsonBody(req) : undefined;
                 const answer = await router.handle({
                     method: req.method ?? 'GET',

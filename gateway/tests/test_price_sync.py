@@ -81,7 +81,7 @@ class TestDeepseekParse(unittest.TestCase):
             ps.parse_deepseek_page("百万tokens输入 （缓存未命中） 空闲时段 1元")
 
 
-class TestProviderCParse(unittest.TestCase):
+class TestUpstreamAParse(unittest.TestCase):
     def test_billing_expr(self):
         offers = {o["model_id"]: o for o in
                   ps.parse_provider_c_docs(DUOYUAN_PRICING, DUOYUAN_RATIO,
@@ -112,7 +112,7 @@ class TestProviderCParse(unittest.TestCase):
         self.assertIsNone(offers["model_c2"]["price"])
 
 
-class TestProviderDParse(unittest.TestCase):
+class TestUpstreamBParse(unittest.TestCase):
     def test_periodic_prices(self):
         offers = {o["model_id"]: o for o in
                   ps.parse_provider_d_page(ps.strip_html(SF_PAGE),

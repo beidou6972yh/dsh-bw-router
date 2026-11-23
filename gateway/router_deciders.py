@@ -132,7 +132,7 @@ _INSTRUCTION = (
 
 
 def _POST_INTERN(spec: dict, meta: dict, timeout_s: float) -> dict | None:
-    """本地打分模型 打分后端（懒加载；导入失败即当不可用，绝不影响主链路）。"""
+    """本地打分模型后端（懒加载；导入失败即当不可用，绝不影响主链路）。"""
     global _intern_client
     if _intern_client is None:
         try:

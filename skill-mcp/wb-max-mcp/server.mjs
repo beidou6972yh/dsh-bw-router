@@ -2,9 +2,11 @@
 // Minimal MCP stdio server for WB router. No dependencies.
 import { createInterface } from 'node:readline';
 import { readFileSync } from 'node:fs';
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 
 const BASE = (process.env.WB_GATEWAY_URL || 'http://127.0.0.1:18790').replace(/\/+$/, '');
-const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE || '/opt/wb-router/config/wb-remote.json';
+const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE || join(homedir(), '.wb-router', 'wb-remote.json');
 // ── Q3-7（2026-11-18）：凭据契约闭合 ─────────────────────────────────────
 // 优先级：WB_GATEWAY_API_KEY(env) > WB_GATEWAY_KEY_FILE(文件，{"token":"…"})
 // 两者都没有时：health/capabilities 仍可访问（网关 AUTH_EXEMPT_PATHS），
@@ -23,13 +25,8 @@ async function api(path, method = 'GET', body) {
   const headers = { accept: 'application/json' };
   const ki = keyInfo();
   if (ki.token) headers.authorization = `Bearer ${ki.token}`;
-  else if (!KEY_EXEMPT_PATHS.has(path)) {
-    throw new Error(
-      '未找到网关凭据（Q3-7）：请设置 WB_GATEWAY_API_KEY，或提供可读的 WB_GATEWAY_KEY_FILE'
-      + `（默认 ${KEY_FILE}，形如 {"token":"…"}，权限 600）。`
-      + ' 外部机器拿不到该文件时，向灰狼申请短期 key；health/capabilities 不需要凭据。'
-    );
-  }
+  // 1.0.3.5：不在客户端预检 key —— 网关默认不鉴权时 plan/execute 无需 key；
+  // 只有网关真的返回 401（启用了 ROUTER_API_KEY）才提示怎么配。
   if (body !== undefined) headers['content-type'] = 'application/json';
   const r = await fetch(`${BASE}${path}`, { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
   const text = await r.text();
@@ -37,6 +34,8 @@ async function api(path, method = 'GET', body) {
   // 401 时把"凭据来源"带出来，便于判断是 env/file 哪一路失效（不含 token 本身）
   if (r.status === 401 && data && typeof data === 'object') {
     data.credential = { source: ki.source, provided: Boolean(ki.token) };
+    data.hint = '网关已启用鉴权：请设置 WB_GATEWAY_API_KEY，或提供可读的 WB_GATEWAY_KEY_FILE'
+      + `（默认 ${KEY_FILE}，形如 {"token":"…"}，权限 600）。网关未启用鉴权时无需任何 key。`;
   }
   return { status: r.status, ok: r.ok, data };
 }
@@ -141,7 +140,7 @@ async function callTool(name, args = {}) {
     };
     const payload = { ok: true, model, content: text, usage,
       annotation: { status: ann.status, ok: ann.ok, learned: ann.data?.learned || null },
-      // 把「预估 vs 实付」差额行带到执行回执里（网关 annotation 计算）
+      // Q3-11：把「预估 vs 实付」差额行带到执行回执里（网关 annotation 计算）
       estimate_delta: ann.data?.estimate_delta || null };
     if (annWarning) payload.annotation_warning = annWarning;
     return { content: [{ type: 'text', text: JSON.stringify(payload) }] };

@@ -1,0 +1,10 @@
+{
+  "updated_at": "2026-11-23",
+  "USDCNY": 7.1,
+  "note": "样例汇率，仅让开箱可算；接入 USD 计价上游请按当日汇率更新，或运行 scripts/fx_sync.py --write 自动取数。缺键/为 null 时网关判「价未知，不猜价」。",
+  "source": {
+    "provider": "example",
+    "field": "rates.CNY",
+    "as_of_utc": "sample"
+  }
+}

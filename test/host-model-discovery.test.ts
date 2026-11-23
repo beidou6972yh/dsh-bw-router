@@ -99,7 +99,7 @@ const REAL_PROFILE_PATCH = `# cordis.patch.yml — 用户 patch 层
             input:
               - text
               - image
-          - id: model-c1:local
+          - id: sample-model:8b-mlx
             name: Model_C1 (local)（本地 · 质量优先）
             contextWindow: 131072
             maxTokens: 8192
@@ -180,10 +180,11 @@ describe('DEF-1: the model list comes from the host, not from three JSON files',
     // 扫到 N 个模型 — the number the defect report asked for.
     expect(answer.count).toBe(3);
     const models = answer.models as { key: string; contextWindow: number | null; limitsGuessed: boolean }[];
+    // 1.0.3.5：代码侧已 sort，期望数组同步按字典序（原期望未排序 ⇒ 误红）
     expect(models.map((m) => m.key).sort()).toEqual([
+      'local-ollama/ornith-sysmarshal-v1.3:128k',
       'provider_a/model_a1',
       'provider_a/model_a5',
-      'local-ollama/ornith-sysmarshal-v1.3:128k',
     ]);
     // The window is a real number because `resolveModelInfo` answered it.
     const local = models.find((m) => m.key.startsWith('local-ollama/'))!;

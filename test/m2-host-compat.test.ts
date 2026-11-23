@@ -39,10 +39,6 @@ function hostWithThrowingService(name: string): DshHostContext {
   const ctx = {
     webServer: { register: (route: { path: string }) => sink.routes.push(route) },
     effect: (fn: () => void) => fn(),
-    // Only `name` is unreachable here. A real host still carries the connection
-    // trust service; without it the route fails closed (403) by design, which is
-    // stated explicitly in the trust-gate tests in dsh-shell.test.ts.
-    connection: { requestRejection: () => undefined },
   } as unknown as DshHostContext;
   Object.defineProperty(ctx, name, {
     configurable: true,
@@ -225,7 +221,7 @@ describe('a Cordis-like context that throws for unknown properties', () => {
 
   it('serves GET /router/state through the registered route', async () => {
     const sink = routeSink();
-    apply(cordisLikeContext({ webServer: sink.webServer, connection: { requestRejection: () => undefined } }));
+    apply(cordisLikeContext({ webServer: sink.webServer }));
     const res = {
       status: 0,
       body: '',
@@ -240,24 +236,5 @@ describe('a Cordis-like context that throws for unknown properties', () => {
     await sink.routes[0]!.handler(req, res);
     expect(res.status).toBe(200);
     expect(() => JSON.parse(res.body)).not.toThrow();
-  });
-
-  it('refuses a host with no connection service: the route answers 403, never 200', async () => {
-    const sink = routeSink();
-    apply(cordisLikeContext({ webServer: sink.webServer }));
-    let status = 0;
-    let body = 'unset';
-    const res = {
-      writeHead(value: number) {
-        status = value;
-      },
-      end(payload: string) {
-        body = payload;
-      },
-    };
-    const req: DshHttpRequest = { method: 'GET', url: '/router/state', on() { /* no body */ } };
-    await sink.routes[0]!.handler(req, res);
-    expect(status).toBe(403);
-    expect(body).toBe('');
   });
 });

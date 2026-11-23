@@ -7,7 +7,7 @@
   - 默认 required=false，便于平滑上线；WB_API_KEYS_REQUIRED=1 或管理面打开后强制；
   - key 轮换/吊销立即生效；最后使用时间只做低频写，避免每请求落盘。
 
-本模块只读写 config/api-keys.json，不碰上游/密钥。
+本模块只读写 config/api-keys.json（样例文件 api-keys.example.json），不碰上游/密钥。
 """
 
 from __future__ import annotations

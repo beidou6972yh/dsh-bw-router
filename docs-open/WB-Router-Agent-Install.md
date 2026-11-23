@@ -6,9 +6,9 @@
 
 | 项 | 值 |
 |---|---|
-| 产品 | WB 模型路由网关 v1.0.3.3（OpenAI 兼容，自托管） |
+| 产品 | WB 模型路由网关 v1.0.3.6（OpenAI 兼容，自托管） |
 | 用户画像 | 无编码基础；不会读日志也能看懂你的回报 |
-| 交付包 | `gateway-1.0.3.3.tar.gz`、`plugins-1.0.3.3.tar.gz`、`skill-mcp-1.0.3.3.tar.gz` |
+| 交付包 | `gateway-1.0.3.6.tar.gz`、`plugins-1.0.3.6.tar.gz`、`skill-mcp-1.0.3.6.tar.gz` |
 | 完成判据 | 见 §5（4 条全过才算装好） |
 
 ---
@@ -44,9 +44,9 @@ df -h "$HOME" | tail -1           # 至少留 2GB
 ```bash
 ROOT=~/wb-router
 mkdir -p "$ROOT" && cd "$ROOT"
-tar -xzf gateway-1.0.3.3.tar.gz
-tar -xzf plugins-1.0.3.3.tar.gz
-tar -xzf skill-mcp-1.0.3.3.tar.gz
+tar -xzf gateway-1.0.3.6.tar.gz
+tar -xzf plugins-1.0.3.6.tar.gz
+tar -xzf skill-mcp-1.0.3.6.tar.gz
 ls    # 期望：gateway  plugins  skill-mcp
 test -f gateway/main.py && test -d gateway/config && echo PKG_OK
 ```
@@ -191,4 +191,4 @@ cp -a config/routing.json.bak   config/routing.json
 
 ---
 
-*版本 1.0.3.3；更多细节见同目录《使用说明书》（26 页）与包内 `gateway/README.md`、`gateway/docs-1.0.3.3/`。*
+*版本 1.0.3.6；更多细节见同目录《使用说明书》（26 页）与包内 `gateway/README.md`、`gateway/docs-1.0.3.6/`。*

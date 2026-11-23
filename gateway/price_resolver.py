@@ -178,6 +178,21 @@ def period_of(offer: dict, at: datetime | None = None,
     return "peak" if _is_peak(offer, at, holidays) else "offpeak"
 
 
+def offer_currency(offer: dict, default: str = "CNY") -> str:
+    """报价币种（1.0.3.6）：offer.currency → offer.price.currency → offer.meta.currency → default。
+
+    口径与 main._offer_currency / router_strategies._recommend_price_view 一致：
+    归一化为大写；空/非字符串回落 default，不猜。
+    """
+    if not isinstance(offer, dict):
+        return str(default or "CNY").strip().upper()
+    price = offer.get("price") if isinstance(offer.get("price"), dict) else {}
+    meta = offer.get("meta") if isinstance(offer.get("meta"), dict) else {}
+    raw = offer.get("currency") or price.get("currency") or meta.get("currency")
+    cur = str(raw).strip().upper() if isinstance(raw, str) and raw.strip() else ""
+    return cur or str(default or "CNY").strip().upper()
+
+
 def effective_price(offer: dict, at: datetime | None = None, group: str | None = None,
                     holidays: set[date] | None = None) -> dict:
     """当前时刻真实价（含峰谷/乘数/分组/活动）。返回 入/缓/出 三个数。"""
@@ -194,7 +209,7 @@ def effective_price(offer: dict, at: datetime | None = None, group: str | None =
             out[key] = round(_num(chosen) * factor, 3)
         else:
             out[key] = round(_num(value) * factor, 3)
-    return {"currency": "CNY", "period": period,
+    return {"currency": offer_currency(offer), "period": period,
             "prices": {k: out[k] for k in PRICE_KEYS if k in out},
             "factor": round(factor, 6), "offer": offer.get("id")}
 
@@ -203,9 +218,9 @@ def list_price(offer: dict) -> dict:
     """刊例视图：原样返回价格结构（UI 展示"低/峰"两列用）。"""
     base, has_blocks = _base_of(offer)
     if not has_blocks:
-        return {"currency": "CNY", "period": "flat",
+        return {"currency": offer_currency(offer), "period": "flat",
                 "prices": {k: v for k, v in base.items() if not isinstance(v, dict)}}
-    return {"currency": "CNY", "period": "peak/offpeak",
+    return {"currency": offer_currency(offer), "period": "peak/offpeak",
             "prices": {k: v for k, v in base.items() if isinstance(v, dict)}}
 
 
@@ -227,7 +242,7 @@ def best_case(offer: dict, group: str | None = None) -> dict:
             out[key] = round(min(_num(v) for v in candidates) * factor, 3) if candidates else None
         else:
             out[key] = round(_num(value) * factor, 3)
-    return {"currency": "CNY", "period": "best",
+    return {"currency": offer_currency(offer), "period": "best",
             "prices": {k: v for k, v in out.items() if v is not None},
             "factor": round(factor, 6), "offer": offer.get("id")}
 

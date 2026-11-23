@@ -85,7 +85,7 @@ def _plan_store(plan: dict, principal: dict | None) -> None:
             "model_key": (st.get("model") or {}).get("key"),
             "capability": st.get("capability"),
             "tier": (st.get("model") or {}).get("tier"),
-            # 把计划时的估价快照存下来，annotation 才能算「预估 vs 实付」差额
+            # Q3-11：把计划时的估价快照存下来，annotation 才能算「预估 vs 实付」差额
             "estimate": dict(st.get("estimate") or {}),
         }
     first = (plan.get("stages") or [{}])[0] if plan.get("stages") else {}
@@ -363,14 +363,16 @@ def report(range_key: str = "7d", group: str = "model") -> dict:
     ann_totals = {"stages": 0, "with_usage": 0, "unknown_pricing": 0,
                   "planned_input_tokens": 0, "actual_input_tokens": 0,
                   "planned_output_tokens": 0, "actual_output_tokens": 0,
-                  "planned_cost": 0.0, "actual_cost": 0.0, "cost_delta": 0.0}
+                  "planned_cost": 0.0, "actual_cost": 0.0, "cost_delta": 0.0,
+                  "currency": "CNY", "unpriced_rows": 0, "foreign_currency_rows": 0}
     ann_groups: dict[str, dict] = {}
 
     def _ann_bucket(name: str) -> dict:
         return ann_groups.setdefault(name, {"stages": 0, "with_usage": 0,
                                             "planned_input_tokens": 0, "actual_input_tokens": 0,
                                             "planned_cost": 0.0, "actual_cost": 0.0,
-                                            "cost_delta": 0.0, "unknown_pricing": 0})
+                                            "cost_delta": 0.0, "unknown_pricing": 0,
+                                            "currency": "CNY"})
 
     for row in annotations:
         est = row.get("estimate") if isinstance(row.get("estimate"), dict) else {}
@@ -396,6 +398,10 @@ def report(range_key: str = "7d", group: str = "model") -> dict:
                 bucket["with_usage"] += 1
             if unknown:
                 bucket["unknown_pricing"] += 1
+                if "unpriced_rows" in bucket:
+                    bucket["unpriced_rows"] += 1
+            if "foreign_currency_rows" in bucket and str(est.get("currency") or "CNY").upper() != "CNY":
+                bucket["foreign_currency_rows"] += 1
             bucket["planned_input_tokens"] += est_in
             bucket["actual_input_tokens"] += actual_in
             bucket["planned_cost"] += planned_cost
@@ -888,6 +894,27 @@ def _price_for(info: dict, est_in: int, est_out: int, period: str,
             rate = _cache_rate() if cache_rate is None else cache_rate
             cost = price_resolver.estimate_cost(prices, est_in, est_out, rate)
             p_state = _price_state_for(info)
+            # 1.0.3.6 币种支持：pricebook 报价可自带币种（CNY 默认）；非 CNY 一律折 CNY，
+            # 缺汇率 ⇒ 价未知（不猜价），口径与 capability_meta 分支一致。
+            src_cur = price_resolver.offer_currency(offer)
+            if src_cur not in ("CNY", "RMB"):
+                converted = price_resolver.convert_to_cny(cost, src_cur)
+                micro_raw = _cost_micro(prices, est_in, est_out, rate)
+                converted_micro = price_resolver.convert_to_cny(micro_raw, src_cur)
+                if converted is None or converted_micro is None:
+                    return {"currency": src_cur, "cost": None, "known": False,
+                            "state": "unpriced",
+                            "notice": f"非 CNY 报价（{src_cur}）缺汇率，不换算不猜价",
+                            "unconverted_currency": src_cur, "source": "pricebook",
+                            "prices": prices, "period": (priced or {}).get("period")}
+                return {"currency": "CNY", "cost": round(converted, 3), "known": True,
+                        "cost_micro": round(converted_micro, 6),
+                        "notice": ("0（本地）" if p_state == "local"
+                                   else "按 pricebook 有效价估算")
+                                  + f"；已按 {src_cur}→CNY 汇率换算",
+                        "state": p_state, "source": "pricebook",
+                        "prices": prices, "period": (priced or {}).get("period"),
+                        "source_currency": src_cur}
             return {"currency": "CNY", "cost": round(cost, 3), "known": True,
                     # N5（2026-11-19）：estimate_cost 内部已 round(...,3)，
                     # 对它再取 6 位是无效的 ⇒ 这里用同一公式的 6 位版本另算一份。

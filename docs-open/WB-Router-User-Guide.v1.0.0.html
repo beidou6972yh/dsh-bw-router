@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>WB 模型路由网关 · 使用说明书（v1.0.3.3）</title>
+  <title>WB 模型路由网关 · 使用说明书（v1.0.3.6）</title>
   <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -110,12 +110,12 @@ hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">WB 模型路由网关 · 使用说明书（v1.0.3.3）</h1>
+<h1 class="title">WB 模型路由网关 · 使用说明书（v1.0.3.6）</h1>
 </header>
 <h1 id="wb-模型路由网关--使用说明书零编码基础版">WB 模型路由网关 ·
 使用说明书（零编码基础版）</h1>
 <blockquote>
-<p><strong>版本</strong>：1.0.3.3（2026-11-21）　<strong>展示名</strong>：WB
+<p><strong>版本</strong>：1.0.3.6（2026-11-21）　<strong>展示名</strong>：WB
 模型路由网关（英文可用 WB Router）
 <strong>读者</strong>：不会写代码，但会解压文件、会复制粘贴命令的人
 <strong>一句话</strong>：把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。
@@ -339,9 +339,9 @@ JSON、不进聊天记录、不进截图。</li>
 <code>~/wb-router</code>）即可。</p>
 <h3 id="42-第-1-步解包三件">4.2 第 1 步：解包三件</h3>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.3.tar.gz</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.3.tar.gz</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.3.tar.gz</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.6.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.6.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.6.tar.gz</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div>
 <p><strong>你会看到</strong>（三件）：<code>gateway  plugins  skill-mcp</code>。其中
 <code>gateway/</code> 里有
@@ -819,13 +819,13 @@ key），跟上游密钥是两套，别混。</p>
 <code>data: [DONE]</code>。</p>
 <h3 id="63-dsh-里点开就用两种插件">6.3 DSH 里点开就用（两种插件）</h3>
 <p><strong>装插件</strong>：解包
-<code>plugins-1.0.3.3.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.1</code>
-与 <code>dsh-wb-max-0.2.1</code> 两个目录。把它们覆盖到你的 DSH
+<code>plugins-1.0.3.6.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.2</code>
+与 <code>dsh-wb-max-0.2.2</code> 两个目录。把它们覆盖到你的 DSH
 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次
 DSH。</p>
 <blockquote>
 <p>插件的公开下载渠道：<strong>GitHub Release</strong>
-（<code>plugins-1.0.3.3.tar.gz</code>，Release <code>v1.0.3.3</code>）。</p>
+（<code>plugins-1.0.3.6.tar.gz</code>，Release <code>v1.0.3.6</code>）。</p>
 </blockquote>
 <p><strong>用起来（Max，走网关）</strong>：① 在 DSH
 模型选择里选网关模型（<code>auto</code> / <code>auto-fast</code> /
@@ -856,7 +856,7 @@ Max 或直连。</p>
 </blockquote>
 <h3 id="65-换模型不丢上下文">6.5 换模型不丢上下文</h3>
 <p><strong>一句话</strong>：同一段对话里换模型，不用重开会话、不用重说一遍——历史消息照常带上，网关只替换「这一段由谁来答」。</p>
-<p><strong>为什么不会把任务带偏</strong>（1.0.3.3 的 B1
+<p><strong>为什么不会把任务带偏</strong>（1.0.3.6 的 B1
 边界纪律，默认开）：B1
 会在计划每段带一段只读的「什么时候该换」说明（<code>boundary_policy</code>），其约定是——</p>
 <ul>
@@ -1474,14 +1474,14 @@ DSH；确认 Base URL 指向网关；到管理面确认这把 key 勾了
 网关侧立即生效，但客户端要换成新 token；先确认你改的是对的那套。</p>
 <p><strong>9.15 升级与回滚怎么回</strong>
 <strong>现象</strong>：换了新版本，或升级后行为不对、想退回旧版。
-<strong>原因</strong>：升级不只是换文件，还要合并配置——新版本会新增配置块、也会改动默认值（1.0.3.3
+<strong>原因</strong>：升级不只是换文件，还要合并配置——新版本会新增配置块、也会改动默认值（1.0.3.6
 就新增了上下文治理块、超时值也变了），整份覆盖会把你的设置改坏。
 <strong>怎么办（升级四步）</strong>：① 备份
 <code>config</code>、<code>数据</code>、<code>logs</code>（见 10.4）；②
 解包新包，<strong>保留你自己的</strong>
 <code>config/api-keys.json</code>、凭据、<code>数据/</code>、<code>logs/</code>；③
 合并配置——拿新包 <code>routing.json</code>
-与你的比对，<strong>只补新增块，不要整份覆盖</strong>（1.0.3.3
+与你的比对，<strong>只补新增块，不要整份覆盖</strong>（1.0.3.6
 新增上下文治理块、超时值也变了）；④
 重启并自检（<code>/health</code>、价格自证、一次小请求）。
 <strong>怎么办（回滚三步）</strong>：还原 <code>.bak</code> 文件 → 重启
@@ -1817,7 +1817,7 @@ key，别只做口头交接。</li>
 </tbody>
 </table>
 <h3 id="115-版本与变更摘要10328-组能力各一句">11.5
-版本与变更摘要（1.0.3.3，8 组能力各一句）</h3>
+版本与变更摘要（1.0.3.6，8 组能力各一句）</h3>
 <table>
 <thead>
 <tr class="header">
@@ -1899,7 +1899,7 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 <tr class="odd">
 <td>插件公开下载渠道</td>
 <td><strong>GitHub Release</strong></td>
-<td><code>plugins-1.0.3.3.tar.gz</code> / Release <code>v1.0.3.3</code></td>
+<td><code>plugins-1.0.3.6.tar.gz</code> / Release <code>v1.0.3.6</code></td>
 </tr>
 <tr class="even">
 <td>公网接入方案</td>
@@ -1949,10 +1949,10 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 <ul>
 <li>事实表：（内部编制资料，不随包）</li>
 <li>网关文档：<code>README.md</code>、<code>README.md</code>（网关代码树内）</li>
-<li>版本文档：<code>变更说明-1.0.3.3.md</code>、<code>开关开启与观察.md</code>、<code>交付说明-1.0.3.3-发对侧.md</code></li>
+<li>版本文档：<code>变更说明-1.0.3.6.md</code>、<code>开关开启与观察.md</code>、<code>交付说明-1.0.3.6-发对侧.md</code></li>
 <li>样例配置：<code>sample-config/upstreams.json</code>、<code>sample-config/routing.json</code>；字段另行核对
 <code>config/pricebook.json</code>、<code>config/api-keys.json</code></li>
-<li>其余细节以交付包内 <code>docs-1.0.3.3/</code> 与
+<li>其余细节以交付包内 <code>docs-1.0.3.6/</code> 与
 <code>README.md</code> 为准</li>
 </ul>
 <hr />
@@ -1995,8 +1995,8 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 <td>事实表 §4、§5、§9
 三种入口、§8.2、§8.3；计划与回写必填项、<code>estimate_delta</code>、<code>pricing.policy</code>、<code>estimate_basis</code>、<code>partial</code>、计划状态
 TTL 取自 <code>router_plan.py</code>；插件交互取自
-<code>dsh-wb-pro-0.2.1/README.md</code> 与
-<code>变更说明-1.0.3.3.md</code>；6.5
+<code>dsh-wb-pro-0.2.2/README.md</code> 与
+<code>变更说明-1.0.3.6.md</code>；6.5
 的换模时机（<code>switch_on</code>＝<code>new_user_message</code>/<code>context_rebuild</code>、<code>tool_turns_frozen</code>、豁免项）与转发原则取自
 <code>router_plan.py</code>、<code>README.md</code>；7.7 的页面分区取自
 <code>admin.html</code>、<code>admin-live.html</code></td>
@@ -2005,7 +2005,7 @@ TTL 取自 <code>router_plan.py</code>；插件交互取自
 <td>八、开关与灰度</td>
 <td>事实表 §5（8 组能力与默认值）；逐项开启方法/观察指标/回滚取自
 <code>开关开启与观察.md</code>；上下文治理口径取自
-<code>变更说明-1.0.3.3.md</code></td>
+<code>变更说明-1.0.3.6.md</code></td>
 </tr>
 <tr class="odd">
 <td>九、常见问题</td>

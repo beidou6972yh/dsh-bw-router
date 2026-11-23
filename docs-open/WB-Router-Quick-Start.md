@@ -1,7 +1,7 @@
 # WB 模型路由网关 · 快速上手（用户版）
 
 > **一句话**：该用哪个模型、这一步花多少钱——它先给你一份计划，**你点头才花钱**。
-> 版本 1.0.3.3 ｜ 适合：不会写代码、但会复制粘贴命令的人 ｜ 想省事：把同目录的《Agent 安装说明》整份丢给你的 Agent，让它替你装。
+> 版本 1.0.3.6 ｜ 适合：不会写代码、但会复制粘贴命令的人 ｜ 想省事：把同目录的《Agent 安装说明》整份丢给你的 Agent，让它替你装。
 
 ---
 
@@ -23,9 +23,9 @@
 
 ```bash
 mkdir -p ~/wb-router && cd ~/wb-router
-tar -xzf gateway-1.0.3.3.tar.gz
-tar -xzf plugins-1.0.3.3.tar.gz
-tar -xzf skill-mcp-1.0.3.3.tar.gz
+tar -xzf gateway-1.0.3.6.tar.gz
+tar -xzf plugins-1.0.3.6.tar.gz
+tar -xzf skill-mcp-1.0.3.6.tar.gz
 ls
 ```
 

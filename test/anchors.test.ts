@@ -54,7 +54,7 @@ describe('YAML anchors and aliases are tolerated, not fatal', () => {
     });
     expect(local.models[0]!.capabilities).toContain('vision');
     expect(local.models[1]).toMatchObject({
-      id: 'model-c1:local',
+      id: 'sample-model:8b-mlx',
       contextWindow: 131_072,
       maxOutputTokens: 8_192,
     });

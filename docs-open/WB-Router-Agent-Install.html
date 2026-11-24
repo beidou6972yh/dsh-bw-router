@@ -1,118 +1,284 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>WB-Router-Agent-Install</title>
   <style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-
-ul.task-list[class]{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-font-size: inherit;
-width: 0.8em;
-margin: 0 0.8em 0.2em -1.6em;
-vertical-align: middle;
-}
-.display.math{display: block; text-align: center; margin: 0.5rem auto;}
-
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } 
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.at { color: #7d9029; } 
-code span.bn { color: #40a070; } 
-code span.bu { color: #008000; } 
-code span.cf { color: #007020; font-weight: bold; } 
-code span.ch { color: #4070a0; } 
-code span.cn { color: #880000; } 
-code span.co { color: #60a0b0; font-style: italic; } 
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.do { color: #ba2121; font-style: italic; } 
-code span.dt { color: #902000; } 
-code span.dv { color: #40a070; } 
-code span.er { color: #ff0000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #40a070; } 
-code span.fu { color: #06287e; } 
-code span.im { color: #008000; font-weight: bold; } 
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.kw { color: #007020; font-weight: bold; } 
-code span.op { color: #666666; } 
-code span.ot { color: #007020; } 
-code span.pp { color: #bc7a00; } 
-code span.sc { color: #4070a0; } 
-code span.ss { color: #bb6688; } 
-code span.st { color: #4070a0; } 
-code span.va { color: #19177c; } 
-code span.vs { color: #4070a0; } 
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
-</style>
-  <style type="text/css">:root{--fg:#1f2328;--muted:#57606a;--line:#d0d7de;--bg:#ffffff;--code:#f6f8fa;--accent:#0b6bcb;}
-html{-webkit-text-size-adjust:100%;}
-body{max-width:900px;margin:0 auto;padding:16px 16px 48px;color:var(--fg);background:var(--bg);
-font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;}
-h1{font-size:26px;line-height:1.3;margin:8px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--accent);}
-h2{font-size:21px;margin:28px 0 10px;padding-top:8px;border-top:1px solid var(--line);}
-h3{font-size:18px;margin:20px 0 8px;}
-h4{font-size:16px;margin:16px 0 6px;}
-p,li{font-size:16px;}
-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;
-background:var(--code);padding:1px 5px;border-radius:4px;word-break:break-word;}
-pre{background:var(--code);padding:12px;border-radius:8px;overflow-x:auto;border:1px solid var(--line);}
-pre code{background:none;padding:0;font-size:13.5px;line-height:1.6;white-space:pre;}
-table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;margin:12px 0;font-size:14.5px;}
-th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;}
-th{background:var(--code);font-weight:600;}
-blockquote{margin:12px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#f3f8ff;color:#243b53;}
-blockquote p{margin:4px 0;}
-a{color:var(--accent);}
-hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
-</style>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">WB-Router-Agent-Install</h1>
 </header>
-<h1 id="wb-模型路由网关--agent-安装说明可直接投喂给-agent">WB
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#wb-模型路由网关-agent-安装说明可直接投喂给-agent"
+id="toc-wb-模型路由网关-agent-安装说明可直接投喂给-agent">WB
+模型路由网关 · Agent 安装说明（可直接投喂给 Agent）</a>
+<ul>
+<li><a href="#开工前先问用户三个问题一次问完别反复打扰"
+id="toc-开工前先问用户三个问题一次问完别反复打扰">1.
+开工前：先问用户三个问题（一次问完，别反复打扰）</a></li>
+<li><a href="#环境检查全部通过再往下" id="toc-环境检查全部通过再往下">2.
+环境检查（全部通过再往下）</a></li>
+<li><a href="#安装照抄root-改成用户选的目录"
+id="toc-安装照抄root-改成用户选的目录">3. 安装（照抄；<code>$ROOT</code>
+改成用户选的目录）</a>
+<ul>
+<li><a href="#解包" id="toc-解包">3.1 解包</a></li>
+<li><a href="#装依赖" id="toc-装依赖">3.2 装依赖</a></li>
+<li><a href="#写配置两处必改改前先备份"
+id="toc-写配置两处必改改前先备份">3.3
+写配置（两处必改，改前先备份）</a></li>
+<li><a href="#放密钥只进环境变量" id="toc-放密钥只进环境变量">3.4
+放密钥（只进环境变量）</a></li>
+<li><a href="#启动" id="toc-启动">3.5 启动</a></li>
+<li><a href="#自检另开终端" id="toc-自检另开终端">3.6
+自检（另开终端）</a></li>
+<li><a href="#真调一次会花一点钱先问用户同意"
+id="toc-真调一次会花一点钱先问用户同意">3.7
+真调一次（会花一点钱，先问用户同意）</a></li>
+</ul></li>
+<li><a href="#可选管理面板与密钥" id="toc-可选管理面板与密钥">4.
+可选：管理面板与密钥</a></li>
+<li><a href="#完成判据4-条全过才算装好"
+id="toc-完成判据4-条全过才算装好">5. 完成判据（4
+条全过才算装好）</a></li>
+<li><a href="#禁止事项违反即视为任务失败"
+id="toc-禁止事项违反即视为任务失败">6.
+禁止事项（违反即视为任务失败）</a></li>
+<li><a href="#出问题怎么处理" id="toc-出问题怎么处理">7.
+出问题怎么处理</a></li>
+<li><a href="#回滚" id="toc-回滚">8. 回滚</a></li>
+<li><a href="#交给用户的回报格式就用这-6-行别多写"
+id="toc-交给用户的回报格式就用这-6-行别多写">9.
+交给用户的回报格式（就用这 6 行，别多写）</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="wb-模型路由网关-agent-安装说明可直接投喂给-agent">WB
 模型路由网关 · Agent 安装说明（可直接投喂给 Agent）</h1>
 <blockquote>
 <p><strong>给 Agent
@@ -122,6 +288,10 @@ hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
 → 执行 → 对账」这条链路。</p>
 </blockquote>
 <table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>项</th>
@@ -131,7 +301,7 @@ hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
 <tbody>
 <tr class="odd">
 <td>产品</td>
-<td>WB 模型路由网关 v1.0.3.6（OpenAI 兼容，自托管）</td>
+<td>WB 模型路由网关 v1.0.3.8（OpenAI 兼容，自托管）</td>
 </tr>
 <tr class="even">
 <td>用户画像</td>
@@ -139,7 +309,7 @@ hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
 </tr>
 <tr class="odd">
 <td>交付包</td>
-<td><code>gateway-1.0.3.6.tar.gz</code>、<code>plugins-1.0.3.6.tar.gz</code>、<code>skill-mcp-1.0.3.6.tar.gz</code></td>
+<td><code>gateway-1.0.3.8.tar.gz</code>、<code>plugins-1.0.3.8.tar.gz</code>、<code>skill-mcp-1.0.3.8.tar.gz</code></td>
 </tr>
 <tr class="even">
 <td>完成判据</td>
@@ -148,7 +318,7 @@ hr{border:none;border-top:1px solid var(--line);margin:24px 0;}
 </tbody>
 </table>
 <hr />
-<h2 id="1-开工前先问用户三个问题一次问完别反复打扰">1.
+<h2 id="开工前先问用户三个问题一次问完别反复打扰">1.
 开工前：先问用户三个问题（一次问完，别反复打扰）</h2>
 <ol type="1">
 <li><strong>模型服务地址</strong>：你有哪个 OpenAI 兼容的模型服务（云端
@@ -166,12 +336,17 @@ echo）</li>
 <p>用户答不上「密钥/服务地址」⇒
 停下来告诉用户：「还差一个模型服务，没有它网关装了也不会跑」，不要自己编地址去试。</p>
 </blockquote>
-<h2 id="2-环境检查全部通过再往下">2. 环境检查（全部通过再往下）</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span>                 <span class="co"># 期望 3.12.x</span></span>
+<h2 id="环境检查全部通过再往下">2. 环境检查（全部通过再往下）</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span>                 <span class="co"># 期望 3.12.x</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip <span class="at">--version</span>          <span class="co"># 没有就 python3 -m ensurepip 或装 python3-pip</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ss</span> <span class="at">-ltn</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-q</span> <span class="st">&#39;:18790 &#39;</span> <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> PORT_BUSY <span class="kw">||</span> <span class="bu">echo</span> PORT_FREE   <span class="co"># 期望 PORT_FREE</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-1</span>           <span class="co"># 至少留 2GB</span></span></code></pre></div>
 <table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>不通过</th>
@@ -190,7 +365,7 @@ echo）</li>
 </tr>
 <tr class="odd">
 <td>18790 被占</td>
-<td><code>ss -ltnp | grep 18790</code>
+<td><code>ss -ltnp \| grep 18790</code>
 看是谁；是旧实例就停掉，别杀别人的进程</td>
 </tr>
 <tr class="even">
@@ -199,27 +374,35 @@ echo）</li>
 </tr>
 </tbody>
 </table>
-<h2 id="3-安装照抄root-改成用户选的目录">3.
-安装（照抄；<code>$ROOT</code> 改成用户选的目录）</h2>
-<h3 id="31-解包">3.1 解包</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">ROOT</span><span class="op">=</span>~/wb-router</span>
+<h2 id="安装照抄root-改成用户选的目录">3. 安装（照抄；<code>$ROOT</code>
+改成用户选的目录）</h2>
+<h3 id="解包">3.1 解包</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">ROOT</span><span class="op">=</span>~/wb-router</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.6.tar.gz</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.6.tar.gz</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.6.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.8.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.8.tar.gz</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.8.tar.gz</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>    <span class="co"># 期望：gateway  plugins  skill-mcp</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-f</span> gateway/main.py <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="at">-d</span> gateway/config <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> PKG_OK</span></code></pre></div>
-<h3 id="32-装依赖">3.2 装依赖</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">--user</span> PyYAML requests</span></code></pre></div>
+<h3 id="装依赖">3.2 装依赖</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">--user</span> PyYAML requests</span></code></pre></div>
 <p>期望：<code>Successfully installed ...</code>；失败就贴错误原文给用户，别重复重试三次以上。</p>
-<h3 id="33-写配置两处必改改前先备份">3.3
+<h3 id="写配置两处必改改前先备份">3.3
 写配置（两处必改，改前先备份）</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> upstreams.json upstreams.json.bak</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/routing.json   config/routing.json.bak</span></code></pre></div>
-<p><strong>（a）<code>upstreams.json</code></strong> ——
-把样例里的占位换成用户给的真实值。单个上游的结构是：</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<p><strong>（a）<code>upstreams.json</code>（网关根目录）</strong> ——
+把样例里的占位换成用户给的真实值。⚠
+注意：<code>config/upstreams.json</code>
+是历史样例、<strong>网关不读</strong>（<code>main.py</code> 读
+<code>BASE_DIR/upstreams.json</code>，即
+<code>gateway/upstreams.json</code>），改错文件不报错但不生效。单个上游的结构是：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;my-cloud&quot;</span><span class="fu">,</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;base_url&quot;</span><span class="fu">:</span> <span class="st">&quot;https://你的服务地址/v1&quot;</span><span class="fu">,</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;api_key_env&quot;</span><span class="fu">:</span> <span class="st">&quot;MY_KEY_A&quot;</span><span class="fu">,</span></span>
@@ -241,17 +424,20 @@ echo）</li>
 <code>capability_meta</code>、<code>hint.tiers</code>，如果存在）。不要整份重写，不要改
 <code>context_governor</code>（保持默认 <code>shadow</code>）。</p>
 <p>改完自检 JSON 合法：</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool upstreams.json <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> UPSTREAMS_OK</span>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool upstreams.json <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> UPSTREAMS_OK</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool config/routing.json   <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> ROUTING_OK</span></code></pre></div>
-<h3 id="34-放密钥只进环境变量">3.4 放密钥（只进环境变量）</h3>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MY_KEY_A</span><span class="op">=</span><span class="st">&#39;用户提供的密钥&#39;</span></span>
+<h3 id="放密钥只进环境变量">3.4 放密钥（只进环境变量）</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MY_KEY_A</span><span class="op">=</span><span class="st">&#39;用户提供的密钥&#39;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">${MY_KEY_A</span><span class="op">:+</span>KEY_SET<span class="va">}</span><span class="st">&quot;</span>        <span class="co"># 期望输出 KEY_SET；不要 echo 密钥本身</span></span></code></pre></div>
 <p>要给长期运行用，就把这行写进用户自己的启动脚本（systemd
 <code>Environment=</code> 或 supervisor
 <code>environment=</code>），<strong>不要</strong>写进仓库里的任何文件。</p>
-<h3 id="35-启动">3.5 启动</h3>
+<h3 id="启动">3.5 启动</h3>
 <p>前台试跑（先确认能起来）：</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> main.py</span></code></pre></div>
 <p>期望：打印一行「凭据已加载：N 个
 ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</code>
@@ -261,21 +447,21 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 <code>router-gateway</code>，systemd
 单元同理）；<strong>不要</strong>自己发明开机自启方式。</p>
 </blockquote>
-<h3 id="36-自检另开终端">3.6 自检（另开终端）</h3>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool <span class="kw">|</span> <span class="fu">head</span> <span class="at">-30</span></span>
+<h3 id="自检另开终端">3.6 自检（另开终端）</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool <span class="kw">|</span> <span class="fu">head</span> <span class="at">-30</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/v1/models <span class="kw">|</span> <span class="fu">head</span> <span class="at">-c</span> 400</span></code></pre></div>
-<p>期望：</p>
-<ol type="1">
-<li><code>/health</code> 里 <code>&quot;ok&quot;: true</code>；</li>
-<li>用户配的每个上游 <code>&quot;state&quot;: &quot;ok&quot;</code>；</li>
-<li><code>/v1/models</code> 里能看到
-<code>auto</code>、<code>auto-fast</code>、<code>auto-strong</code>。</li>
-</ol>
-<h3 id="37-真调一次会花一点钱先问用户同意">3.7
+<p>期望： 1. <code>/health</code> 里 <code>"ok": true</code>； 2.
+用户配的每个上游 <code>"state": "ok"</code>； 3. <code>/v1/models</code>
+里能看到
+<code>auto</code>、<code>auto-fast</code>、<code>auto-strong</code>。</p>
+<h3 id="真调一次会花一点钱先问用户同意">3.7
 真调一次（会花一点钱，先问用户同意）</h3>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/smoke.py     <span class="co"># 期望：打印 HTTP 码/耗时/返回模型，无 4xx/5xx</span></span></code></pre></div>
-<h2 id="4-可选管理面板与密钥">4. 可选：管理面板与密钥</h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 本机打开（只在内网）：  http://127.0.0.1:18790/admin</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/smoke.py     <span class="co"># 期望：打印 HTTP 码/耗时/返回模型，无 4xx/5xx</span></span></code></pre></div>
+<h2 id="可选管理面板与密钥">4. 可选：管理面板与密钥</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 本机打开（只在内网）：  http://127.0.0.1:18790/admin</span></span></code></pre></div>
 <p>首登后在「API keys」里新建一把给用户自己用（选
 <code>scopes=plan,chat</code>，设
 <code>rpm</code>）；<strong>明文只显示一次</strong>，让用户当场存好。
@@ -283,7 +469,7 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 <code>required</code> 设为
 <code>false</code>，<strong>但交付给用户前必须改回
 <code>true</code></strong> 并配一把 key——否则等于没有鉴权。</p>
-<h2 id="5-完成判据4-条全过才算装好">5. 完成判据（4 条全过才算装好）</h2>
+<h2 id="完成判据4-条全过才算装好">5. 完成判据（4 条全过才算装好）</h2>
 <ol type="1">
 <li><code>curl /health</code> 返回 <code>ok: true</code>，且每个上游
 <code>state: ok</code>；</li>
@@ -293,7 +479,7 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 <li>打开 <code>/admin</code>
 能登录（或按发布说明给出默认账号）且页面不报错。</li>
 </ol>
-<h2 id="6-禁止事项违反即视为任务失败">6.
+<h2 id="禁止事项违反即视为任务失败">6.
 禁止事项（违反即视为任务失败）</h2>
 <ol type="1">
 <li>不把密钥写进任何文件、不 echo、不进日志、不进回报。</li>
@@ -304,8 +490,13 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 都不许删）。</li>
 <li>不在没得到用户同意时真调付费模型。</li>
 </ol>
-<h2 id="7-出问题怎么处理">7. 出问题怎么处理</h2>
+<h2 id="出问题怎么处理">7. 出问题怎么处理</h2>
 <table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>现象</th>
@@ -328,7 +519,7 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 <tr class="odd">
 <td>启动直接退出、无报错</td>
 <td>端口被占 / 配置解析失败</td>
-<td><code>python3 -m json.tool config/routing.json</code>；<code>ss -ltn | grep 18790</code></td>
+<td><code>python3 -m json.tool config/routing.json</code>；<code>ss -ltn \| grep 18790</code></td>
 </tr>
 <tr class="even">
 <td><code>/health</code> 里某上游 <code>state != ok</code></td>
@@ -353,12 +544,13 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 </tr>
 </tbody>
 </table>
-<h2 id="8-回滚">8. 回滚</h2>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
+<h2 id="回滚">8. 回滚</h2>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> upstreams.json.bak upstreams.json</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/routing.json.bak   config/routing.json</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 重启进程；数据/ 与 logs/ 保留不动</span></span></code></pre></div>
-<h2 id="9-交给用户的回报格式就用这-6-行别多写">9.
+<h2 id="交给用户的回报格式就用这-6-行别多写">9.
 交给用户的回报格式（就用这 6 行，别多写）</h2>
 <pre><code>装好了：&lt;安装目录&gt;，当前可用模型 &lt;N&gt; 个（&lt;列表前三个&gt;）
 访问地址：http://127.0.0.1:18790 （管理面 /admin，只在本机/内网可开）
@@ -367,7 +559,7 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 怎么用：在 DSH 里选 auto / auto-fast / auto-strong，先「生成计划」再「确认开工」
 出问题先看：日志 logs/，或把 /health 的输出发我</code></pre>
 <hr />
-<p><em>版本 1.0.3.6；更多细节见同目录《使用说明书》（26 页）与包内
-<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.6/</code>。</em></p>
+<p><em>版本 1.0.3.8；更多细节见同目录《使用说明书》（26 页）与包内
+<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.8/</code>。</em></p>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # WB 模型路由网关 · 使用说明书（零编码基础版）
 
-> **版本**：1.0.3.6（2026-11-21）　**展示名**：WB 模型路由网关（英文可用 WB Router）
+> **版本**：1.0.3.8（2026-11-24）　**展示名**：WB 模型路由网关（英文可用 WB Router）
 > **读者**：不会写代码，但会解压文件、会复制粘贴命令的人
 > **一句话**：把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。
 > **开源状态**：**已于 2026-11-22 开源**；仓库 `https://github.com/beidou6972yh/dsh-bw-router`，许可证 **MIT**（详见 §11.6）。
@@ -134,9 +134,9 @@ cd ~/wb-router
 
 ```bash
 cd ~/wb-router
-tar -xzf gateway-1.0.3.6.tar.gz
-tar -xzf plugins-1.0.3.6.tar.gz
-tar -xzf skill-mcp-1.0.3.6.tar.gz
+tar -xzf gateway-1.0.3.8.tar.gz
+tar -xzf plugins-1.0.3.8.tar.gz
+tar -xzf skill-mcp-1.0.3.8.tar.gz
 ls
 ```
 
@@ -233,7 +233,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -20
 | 价格自证（填价后） | `python3 scripts/price-attest.py` | 退出码 0，覆盖里 `unsourced` 为 0 |
 | 回归（可选，几分钟） | `bash run-tests.sh --clean` | 两段都 `OK`、无失败、退出码 0 |
 
-> 回归数字：发布方出厂验证是**两段各 568 个用例全绿、exit 0**。你自己跑时判据是「**两段一致 ＋ 全绿**」，不必盯固定数字——用例数会随配置展开而变。
+> 回归数字：发布方出厂验证是**两段各 579 个用例全绿、exit 0**。你自己跑时判据是「**两段一致 ＋ 全绿**」，不必盯固定数字——用例数会随配置展开而变。
 
 ---
 
@@ -406,9 +406,9 @@ curl -sS http://127.0.0.1:18790/v1/chat/completions \
 
 ### 6.3 DSH 里点开就用（两种插件）
 
-**装插件**：解包 `plugins-1.0.3.6.tar.gz`，得到 `dsh-wb-pro-0.2.2` 与 `dsh-wb-max-0.2.2` 两个目录。把它们覆盖到你的 DSH 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次 DSH。
+**装插件**：解包 `plugins-1.0.3.8.tar.gz`，得到 `dsh-wb-pro-0.2.4` 与 `dsh-wb-max-0.2.4` 两个目录。把它们覆盖到你的 DSH 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次 DSH。
 
-> 插件公开下载：GitHub Release `v1.0.3.6` 资产 `plugins-1.0.3.6.tar.gz`（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.6 ）。
+> 插件公开下载：GitHub Release `v1.0.3.8` 资产 `plugins-1.0.3.8.tar.gz`（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.8 ）。
 
 **用起来（Max，走网关）**：① 在 DSH 模型选择里选网关模型（`auto` / `auto-fast` / `auto-strong`）；② 输入区点「生成计划」；③ 计划卡出现在输入区上方，每段写着用哪个模型、大概多少钱；④ 点「确认开工」，会话切到第 1 段模型；⑤ 状态栏显示 `[路由] 第 n/N 段 · 当前模型 · 已花 … · 下一段：…`，按提示逐段推进；开工前可在计划卡上给某段换模型。
 
@@ -843,7 +843,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 | `ROUTER_B4_SHADOW` / `ROUTER_B5_PASSTHROUGH` / `ROUTER_B5_PASSTHROUGH_KEYS` | B4 影子判定 / B5 总闸 / 限定钥匙 | 关 / 关 / 空 |
 | `WB_API_KEYS_REQUIRED` | 强制开启 per-key 校验（优先于文件里的 `required`） | 跟随文件 |
 
-### 11.5 版本与变更摘要（1.0.3.6，8 组能力各一句）
+### 11.5 版本与变更摘要（1.0.3.8，8 组能力各一句）
 
 | 组 | 一句话 |
 |---|---|
@@ -856,7 +856,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 | A0/L5 价格单源 | 价格只以 `pricebook.json` 为准，默认自证覆盖与偏差 |
 | 观测 | 账本记 `ctx_gov`，响应头给窗口/预算/已用/裁剪/档位 |
 
-**出厂验证口径（发布方数据）**：价格自证 **27/27**、drift 0；当前部署接入 **5 家**上游（云端＋本地）；**3 种入口**（DSH Pro 插件 / DSH Max 插件 / OpenAI 兼容直连）；回归 **568** 个用例两段全绿；异机压测 **2166 请求 / 0 失败**；能力分 **8 组**；账本**只记特征、不记正文**。
+**出厂验证口径（发布方数据）**：价格自证 **27/27**、drift 0；当前部署接入 **5 家**上游（云端＋本地）；**3 种入口**（DSH Pro 插件 / DSH Max 插件 / OpenAI 兼容直连）；回归 **579** 个用例两段全绿；异机压测 **2166 请求 / 0 失败**；能力分 **8 组**；账本**只记特征、不记正文**。
 
 ### 11.6 待确认 / 未验证清单
 
@@ -866,7 +866,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 | 开源初版系统要求 | **部分未验证** | Linux/容器已验证；**Windows/macOS 原生安装未验证** |
 | 开源版管理面板默认账号 | **admin/admin（源码默认值）** | 首次登录后立刻改口令；管理面只绑 `127.0.0.1` |
 | 上游名单与价格表 | **随你自配** | 本书不承诺任何具体价格与上游清单 |
-| 插件公开下载渠道 | **GitHub Release** | `plugins-1.0.3.6.tar.gz` / Release `v1.0.3.6` |
+| 插件公开下载渠道 | **GitHub Release** | `plugins-1.0.3.8.tar.gz` / Release `v1.0.3.8` |
 | 公网接入方案 | **未包含** | 开源包只保证「只绑回环＋只放行 `/health` 与 `/v1/*`」；要对外请自建反向代理与白名单 |
 
 ### 11.7 术语小词典
@@ -884,9 +884,9 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 
 - 事实表：（内部编制资料，不随包）
 - 网关文档：`README.md`、`README.md`（网关代码树内）
-- 版本文档：`变更说明-1.0.3.6.md`、`开关开启与观察.md`、`交付说明-1.0.3.6-发对侧.md`
+- 版本文档：`变更说明-1.0.3.8.md`、`开关开启与观察.md`
 - 样例配置：`gateway/upstreams.json`、`gateway/config/routing.json`；字段另行核对 `config/pricebook.json`、`config/api-keys.json`
-- 其余细节以交付包内 `docs-1.0.3.6/` 与 `README.md` 为准
+- 其余细节以交付包内 `docs-1.0.3.8/` 与 `README.md` 为准
 
 ---
 
@@ -901,7 +901,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 | 三、安装前准备 | 事实表 §11-2（系统要求未验证口径）、§2（Python 3.12、两个依赖、18790）、§8.2 |
 | 四、安装 | 事实表 §8.1 安装步骤、§2 服务形态；期望输出取自 `README.md` 启动与 `/health`；回归判据取自 `run-tests.sh` 头部说明 |
 | 五、模型配置 | 事实表 §8.2、§11-4；字段名取自 `gateway/upstreams.json`、`gateway/config/routing.json`、`config/pricebook.json`、`config/api-keys.json`；价格命令取自 `scripts/price_sync.py`、`scripts/price-attest.py` 头部说明 |
-| 六、七章 | 事实表 §4、§5、§9 三种入口、§8.2、§8.3；计划与回写必填项、`estimate_delta`、`pricing.policy`、`estimate_basis`、`partial`、计划状态 TTL 取自 `router_plan.py`；插件交互取自 `dsh-wb-pro-0.2.2/README.md` 与 `变更说明-1.0.3.6.md`；6.5 的换模时机（`switch_on`＝`new_user_message`/`context_rebuild`、`tool_turns_frozen`、豁免项）与转发原则取自 `router_plan.py`、`README.md`；7.7 的页面分区取自 `admin.html`、`admin-live.html` |
+| 六、七章 | 事实表 §4、§5、§9 三种入口、§8.2、§8.3；计划与回写必填项、`estimate_delta`、`pricing.policy`、`estimate_basis`、`partial`、计划状态 TTL 取自 `router_plan.py`；插件交互取自 `dsh-wb-pro-0.2.4/README.md` 与 `变更说明-1.0.3.6.md`；6.5 的换模时机（`switch_on`＝`new_user_message`/`context_rebuild`、`tool_turns_frozen`、豁免项）与转发原则取自 `router_plan.py`、`README.md`；7.7 的页面分区取自 `admin.html`、`admin-live.html` |
 | 八、开关与灰度 | 事实表 §5（8 组能力与默认值）；逐项开启方法/观察指标/回滚取自 `开关开启与观察.md`；上下文治理口径取自 `变更说明-1.0.3.6.md` |
 | 九、常见问题 | 事实表 §8.4 错误码表；本地 503 细节与熔断时长取自 `README.md`；计划过期取自 `router_plan.py`；其余为安装运维常识（不引入新数字） |
 | 十、十一章 | 事实表 §10、§6「只记特征不记正文」、§8.3 端点、§8.4 错误码、§5 能力组、§6 硬数字、§11 待确认；字段速查来自样例配置与 `ROUTER_*` 环境变量（见 `开关开启与观察.md`） |
@@ -918,7 +918,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 |---|---|
 | FAQ 条数 | **18 条**（9.1–9.18），满足 ≥15；覆盖 401、429、400 `context_window_exceeded`、413、503（`local_unavailable`/`local_vram_insufficient`）、502、熔断 `circuit_open`、启动失败/端口占用、价格缺失或对不上、计划卡不出现/点了没反应、流式中断、账本找不到、换 key 不生效、升级与回滚、换模型后上下文是否还在 |
 | 目录锚点 | **12 个**目录条目，逐个对应 `id="s1"…"s12"` 与 12 个章节标题，一一一致 |
-| 硬数字 | 只用事实表 §6 的 27/27、5 家、3 种入口、568、2166 请求/0 失败、8 组、只记特征不记正文；其余为操作参数（状态码、270/600 秒、1024、0.2、`127.0.0.1:18790`、Python 3.12、24 小时计划状态、60 秒本地冷却、20 秒等待上限），均出自事实表 §2/§5/§8 与上述 repo 文档 |
+| 硬数字 | 只用事实表 §6 的 27/27、5 家、3 种入口、579、2166 请求/0 失败、8 组、只记特征不记正文；其余为操作参数（状态码、270/600 秒、1024、0.2、`127.0.0.1:18790`、Python 3.12、24 小时计划状态、60 秒本地冷却、20 秒等待上限），均出自事实表 §2/§5/§8 与上述 repo 文档 |
 | 禁用表述 | 自 grep 结果：无星号计数、无百分比数值（许可证名 MIT 仅出现在 1.4 与 11.6 的既定事实陈述中）、无排名或独占类夸张表述；效果承诺类词只出现在 1.4「不做此类承诺」的否定句与本行说明中；未写具体单价（价格示例已标注「结构示意」） |
 | 命令与路径 | 命令全在代码块内；路径统一 `~/wb-router`（＝安装目录）相对写法，未写死发布方本机绝对路径；本机绝对路径仅出现在 11.8 来源 |
 | 行数统计 | `wc -l` 实测 **926 行**（按本轮修订口径 ≤940 行） |

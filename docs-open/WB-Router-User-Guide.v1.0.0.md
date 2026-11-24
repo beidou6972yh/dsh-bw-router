@@ -244,7 +244,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -20
 
 | 文件 | 管什么 | 必须改 | 改错会怎样 |
 |---|---|---|---|
-| `config/upstreams.json` | 有哪些上游、怎么连、每个模型的窗口与能力 | 上游 `id`、`base_url`、`api_key_env`、模型清单 | 连不上、401、超窗误判、模型选不到 |
+| `upstreams.json`（网关根目录，非 config/） | 有哪些上游、怎么连、每个模型的窗口与能力 | 上游 `id`、`base_url`、`api_key_env`、模型清单 | 连不上、401、超窗误判、模型选不到 |
 | `config/routing.json` | 怎么选：虚拟模型、候选链、时段、熔断、超时、上下文治理 | `routes`／`strategies` 里的「上游/模型」键、`peak`、`timeouts`、`context_governor` | 选到不存在的模型（启动告警剔除）、候选全灭回 502 |
 | `config/pricebook.json` | 每个模型多少钱（**价格只以这一份为准**） | 每个模型的输入/输出单价（分峰谷） | 计划显示「0（待用户录入）」，不算钱、对不了账 |
 | `config/api-keys.json` | 谁能用、用哪些接口、每分钟多少次 | `required`、每把 key 的 `scopes` 与 `rpm` | 401；或能看计划但执行被拒（缺 scope） |
@@ -825,7 +825,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 
 | 文件 | 关键字段 | 一句话 |
 |---|---|---|
-| `config/upstreams.json` | `upstreams[].id`/`base_url`/`api_key_env`/`max_rpm`；`models.<模型>.context_window`/`.max_tokens`/`.vision`/`.tier` | 有哪些上游、怎么连、每个模型能吃多长 |
+| `upstreams.json`（网关根目录，非 config/） | `upstreams[].id`/`base_url`/`api_key_env`/`max_rpm`；`models.<模型>.context_window`/`.max_tokens`/`.vision`/`.tier` | 有哪些上游、怎么连、每个模型能吃多长 |
 | `config/routing.json` | `virtual_models`、`routes`（时段×级别候选链）、`strategies`（`fast`/`strong`）、`complexity`、`peak`、`breaker`、`timeouts`、`context_governor`、`hint`、`ledger.path` | 怎么选、何时算高峰、出错怎么退 |
 | `config/pricebook.json` | `models.<模型>.offers[].price.input/output/cache_hit`（`peak`/`offpeak`）、`rules.peak_rule`、`currency` | 每个模型多少钱（价格只以这一份为准） |
 | `config/api-keys.json` | `required`、`keys[].scopes`（`plan`/`chat`）、`keys[].rpm`、`keys[].revoked_at` | 谁能用、能用哪些接口、多快 |
@@ -885,7 +885,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 - 事实表：（内部编制资料，不随包）
 - 网关文档：`README.md`、`README.md`（网关代码树内）
 - 版本文档：`变更说明-1.0.3.6.md`、`开关开启与观察.md`、`交付说明-1.0.3.6-发对侧.md`
-- 样例配置：`sample-config/upstreams.json`、`sample-config/routing.json`；字段另行核对 `config/pricebook.json`、`config/api-keys.json`
+- 样例配置：`gateway/upstreams.json`、`gateway/config/routing.json`；字段另行核对 `config/pricebook.json`、`config/api-keys.json`
 - 其余细节以交付包内 `docs-1.0.3.6/` 与 `README.md` 为准
 
 ---
@@ -900,7 +900,7 @@ curl -s http://127.0.0.1:18790/health | python3 -m json.tool | head -5
 | 一、二章 | 事实表 §0 命名与发布状态、§1 一句话定位、§2 组成、§3 核心问题、§4 四步链、§7 差异对比（只比决策单位/开关/钱的口径/形态）、§11 待确认 |
 | 三、安装前准备 | 事实表 §11-2（系统要求未验证口径）、§2（Python 3.12、两个依赖、18790）、§8.2 |
 | 四、安装 | 事实表 §8.1 安装步骤、§2 服务形态；期望输出取自 `README.md` 启动与 `/health`；回归判据取自 `run-tests.sh` 头部说明 |
-| 五、模型配置 | 事实表 §8.2、§11-4；字段名取自 `sample-config/upstreams.json`、`sample-config/routing.json`、`config/pricebook.json`、`config/api-keys.json`；价格命令取自 `scripts/price_sync.py`、`scripts/price-attest.py` 头部说明 |
+| 五、模型配置 | 事实表 §8.2、§11-4；字段名取自 `gateway/upstreams.json`、`gateway/config/routing.json`、`config/pricebook.json`、`config/api-keys.json`；价格命令取自 `scripts/price_sync.py`、`scripts/price-attest.py` 头部说明 |
 | 六、七章 | 事实表 §4、§5、§9 三种入口、§8.2、§8.3；计划与回写必填项、`estimate_delta`、`pricing.policy`、`estimate_basis`、`partial`、计划状态 TTL 取自 `router_plan.py`；插件交互取自 `dsh-wb-pro-0.2.2/README.md` 与 `变更说明-1.0.3.6.md`；6.5 的换模时机（`switch_on`＝`new_user_message`/`context_rebuild`、`tool_turns_frozen`、豁免项）与转发原则取自 `router_plan.py`、`README.md`；7.7 的页面分区取自 `admin.html`、`admin-live.html` |
 | 八、开关与灰度 | 事实表 §5（8 组能力与默认值）；逐项开启方法/观察指标/回滚取自 `开关开启与观察.md`；上下文治理口径取自 `变更说明-1.0.3.6.md` |
 | 九、常见问题 | 事实表 §8.4 错误码表；本地 503 细节与熔断时长取自 `README.md`；计划过期取自 `router_plan.py`；其余为安装运维常识（不引入新数字） |

@@ -1,6 +1,6 @@
 {
   "name": "dsh-bw-router",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "B&W (小棒 & 灰狼) — DSH plugin: plan a task into stages, pick the right model per stage, and switch models inside one session without losing context.",
   "type": "module",
   "license": "MIT",

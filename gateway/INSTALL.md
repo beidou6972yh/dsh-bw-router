@@ -15,7 +15,7 @@ tar -xzf gateway-1.0.3.6.tar.gz
 cd gateway
 ```
 
-1. `config/upstreams.json`：把 `up-a…local-lan`、`*.example.com` 换成你侧真实上游；密钥走每条的 `api_key_env` 环境变量。
+1. `upstreams.json`（网关根目录）：把 `up-a…local-lan`、`*.example.com` 换成你侧真实上游；密钥走每条的 `api_key_env` 环境变量。
 2. `config/routing.json`：`routes` / `strategies` / `capability_meta` 三处的 `<上游>/<模型>` 键要与 upstreams 一致。
 3. `config/pricebook.json`：价目唯一真源；样例含 `model-usd-fast`（USD 报价，演示币种与汇率折算）。
 4. `config/fx-rates.json`：汇率真源（键名 `<币种>CNY`，如 `USDCNY`）；非 CNY 报价缺汇率时判「价未知」。

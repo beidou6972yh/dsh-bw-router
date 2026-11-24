@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.4 — 2026-11-24
+
+配合网关 **1.0.3.8** 发行：补齐 v1.0.3.7 复测报告指出的 B 项残留（User-Guide 两处表格 + 全部 PDF 导出件），并顺手修 `gateway/INSTALL.md` 同病。
+
+### 修复 B 项残留（复测报告 ⚠ 项闭环）
+- `docs-open/WB-Router-User-Guide.v1.0.0.md`：**两处表格**（§5.1 配置文件表、§11.3 字段表）`config/upstreams.json` → `upstreams.json`（网关根目录）；`sample-config/upstreams.json` 两处旧引用改为 `gateway/upstreams.json`。
+- `gateway/INSTALL.md`：第 1 步 `config/upstreams.json` → `upstreams.json`（本身也是错的，复测报告未提，同批修）。
+- **全部 3 份 PDF 重出**（Agent-Install / Quick-Start / User-Guide）：Chromium 打印，`pdftotext` 复核 `config/upstreams` 命中 **0**。
+
+### 验证
+- `python3 -m unittest discover -s tests` → **Ran 579 / OK**
+- 3 份 PDF 文本复核：旧路径 0 命中
+- 残留仅保留 2 处「config/upstreams.json 不生效」的警示句（有意保留）
+
 ## 0.2.3 — 2026-11-24
 
 配合网关 **1.0.3.7** 发行：修跨宿主文档路径缺陷（对照外部实测报告 A/B 两项 + 同病扩展）。

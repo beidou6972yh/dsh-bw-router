@@ -33,7 +33,7 @@ ls
 
 ### 第 2 步：填两个地方
 
-**（a）改配置文件**：`gateway/config/upstreams.json` 里把三处换成你自己的：
+**（a）改配置文件**：`gateway/upstreams.json`（网关根目录） 里把三处换成你自己的：
 
 | 改什么 | 改成什么 |
 |---|---|

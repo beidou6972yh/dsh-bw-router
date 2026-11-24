@@ -1,6 +1,6 @@
 {
   "name": "dsh-wb-max",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "WB 路由 · Max：DSH 调用 WB 模型路由决策器（网关）的 Max 模式前端",
   "type": "module",
   "license": "MIT",

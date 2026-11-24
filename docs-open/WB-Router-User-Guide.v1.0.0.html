@@ -357,7 +357,7 @@ JSON、不进聊天记录、不进截图。</li>
 两份模板，可以直接抄：</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> sample-config/routing.json   gateway/config/routing.json</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> sample-config/upstreams.json gateway/config/upstreams.json</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> gateway/upstreams.json gateway/upstreams.json.bak</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool gateway/config/routing.json <span class="op">&gt;</span> /dev/null   <span class="co"># 无输出＝JSON 合法</span></span></code></pre></div>
 <h3 id="44-第-3-步把凭据放进环境变量">4.4 第 3
 步：把凭据放进环境变量</h3>
@@ -521,7 +521,7 @@ supervisor，服务名
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>config/upstreams.json</code></td>
+<td><code>upstreams.json</code></td>
 <td>有哪些上游、怎么连、每个模型的窗口与能力</td>
 <td>上游
 <code>id</code>、<code>base_url</code>、<code>api_key_env</code>、模型清单</td>
@@ -1552,7 +1552,7 @@ key，别只做口头交接。</li>
 <div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router/gateway</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 还原（&lt;备份名&gt; 换成你的目录名）</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-&lt;备份名&gt;/config/routing.json&quot;</span>   config/routing.json</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-&lt;备份名&gt;/config/upstreams.json&quot;</span> config/upstreams.json</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/wb-backup-&lt;备份名&gt;/upstreams.json&quot;</span> upstreams.json</span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 重启：前台 Ctrl+C 后重新 python3 main.py；用进程管理器的 restart 你的服务</span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> main.py</span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 另开终端自检</span></span>
@@ -1740,7 +1740,7 @@ key，别只做口头交接。</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>config/upstreams.json</code></td>
+<td><code>upstreams.json</code></td>
 <td><code>upstreams[].id</code>/<code>base_url</code>/<code>api_key_env</code>/<code>max_rpm</code>；<code>models.&lt;模型&gt;.context_window</code>/<code>.max_tokens</code>/<code>.vision</code>/<code>.tier</code></td>
 <td>有哪些上游、怎么连、每个模型能吃多长</td>
 </tr>
@@ -1950,7 +1950,7 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 <li>事实表：（内部编制资料，不随包）</li>
 <li>网关文档：<code>README.md</code>、<code>README.md</code>（网关代码树内）</li>
 <li>版本文档：<code>变更说明-1.0.3.6.md</code>、<code>开关开启与观察.md</code>、<code>交付说明-1.0.3.6-发对侧.md</code></li>
-<li>样例配置：<code>sample-config/upstreams.json</code>、<code>sample-config/routing.json</code>；字段另行核对
+<li>样例配置：<code>upstreams.json</code>、<code>sample-config/routing.json</code>；字段另行核对
 <code>config/pricebook.json</code>、<code>config/api-keys.json</code></li>
 <li>其余细节以交付包内 <code>docs-1.0.3.6/</code> 与
 <code>README.md</code> 为准</li>
@@ -1986,7 +1986,7 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>568</strong>
 <tr class="even">
 <td>五、模型配置</td>
 <td>事实表 §8.2、§11-4；字段名取自
-<code>sample-config/upstreams.json</code>、<code>sample-config/routing.json</code>、<code>config/pricebook.json</code>、<code>config/api-keys.json</code>；价格命令取自
+<code>upstreams.json</code>、<code>sample-config/routing.json</code>、<code>config/pricebook.json</code>、<code>config/api-keys.json</code>；价格命令取自
 <code>scripts/price_sync.py</code>、<code>scripts/price-attest.py</code>
 头部说明</td>
 </tr>

@@ -50,7 +50,7 @@ description: 非 DSH 用户的 WB-Max 路由：收到「[WB-Max路由]」或用�
 
 ```bash
 NODE="$(command -v node)"        # 本机真实路径 /usr/local/bin/node；不要写 /usr/bin/node（不存在）
-CLI="${DSH_HOME:-/opt/wb-router}/tools/wb-max-mcp/bin/wb-max.mjs"
+CLI="${WB_MAX_CLI:-$(ls ./skill-mcp/wb-max-mcp/bin/wb-max.mjs ./wb-max-mcp/bin/wb-max.mjs "${DSH_HOME:-/nonexistent}/tools/wb-max-mcp/bin/wb-max.mjs" /opt/wb-router/tools/wb-max-mcp/bin/wb-max.mjs 2>/dev/null | head -1)}"; [ -f "$CLI" ] || { echo "找不到 wb-max.mjs，请设 WB_MAX_CLI 指向实际路径"; exit 2; }
 $NODE $CLI health
 $NODE $CLI plan --task "任务" --strategy auto
 $NODE $CLI exec --plan-id <id> --stage-id s1 --model <计划 model.key> --prompt "..." --confirmed true --strategy <...> --capability <...>
@@ -71,17 +71,17 @@ $NODE $CLI exec --plan-id <id> --stage-id s1 --model <计划 model.key> --prompt
 | 优先级 | 来源 | 形态 | 说明 |
 |---|---|---|---|
 | 1（最高） | 环境变量 `WB_GATEWAY_API_KEY` | 明文 token | 显式覆盖一切；适合临时/外部机器 |
-| 2 | 文件 `WB_GATEWAY_KEY_FILE`（默认 `/opt/wb-router/config/wb-remote.json`，权限 600） | `{"token":"..."}` | 本机默认来源；只读，不进仓库 |
+| 2 | 文件 `WB_GATEWAY_KEY_FILE`（默认 `/opt/wb-router/config/wb-remote.json`，可用 `WB_GATEWAY_KEY_FILE` 覆盖；权限 600） | `{"token":"..."}` | 本机默认来源；只读，不进仓库 |
 | 3 | 都没有 | — | **MCP 对需要鉴权的接口直接报可操作错误**：`未找到网关凭据：请设置 WB_GATEWAY_API_KEY 或提供可读的 WB_GATEWAY_KEY_FILE…`；health 不需要凭据，仍可用 |
 
 - **冲突处置**：env 与文件同时存在且值不同 ⇒ **env 优先**，文件被忽略（不报错，但报错信息里注明 `source=env`）。同一台机器不要长期两份不同 token。
 - **外部机器（零刻/云主机/他人）**：拿不到本机 `wb-remote.json` ⇒ 向灰狼申请**短期 key**（写明用途/期限），用 `WB_GATEWAY_API_KEY` 注入；不得把 key 写进仓库、聊天记录或截图。
 - **验证三条**（照抄可跑）：
   ```bash
-  NODE="$(command -v node)"; CLI="${DSH_HOME:-/opt/wb-router}/tools/wb-max-mcp/bin/wb-max.mjs"
+  NODE="$(command -v node)"; CLI="${WB_MAX_CLI:-$(ls ./skill-mcp/wb-max-mcp/bin/wb-max.mjs ./wb-max-mcp/bin/wb-max.mjs "${DSH_HOME:-/nonexistent}/tools/wb-max-mcp/bin/wb-max.mjs" /opt/wb-router/tools/wb-max-mcp/bin/wb-max.mjs 2>/dev/null | head -1)}"; [ -f "$CLI" ] || { echo "找不到 wb-max.mjs，请设 WB_MAX_CLI 指向实际路径"; exit 2; }
   $NODE $CLI health                                              # 不需要 key
   env -u WB_GATEWAY_API_KEY $NODE $CLI plan --task "验证文件凭据"   # 走 keyfile
-  WB_GATEWAY_API_KEY="$(python3 -c 'import json;print(json.load(open("/opt/wb-router/config/wb-remote.json"))["token"])')" \
+  WB_GATEWAY_API_KEY="$(python3 -c 'import json,os;print(json.load(open(os.environ.get("WB_GATEWAY_KEY_FILE","/opt/wb-router/config/wb-remote.json")))["token"])')" \
     $NODE $CLI plan --task "验证 env 凭据"                        # 走 env
   ```
 
@@ -90,7 +90,7 @@ $NODE $CLI exec --plan-id <id> --stage-id s1 --model <计划 model.key> --prompt
 ```bash
 export WB_GATEWAY_URL='https://gateway.example.com'
 export WB_GATEWAY_API_KEY='<向灰狼申请；勿入仓库/聊天>'
-NODE="$(command -v node)"; CLI="${DSH_HOME:-/opt/wb-router}/tools/wb-max-mcp/bin/wb-max.mjs"
+NODE="$(command -v node)"; CLI="${WB_MAX_CLI:-$(ls ./skill-mcp/wb-max-mcp/bin/wb-max.mjs ./wb-max-mcp/bin/wb-max.mjs "${DSH_HOME:-/nonexistent}/tools/wb-max-mcp/bin/wb-max.mjs" /opt/wb-router/tools/wb-max-mcp/bin/wb-max.mjs 2>/dev/null | head -1)}"; [ -f "$CLI" ] || { echo "找不到 wb-max.mjs，请设 WB_MAX_CLI 指向实际路径"; exit 2; }
 $NODE $CLI doctor     # exit 0 可达 / 2 不可达
 ```
 - 完整说明（端点/限流/计费/审计/回滚）：`gateway/README.md`

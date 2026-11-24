@@ -151,7 +151,7 @@ ls
 ```bash
 cd ~/wb-router
 cp -a sample-config/routing.json   gateway/config/routing.json
-cp -a sample-config/upstreams.json gateway/config/upstreams.json
+cp -a gateway/upstreams.json gateway/upstreams.json.bak   # 改前先备份；config/upstreams.json 不生效
 python3 -m json.tool gateway/config/routing.json > /dev/null   # 无输出＝JSON 合法
 ```
 
@@ -769,7 +769,7 @@ ls "$HOME/wb-backup-$STAMP"
 cd ~/wb-router/gateway
 # 1) 还原（<备份名> 换成你的目录名）
 cp -a "$HOME/wb-backup-<备份名>/config/routing.json"   config/routing.json
-cp -a "$HOME/wb-backup-<备份名>/config/upstreams.json" config/upstreams.json
+cp -a "$HOME/wb-backup-<备份名>/upstreams.json" upstreams.json
 # 2) 重启：前台 Ctrl+C 后重新 python3 main.py；用进程管理器的 restart 你的服务
 python3 main.py
 # 3) 另开终端自检

@@ -63,11 +63,11 @@ python3 -m pip install --user PyYAML requests
 
 ```bash
 cd "$ROOT/gateway"
-cp -a config/upstreams.json config/upstreams.json.bak
+cp -a upstreams.json upstreams.json.bak
 cp -a config/routing.json   config/routing.json.bak
 ```
 
-**（a）`config/upstreams.json`** —— 把样例里的占位换成用户给的真实值。单个上游的结构是：
+**（a）`upstreams.json`（网关根目录）** —— 把样例里的占位换成用户给的真实值。⚠ 注意：`config/upstreams.json` 是历史样例、**网关不读**（`main.py` 读 `BASE_DIR/upstreams.json`，即 `gateway/upstreams.json`），改错文件不报错但不生效。单个上游的结构是：
 
 ```json
 {
@@ -89,7 +89,7 @@ cp -a config/routing.json   config/routing.json.bak
 改完自检 JSON 合法：
 
 ```bash
-python3 -m json.tool config/upstreams.json >/dev/null && echo UPSTREAMS_OK
+python3 -m json.tool upstreams.json >/dev/null && echo UPSTREAMS_OK
 python3 -m json.tool config/routing.json   >/dev/null && echo ROUTING_OK
 ```
 
@@ -173,7 +173,7 @@ python3 scripts/smoke.py     # 期望：打印 HTTP 码/耗时/返回模型，�
 
 ```bash
 cd "$ROOT/gateway"
-cp -a config/upstreams.json.bak config/upstreams.json
+cp -a upstreams.json.bak upstreams.json
 cp -a config/routing.json.bak   config/routing.json
 # 重启进程；数据/ 与 logs/ 保留不动
 ```

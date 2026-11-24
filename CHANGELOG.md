@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.3 — 2026-11-24
+
+配合网关 **1.0.3.7** 发行：修跨宿主文档路径缺陷（对照外部实测报告 A/B 两项 + 同病扩展）。
+
+### 修复 A：SKILL.md CLI 路径不再写死 `/opt/wb-router`
+- `skill-mcp/wb-max-router/SKILL.md` 中 3 处 `CLI="${DSH_HOME:-/opt/wb-router}/tools/wb-max-mcp/bin/wb-max.mjs"` 改为探测式解析（与 `scripts/check-tools.sh` 同款顺序）：`WB_MAX_CLI` 环境变量 → 仓库相对路径 → `$DSH_HOME/tools` → 旧默认；找不到即明确报错退出 2。
+- 凭据文件默认路径改为可覆盖：`WB_GATEWAY_KEY_FILE` 优先，`/opt/wb-router/config/wb-remote.json` 仅作旧默认。
+- 影响：Windows / 非标准安装路径下，MCP 挂不上时的 CLI 兜底不再直接失效。
+
+### 修复 B：安装说明的 upstreams 配置路径写错
+- `docs-open/WB-Router-Agent-Install.md` 4 处 `config/upstreams.json` → `upstreams.json`（网关根目录）。
+- **根因**：`gateway/main.py:523` 读 `BASE_DIR/upstreams.json`（= `gateway/upstreams.json`）；`gateway/config/upstreams.json` 是历史样例，网关不读，改它不报错但不生效。
+- 同一缺陷扩展修复：`WB-Router-Quick-Start.md`（1 处）、`WB-Router-User-Guide.v1.0.0.md`（样例/备份/回滚命令）同步改正。
+- html 导出件同步更新；pdf 导出件待重出。
+
+### 其他
+- 文档不再引用已不存在的 `sample-config/`（User-Guide 内 `sample-config/routing.json` 保留为旧版说明，标注可选）。
+- 回归：`python3 -m unittest discover -s tests` → Ran 579 / OK（未触及网关逻辑）。
 ## 0.2.2 — 2026-11-24
 
 版本号随网关 **1.0.3.6** 发行对齐（插件代码与 0.2.1 等价，无行为变更）。

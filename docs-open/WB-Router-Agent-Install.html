@@ -215,9 +215,9 @@ echo）</li>
 <h3 id="33-写配置两处必改改前先备份">3.3
 写配置（两处必改，改前先备份）</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/upstreams.json config/upstreams.json.bak</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> upstreams.json upstreams.json.bak</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/routing.json   config/routing.json.bak</span></code></pre></div>
-<p><strong>（a）<code>config/upstreams.json</code></strong> ——
+<p><strong>（a）<code>upstreams.json</code></strong> ——
 把样例里的占位换成用户给的真实值。单个上游的结构是：</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="st">&quot;my-cloud&quot;</span><span class="fu">,</span></span>
@@ -241,7 +241,7 @@ echo）</li>
 <code>capability_meta</code>、<code>hint.tiers</code>，如果存在）。不要整份重写，不要改
 <code>context_governor</code>（保持默认 <code>shadow</code>）。</p>
 <p>改完自检 JSON 合法：</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool config/upstreams.json <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> UPSTREAMS_OK</span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool upstreams.json <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> UPSTREAMS_OK</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> json.tool config/routing.json   <span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> ROUTING_OK</span></code></pre></div>
 <h3 id="34-放密钥只进环境变量">3.4 放密钥（只进环境变量）</h3>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MY_KEY_A</span><span class="op">=</span><span class="st">&#39;用户提供的密钥&#39;</span></span>
@@ -355,7 +355,7 @@ ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</co
 </table>
 <h2 id="8-回滚">8. 回滚</h2>
 <div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">/gateway&quot;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/upstreams.json.bak config/upstreams.json</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> upstreams.json.bak upstreams.json</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-a</span> config/routing.json.bak   config/routing.json</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 重启进程；数据/ 与 logs/ 保留不动</span></span></code></pre></div>
 <h2 id="9-交给用户的回报格式就用这-6-行别多写">9.

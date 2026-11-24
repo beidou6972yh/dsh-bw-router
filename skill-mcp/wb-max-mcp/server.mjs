@@ -48,7 +48,8 @@ const TOOLS = [
       context: { type: 'string', description: '紧凑上下文/约束（可选）' },
       strategy: { type: 'string', enum: ['auto', 'cost', 'capability', 'function'], description: '默认 auto' },
       function: { type: 'string', description: 'strategy=function 时必填，如 coding/vision/long_context' },
-      max_stages: { type: 'number', description: '1-6，默认 3' }
+      max_stages: { type: 'number', description: '1-6，默认 3' },
+      stage_models: { type: 'object', description: '会话钉选：按段 id 指定模型，如 {"s1":"<upstream>/<model>"}；也接受数字键 "1"/"2"/"3"。非法/未注册模型自动跳过，不阻断计划。' }
     }, required: ['task'] }
   },
   {
@@ -86,6 +87,10 @@ async function callTool(name, args = {}) {
     if (args.context) body.context = String(args.context);
     if (args.function) body.function = String(args.function);
     body.constraints = { max_stages: Number(args.max_stages || 3) };
+    // 2026-11-24 会话钉选：请求级覆写三路模型，不写盘、不影响其他会话。
+    if (args.stage_models && typeof args.stage_models === 'object' && !Array.isArray(args.stage_models)) {
+      body.stage_models = args.stage_models;
+    }
     const r = await api('/v1/route/plan', 'POST', body);
     if (!r.ok) throw new Error(`plan HTTP ${r.status}: ${JSON.stringify(r.data).slice(0, 500)}`);
     return { content: [{ type: 'text', text: JSON.stringify({ ...r.data, confirm_required: true,

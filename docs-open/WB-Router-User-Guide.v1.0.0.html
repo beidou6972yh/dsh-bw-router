@@ -229,9 +229,6 @@
   </style>
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">WB-Router-User-Guide.v1.0.0</h1>
-</header>
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#wb-模型路由网关-使用说明书零编码基础版"
@@ -356,9 +353,9 @@ id="toc-其余开关怎么开看什么怎么回滚">8.4
 配置文件字段速查</a></li>
 <li><a href="#环境变量速查" id="toc-环境变量速查">11.4
 环境变量速查</a></li>
-<li><a href="#版本与变更摘要1.0.3.88-组能力各一句"
-id="toc-版本与变更摘要1.0.3.88-组能力各一句">11.5
-版本与变更摘要（1.0.3.8，8 组能力各一句）</a></li>
+<li><a href="#版本与变更摘要1.0.3.98-组能力各一句"
+id="toc-版本与变更摘要1.0.3.98-组能力各一句">11.5
+版本与变更摘要（1.0.3.9，8 组能力各一句）</a></li>
 <li><a href="#待确认-未验证清单" id="toc-待确认-未验证清单">11.6 待确认
 / 未验证清单</a></li>
 <li><a href="#术语小词典" id="toc-术语小词典">11.7 术语小词典</a></li>
@@ -375,7 +372,7 @@ id="toc-本书标注为未验证-需你自配的部分">12.2 本书标注为「�
 <h1 id="wb-模型路由网关-使用说明书零编码基础版">WB 模型路由网关 ·
 使用说明书（零编码基础版）</h1>
 <blockquote>
-<p><strong>版本</strong>：1.0.3.8（2026-11-24）　<strong>展示名</strong>：WB
+<p><strong>版本</strong>：1.0.3.9（2026-11-24）　<strong>展示名</strong>：WB
 模型路由网关（英文可用 WB Router）
 <strong>读者</strong>：不会写代码，但会解压文件、会复制粘贴命令的人
 <strong>一句话</strong>：把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。
@@ -613,9 +610,9 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 <h3 id="第-1-步解包三件">4.2 第 1 步：解包三件</h3>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.8.tar.gz</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.8.tar.gz</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.8.tar.gz</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.9.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.9.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.9.tar.gz</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div>
 <p><strong>你会看到</strong>（三件）：<code>gateway  plugins  skill-mcp</code>。其中
 <code>gateway/</code> 里有
@@ -1127,13 +1124,13 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href=
 <code>data: [DONE]</code>。</p>
 <h3 id="dsh-里点开就用两种插件">6.3 DSH 里点开就用（两种插件）</h3>
 <p><strong>装插件</strong>：解包
-<code>plugins-1.0.3.8.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.4</code>
-与 <code>dsh-wb-max-0.2.4</code> 两个目录。把它们覆盖到你的 DSH
+<code>plugins-1.0.3.9.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.5</code>
+与 <code>dsh-wb-max-0.2.5</code> 两个目录。把它们覆盖到你的 DSH
 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次
 DSH。</p>
 <blockquote>
-<p>插件公开下载：GitHub Release <code>v1.0.3.8</code> 资产
-<code>plugins-1.0.3.8.tar.gz</code>（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.8
+<p>插件公开下载：GitHub Release <code>v1.0.3.9</code> 资产
+<code>plugins-1.0.3.9.tar.gz</code>（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.9
 ）。</p>
 </blockquote>
 <p><strong>用起来（Max，走网关）</strong>：① 在 DSH
@@ -2183,8 +2180,8 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href=
 </tr>
 </tbody>
 </table>
-<h3 id="版本与变更摘要1.0.3.88-组能力各一句">11.5
-版本与变更摘要（1.0.3.8，8 组能力各一句）</h3>
+<h3 id="版本与变更摘要1.0.3.98-组能力各一句">11.5
+版本与变更摘要（1.0.3.9，8 组能力各一句）</h3>
 <table>
 <colgroup>
 <col style="width: 50%" />
@@ -2275,8 +2272,8 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>579</strong>
 <tr class="odd">
 <td>插件公开下载渠道</td>
 <td><strong>GitHub Release</strong></td>
-<td><code>plugins-1.0.3.8.tar.gz</code> / Release
-<code>v1.0.3.8</code></td>
+<td><code>plugins-1.0.3.9.tar.gz</code> / Release
+<code>v1.0.3.9</code></td>
 </tr>
 <tr class="even">
 <td>公网接入方案</td>
@@ -2330,10 +2327,10 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>579</strong>
 <ul>
 <li>事实表：（内部编制资料，不随包）</li>
 <li>网关文档：<code>README.md</code>、<code>README.md</code>（网关代码树内）</li>
-<li>版本文档：<code>变更说明-1.0.3.8.md</code>、<code>开关开启与观察.md</code></li>
+<li>版本文档：<code>变更说明-1.0.3.9.md</code>、<code>开关开启与观察.md</code></li>
 <li>样例配置：<code>gateway/upstreams.json</code>、<code>gateway/config/routing.json</code>；字段另行核对
 <code>config/pricebook.json</code>、<code>config/api-keys.json</code></li>
-<li>其余细节以交付包内 <code>docs-1.0.3.8/</code> 与
+<li>其余细节以交付包内 <code>docs-1.0.3.9/</code> 与
 <code>README.md</code> 为准</li>
 </ul>
 <hr />
@@ -2379,7 +2376,7 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>579</strong>
 <td>事实表 §4、§5、§9
 三种入口、§8.2、§8.3；计划与回写必填项、<code>estimate_delta</code>、<code>pricing.policy</code>、<code>estimate_basis</code>、<code>partial</code>、计划状态
 TTL 取自 <code>router_plan.py</code>；插件交互取自
-<code>dsh-wb-pro-0.2.4/README.md</code> 与
+<code>dsh-wb-pro-0.2.5/README.md</code> 与
 <code>变更说明-1.0.3.6.md</code>；6.5
 的换模时机（<code>switch_on</code>＝<code>new_user_message</code>/<code>context_rebuild</code>、<code>tool_turns_frozen</code>、豁免项）与转发原则取自
 <code>router_plan.py</code>、<code>README.md</code>；7.7 的页面分区取自

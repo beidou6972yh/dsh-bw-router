@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.2.5 — 2026-11-24
+
+配合网关 **1.0.3.9** 发行：修「Max 三段模型钉选确认后被弹回默认模型」这一真缺陷，并收口两个同源坑。
+
+### 修复
+- **网关 `stage_models` 请求级钉选**：`POST /v1/route/plan` 新增可选 `stage_models`（`{"s1":"<upstream>/<model>"…}`，也接受数字键）。优先级 钉选 > learnedOverride > 策略链首位；**不写盘**、不污染其他会话；非法值记 `stage_models_skipped` 并 fail-open；不传时零差异。计划响应回显 `stage_models` / `stage_models_skipped`，每段带 `pinned` 与 `source=session_pin` 审计痕；计划记账落钉选后的 model_key，执行侧 `model_mismatch` 不误报。
+- **MCP `wb_route_plan`**：schema 增加 `stage_models` 并原样下发（此前只透传 task/strategy/max_stages，钉选根本没发出去）。
+- **客户端钉选持久化**：按段 id 存 `localStorage`，新建会话/刷新后恢复；主按钮与草稿两条出计划通路都带钉选；「取消」清空。
+- **原生回落白名单动态化**：由网关 `/wb-max/models` 自动收集上游 id，不再写死名单（新上游即刻有原生兜底）。
+- **空草稿点 Pro 给提示**：不再「无反应」。
+
+### 验证
+- 新增 `gateway/tests/test_stage_models_pin.py` **13 例**（钉选生效/数字键/部分钉选/重出一致/fail-open/坏形状/不落盘/优先于 learnedOverride），生产树与公开树各 13/13 OK。
+- 影子实例活体冒烟：不传钉选复现「全弹回」，传三路钉选精确落位。
+
 ## 0.2.4 — 2026-11-24
 
 配合网关 **1.0.3.8** 发行：补齐 v1.0.3.7 复测报告指出的 B 项残留（User-Guide 两处表格 + 全部 PDF 导出件），并顺手修 `gateway/INSTALL.md` 同病。

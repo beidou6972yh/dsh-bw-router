@@ -297,6 +297,8 @@ window.__ModuleLoader__.load({
         setMaxActive(false); setOn(true);
         setSendGate(true, "先确认计划，再点 ⬆️ 发送");
         if (draft.trim()) { lastPlanned.current = draft; setPending(true); makePlan(draft).finally(() => setPending(false)); }
+        // 2026-11-24：空草稿点 Pro 给明确提示，不再「无反应」。
+        else publish({ state: "hint", message: "Pro 已开启 · 请先在输入框写任务，会自动生成计划（也可点「生成计划」）" });
       };
       const enableMax = () => {
         try { localStorage.setItem("wb.max.enabled", "1"); localStorage.setItem(PRO_KEY, "0"); } catch {}
@@ -575,6 +577,7 @@ window.__ModuleLoader__.load({
       if (maxOn) return null;
       if (!card) {
         if (view?.state === "error") return React.createElement("div", { "data-dsh-pro": "card", style: { fontSize: "12px", color: "#b42318" } }, view.message);
+        if (view?.state === "hint") return React.createElement("div", { "data-dsh-pro": "card", style: { fontSize: "12px", color: "#1d4ed8", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "4px 9px", width: "fit-content" } }, view.message);
         return null;
       }
       if (collapsed) return React.createElement("div", { "data-dsh-pro": "card", style: { display: "flex", alignItems: "center", gap: "8px", border: "1px solid #e5e7eb", borderRadius: "10px", padding: "6px 10px", margin: "4px 0", background: "#fff", fontSize: "12px", width: "min(520px, 100%)", boxShadow: "0 4px 12px rgba(15,23,42,.06)" } },

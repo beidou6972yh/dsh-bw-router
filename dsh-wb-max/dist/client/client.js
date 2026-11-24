@@ -113,6 +113,20 @@ window.__ModuleLoader__.load({
     let maxRecommendMode = "price";  // 推荐策略模式：price（默认，价格优先）/ capability / preset（用户 2026-11-17 定）
     let maxFunction = "coding";
     let bridgeSessionId = "";
+    // 2026-11-24 会话钉选：三路模型按 stage id 存本地，出计划时随请求发给网关。
+    // 只在显式选模/确认时写入，取消勾选或关闭路由时清空 ⇒ 不污染直连会话。
+    const PINS_KEY = "wb.max.stage.models";
+    function loadPins() { try { const raw = localStorage.getItem(PINS_KEY); const v = raw ? JSON.parse(raw) : null; return (v && typeof v === "object" && !Array.isArray(v)) ? v : {}; } catch { return {}; } }
+    function savePins(pins) { try { const keep = {}; for (const k of Object.keys(pins || {})) { if (pins[k]) keep[k] = pins[k]; } if (Object.keys(keep).length) localStorage.setItem(PINS_KEY, JSON.stringify(keep)); else localStorage.removeItem(PINS_KEY); } catch {} }
+    function clearPins() { try { localStorage.removeItem(PINS_KEY); } catch {} }
+    // 2026-11-24：原生回落白名单不再写死 —— 由「网关已注册模型」里出现过的上游动态补齐。
+    // 原缺陷：卡片选了白名单外的上游时只剩 wb-gateway 一条路，网关异常即无原生兜底。
+    const KNOWN_EXTRA = new Set();
+    function noteKnownProvider(key) {
+      const s = String(key || "").replace(/^wb-gateway\//, "");
+      const i = s.indexOf("/");
+      if (i > 0) KNOWN_EXTRA.add(s.slice(0, i));
+    }
     let bridgeRunning = false;
     function SessionBridge(props) {
       const sid = props?.session?.sessionId || "";
@@ -251,6 +265,7 @@ window.__ModuleLoader__.load({
       React.useEffect(() => {
         get("/wb-max/models").then((r) => {
           if (!r.ok) return;
+          for (const m of (r.data.models || [])) noteKnownProvider(m && m.model);
           // 2026-11-17 用户令：虚拟模型（auto / auto-* / auto-fn-*）只用于网关与插件后台
           // 识别·控制·调度，**不进 DSH 前台**；计划卡下拉只列真实候选（provider/model）。
           setModels((r.data.models || []).filter((m) => String(m?.model || "").includes("/")).map((m) => ({
@@ -525,7 +540,8 @@ window.__ModuleLoader__.load({
         window.addEventListener("wb-automation-changed", h);
         return () => window.removeEventListener("wb-automation-changed", h);
       }, []);
-      const [overrides, setOverrides] = React.useState({});
+      // 2026-11-24：钉选从本地恢复（新建会话/刷新后不再回退默认模型）。
+      const [overrides, setOverrides] = React.useState(() => loadPins());
       const models = useModels();
       const [bridgeSid, setBridgeSid] = React.useState(bridgeSessionId);
       React.useEffect(() => {
@@ -581,7 +597,9 @@ window.__ModuleLoader__.load({
         setBusy(true); setMsg("");
         try { if (planAbort) planAbort.abort(); } catch {}
         planAbort = typeof AbortController !== "undefined" ? new AbortController() : null;
-        const r = await postPlan({ task: draft, strategy: nextStrategy, decider: deciderMode(), ...(nextStrategy === "function" ? { function: nextFn } : {}), ...(nextStrategy === "recommend" ? { mode: maxRecommendMode } : {}) }, planAbort ? planAbort.signal : undefined).catch((e) => ({ ok: false, data: { error: String(e && e.message || e) } }));
+        // 2026-11-24：草稿直接出计划也带会话钉选（否则此路径仍会被策略链弹回）。
+        const draftPins = loadPins();
+        const r = await postPlan({ task: draft, strategy: nextStrategy, decider: deciderMode(), ...(Object.keys(draftPins).length ? { stage_models: draftPins } : {}), ...(nextStrategy === "function" ? { function: nextFn } : {}), ...(nextStrategy === "recommend" ? { mode: maxRecommendMode } : {}) }, planAbort ? planAbort.signal : undefined).catch((e) => ({ ok: false, data: { error: String(e && e.message || e) } }));
         setBusy(false);
         if (!r.ok) {
           if (r && r.data && r.data.aborted) return;
@@ -609,7 +627,7 @@ window.__ModuleLoader__.load({
         const slash = key.indexOf("/");
         const head = slash > 0 ? key.slice(0, slash) : "";
         const rest = slash > 0 ? key.slice(slash + 1) : "";
-        const KNOWN = ["provider_c", "provider_d", "provider_a", "deepseek-account",
+        const KNOWN = [...KNOWN_EXTRA, "provider_c", "provider_d", "provider_a", "deepseek-account",
                        "provider_i", "workbuddy", "provider_b", "local-auto", "llama-review"];
         // provider_i / workbuddy 是 DSH 直连桥，网关不代理 ⇒ 只能给原生 (provider, model)
         if (head === "provider_i" || head === "workbuddy") return [{ provider: head, model: rest }];
@@ -691,6 +709,9 @@ window.__ModuleLoader__.load({
         // [2026-11-21 1.0.3.2 · T2/B1] 同轮不换模：回复进行中尝试换模 ⇒ 提示并阻止（不落任何切换）。
         if (running) { setMsg("本段同轮不换模：当前回复未结束，等本段完成后再切换模型"); return; }
         if (!approved) {
+          // 2026-11-24：钉选落本地，重出计划时随 stage_models 发给网关，不再被策略链弹回。
+          const next = { ...overrides, [row.stageId]: modelKey };
+          setOverrides(next); savePins(next);
           setPlan((prev) => prev ? { ...prev, stages: prev.stages.map((s) => s.stage_id === row.stageId ? { ...s, model: { ...s.model, key: modelKey, label: modelKey } } : s) } : prev);
           return;
         }
@@ -751,6 +772,7 @@ window.__ModuleLoader__.load({
             if (planAbort) { try { planAbort.abort(); } catch {} planAbort = null; }
             try { localStorage.setItem(MAX_KEY, "0"); } catch {}
             setSendGate(false, "");
+            clearPins();  // 2026-11-24：取消＝丢弃全部会话钉选，回到网关默认策略。
             window.dispatchEvent(new CustomEvent("wb-max-enabled", { detail: { on: false } }));
             setPlan(null); setApproved(false); setOverrides({}); setMsg("");
             window.dispatchEvent(new CustomEvent("wb-max-plan", { detail: { plan: null } }));
@@ -763,7 +785,10 @@ window.__ModuleLoader__.load({
       planAbort = typeof AbortController !== "undefined" ? new AbortController() : null;
       const signal = planAbort ? planAbort.signal : undefined;
       try {
-        const r = await postPlan({ task: text, strategy, decider: deciderMode(), ...(strategy === "function" ? { function: functionKey } : {}), ...(strategy === "recommend" ? { mode: maxRecommendMode } : {}) }, signal);
+        // 2026-11-24：带上会话钉选的三路模型，避免重出计划时被网关策略链弹回官方默认。
+        const pins = loadPins();
+        const stageModels = Object.keys(pins).length ? pins : undefined;
+        const r = await postPlan({ task: text, strategy, decider: deciderMode(), ...(stageModels ? { stage_models: stageModels } : {}), ...(strategy === "function" ? { function: functionKey } : {}), ...(strategy === "recommend" ? { mode: maxRecommendMode } : {}) }, signal);
         if (!r.ok) return { ok: false, error: err(r) };
         window.dispatchEvent(new CustomEvent("wb-max-plan", { detail: { plan: r.data } }));
         return r;

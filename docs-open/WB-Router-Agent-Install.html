@@ -229,9 +229,6 @@
   </style>
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">WB-Router-Agent-Install</h1>
-</header>
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#wb-模型路由网关-agent-安装说明可直接投喂给-agent"
@@ -301,7 +298,7 @@ id="toc-交给用户的回报格式就用这-6-行别多写">9.
 <tbody>
 <tr class="odd">
 <td>产品</td>
-<td>WB 模型路由网关 v1.0.3.8（OpenAI 兼容，自托管）</td>
+<td>WB 模型路由网关 v1.0.3.9（OpenAI 兼容，自托管）</td>
 </tr>
 <tr class="even">
 <td>用户画像</td>
@@ -309,7 +306,7 @@ id="toc-交给用户的回报格式就用这-6-行别多写">9.
 </tr>
 <tr class="odd">
 <td>交付包</td>
-<td><code>gateway-1.0.3.8.tar.gz</code>、<code>plugins-1.0.3.8.tar.gz</code>、<code>skill-mcp-1.0.3.8.tar.gz</code></td>
+<td><code>gateway-1.0.3.9.tar.gz</code>、<code>plugins-1.0.3.9.tar.gz</code>、<code>skill-mcp-1.0.3.9.tar.gz</code></td>
 </tr>
 <tr class="even">
 <td>完成判据</td>
@@ -380,9 +377,9 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">ROOT</span><span class="op">=</span>~/wb-router</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.8.tar.gz</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.8.tar.gz</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.8.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.9.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.9.tar.gz</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.9.tar.gz</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>    <span class="co"># 期望：gateway  plugins  skill-mcp</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-f</span> gateway/main.py <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="at">-d</span> gateway/config <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> PKG_OK</span></code></pre></div>
 <h3 id="装依赖">3.2 装依赖</h3>
@@ -559,7 +556,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href=
 怎么用：在 DSH 里选 auto / auto-fast / auto-strong，先「生成计划」再「确认开工」
 出问题先看：日志 logs/，或把 /health 的输出发我</code></pre>
 <hr />
-<p><em>版本 1.0.3.8；更多细节见同目录《使用说明书》（26 页）与包内
-<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.8/</code>。</em></p>
+<p><em>版本 1.0.3.9；更多细节见同目录《使用说明书》（26 页）与包内
+<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.9/</code>。</em></p>
 </body>
 </html>

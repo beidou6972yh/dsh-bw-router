@@ -33,7 +33,7 @@ _LOCK = threading.Lock()
 # ── Q1-5（2026-11-18）：plan 允许的顶层键（其余回显到 ignored_keys，不再静默丢弃）──
 ALLOWED_PLAN_KEYS = {"task", "strategy", "function", "context", "constraints",
                      "max_stages", "client", "request_id", "ignore_learned_override",
-                     "automation_level"}
+                     "automation_level", "stage_models"}
 MAX_STAGES_MIN, MAX_STAGES_MAX, MAX_STAGES_DEFAULT = 1, 6, 3
 
 
@@ -1055,6 +1055,33 @@ def build_plan(payload: dict, principal: dict | None = None) -> tuple[dict, int]
                     "allowed": f"{MAX_STAGES_MIN}-{MAX_STAGES_MAX}", "received": max_stages}, 400
 
     ignore_override = bool(payload.get("ignore_learned_override") is True)
+    # ── 2026-11-24 钉选覆写：请求级 stage_models（会话内三路模型钉选）──────────
+    # 形如 {"s1": "<upstream>/<model>", "s2": "...", "s3": "..."}；
+    # 也接受 1-based 数字键 "1"/"2"/"3"。只认本网关已注册模型（upstream/model），
+    # 非法值记入 stage_models_skipped 且**不阻断**计划（fail-open，缺省时零差异）。
+    # 与 learnedOverride 不同：这是「本次请求显式钉选」，不写盘、不影响其他会话/请求。
+    raw_stage_models = payload.get("stage_models")
+    stage_models: dict[str, str] = {}
+    stage_models_skipped: list[dict] = []
+    if isinstance(raw_stage_models, dict):
+        for k, v in raw_stage_models.items():
+            key_norm = str(k).strip().lower()
+            if key_norm.isdigit():
+                n = int(key_norm)
+                key_norm = f"s{n}" if 1 <= n <= 6 else ""
+            if not (key_norm.startswith("s") and key_norm[1:].isdigit()):
+                stage_models_skipped.append({"key": str(k), "model": str(v), "reason": "bad_stage_id"})
+                continue
+            model_norm = str(v or "").strip()
+            if not model_norm:
+                continue
+            up_id, mid = _gw().split_candidate(model_norm)
+            if up_id not in _gw().UPSTREAM_MAP or not mid:
+                stage_models_skipped.append({"key": str(k), "model": model_norm, "reason": "model_unregistered"})
+                continue
+            stage_models[key_norm] = model_norm
+    elif raw_stage_models is not None:
+        stage_models_skipped.append({"key": "*", "model": "", "reason": "bad_shape"})
     automation_level = None
     automation_raw = payload.get("automation_level")
     if automation_raw is not None and str(automation_raw).strip():
@@ -1102,6 +1129,13 @@ def build_plan(payload: dict, principal: dict | None = None) -> tuple[dict, int]
                                             str((_chain_head or {}).get("tier") or ""))
             if override_skip:
                 override_model = ""
+        # 钉选（stage_models）优先级高于 learnedOverride：用户本次显式选择说了算。
+        pinned_model = stage_models.get(f"s{idx}", "")
+        pin_applied = False
+        if pinned_model:
+            override_model = pinned_model
+            override_skip = None
+            pin_applied = True
         model = override_model if override_model else (chain[0] if chain else "")
         if not model:
             return {"ok": False, "code": "no_model",
@@ -1154,9 +1188,11 @@ def build_plan(payload: dict, principal: dict | None = None) -> tuple[dict, int]
                 "missing": price.get("missing") or [],
             },
             "rationale": (f"{capability} → {model}"
-                          + (f"（learnedOverride，源={override.get('source')}）" if override_model else "")
+                          + (f"（会话钉选）" if pin_applied else
+                             (f"（learnedOverride，源={(override or {}).get('source')}）" if override_model else ""))
                           + f"；策略={resolved}，档位={key}"),
-            "learned_override": bool(override_model),
+            "learned_override": bool(override_model) and not pin_applied,
+            "pinned": pin_applied,
             "override_skipped": override_skip,
         })
         if b1_enabled():
@@ -1165,7 +1201,7 @@ def build_plan(payload: dict, principal: dict | None = None) -> tuple[dict, int]
             "stage_id": f"s{idx}", "capability": capability,
             "applied": bool(override_model),
             "model": override_model or None,
-            "source": (override or {}).get("source") if override else None,
+            "source": "session_pin" if pin_applied else ((override or {}).get("source") if override else None),
             "learned_at": (override or {}).get("learned_at") if override else None,
             "evidence_count": (((override or {}).get("evidence") or {}).get("count")
                                if isinstance((override or {}).get("evidence"), dict) else None),
@@ -1240,6 +1276,9 @@ def build_plan(payload: dict, principal: dict | None = None) -> tuple[dict, int]
         # Q1-5：回显生效值与被忽略的顶层键（对外可自证"到底按几段跑"）
         "max_stages": max_stages,
         "ignored_keys": ignored_keys,
+        # 2026-11-24：本次请求的会话钉选（请求级，不写盘；回显便于自证）
+        "stage_models": stage_models,
+        "stage_models_skipped": stage_models_skipped,
         # Q1-2：plan 现在真的落了一小段短期状态（内存 TTL 24h）
         "has_plan_state": True,
         "plan_ttl_s": PLAN_TTL_S,

@@ -8,7 +8,7 @@ SKILL="$SKILL_DIR/SKILL.md"
 # 解析顺序：WB_MCP_SERVER 环境变量 → 同级 ../wb-max-mcp → 上两级 → 旧默认路径（向后兼容）
 SERVER="${WB_MCP_SERVER:-}"
 if [ -z "$SERVER" ]; then
-  for c in "$SKILL_DIR/../wb-max-mcp/server.mjs" "$SKILL_DIR/../../wb-max-mcp/server.mjs" /opt/wb-router/tools/wb-max-mcp/server.mjs; do
+  for c in "$SKILL_DIR/../wb-max-mcp/server.mjs" "$SKILL_DIR/../../wb-max-mcp/server.mjs" "$SKILL_DIR/../../tools/wb-max-mcp/server.mjs"; do
     [ -f "$c" ] && SERVER="$c" && break
   done
 fi

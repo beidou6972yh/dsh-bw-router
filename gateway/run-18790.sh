@@ -7,7 +7,8 @@ BASE=$(cd "$(dirname "$0")" && pwd)
 export ROUTER_HOST=127.0.0.1
 export ROUTER_PORT=18790
 export ROUTER_DATA_DIR="$BASE/数据"
-export ROUTER_CREDENTIALS_PATH=/opt/wb-router/.credentials.yaml
+# 1.0.3.10 #12：凭据路径按安装树相对定位（上级 DSH_HOME），可用环境变量覆盖。
+export ROUTER_CREDENTIALS_PATH="${ROUTER_CREDENTIALS_PATH:-${DSH_HOME:-$(cd "$BASE/../.." && pwd)}/.credentials.yaml}"
 export PYTHONUNBUFFERED=1
 cd "$BASE"
 exec /usr/bin/python3 main.py

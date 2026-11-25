@@ -40,7 +40,11 @@ _LEVELS = {"L1", "L2", "L3"}
 
 _STATE = {"doc": None, "loaded_at": 0.0, "fail_streak": {}, "open_until": {}}
 _CACHE_TTL = 5.0
-_CRED_FILE = "/opt/wb-router/.credentials.yaml"
+# 1.0.3.10 #12：凭据路径按当前工作树定位，可用环境变量覆盖（原写死 /opt/wb-router）。
+_CRED_FILE = os.environ.get(
+    "ROUTER_CREDENTIALS_PATH",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), ".credentials.yaml"),
+)
 _intern_client = None  # 懒加载 intern_decision_client（None=未试，False=不可用）
 
 

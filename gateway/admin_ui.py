@@ -92,7 +92,7 @@ td,th{border:1px solid #ddd;padding:6px 8px;text-align:left;font-size:14px}
 BALANCES_FILE = Path(__file__).with_name("config") / "balances.json"
 _BALANCES_LINE_RE = re.compile(r"window\.__BALANCES__\s*=\s*[^\n]*")
 
-# ── N3（2026-11-19 用户令「/admin 去明文余额要改」）────────────────────────────
+# ── N3（2026-11-19 需求方令「/admin 去明文余额要改」）────────────────────────────
 # 旧行为：inject 时把 balances.json 的 items（人民币/美元余额数字）整份塞进 HTML，
 #   于是**未登录** GET /admin/ 的响应体里就有明文金额（而 /admin/api/balances 是 401）。
 # 新行为：静态页/未登录只给骨架 —— fetched_at（时间戳，非金额）+ 空 items + locked 标记；
@@ -137,7 +137,25 @@ def balances_public() -> dict:
 
 def plugin_status_summary(profile: str = "web", timeout: int = 25) -> dict:
     """N8③：插件装配状态（只读）。复用 tools/plugin-reconcile.mjs --show --json。"""
-    tool = Path("/opt/wb-router/tools/plugin-reconcile.mjs")
+    # 1.0.3.10 #12：按 DSH_HOME/当前树向上找 tools/，可用环境变量覆盖（原写死本机绝对路径）。
+    env_tool = os.environ.get("PLUGIN_RECONCILE_PATH")
+    if env_tool:
+        tool = Path(env_tool)
+    else:
+        tool = None
+        for base in (Path(os.environ["DSH_HOME"]),) if os.environ.get("DSH_HOME") else ():
+            candidate = Path(base) / "tools" / "plugin-reconcile.mjs"
+            if candidate.exists():
+                tool = candidate
+                break
+        if tool is None:
+            for parent in Path(__file__).resolve().parents:
+                candidate = parent / "tools" / "plugin-reconcile.mjs"
+                if candidate.exists():
+                    tool = candidate
+                    break
+        if tool is None:
+            tool = Path(__file__).resolve().parents[4] / "tools" / "plugin-reconcile.mjs"
     if not tool.exists():
         return {"ok": False, "error": "plugin-reconcile.mjs 不存在"}
     try:
@@ -826,15 +844,31 @@ def _probe_capabilities(base_url: str, key: str, model: str, timeout: float = 45
 # ---------------------------------------------------------------------------
 
 
-def _norm_model_spec(spec: dict) -> dict:
+# 2026-11-23 Q-dycoding 防再犯②：缺失窗口/无明确证据的能力一律**留 null（unknown）**，
+# 不再用 131072/8192 兜底——兜底值会被后续误当实测事实写进配置（23:25 事故即如此）。
+_UNKNOWN_CTX_DEFAULTS = {"context_window": 131072, "max_tokens": 8192}
+
+
+def _norm_model_spec(spec: dict, *, allow_defaults: bool = True) -> dict:
+    """规范化单模型元数据。
+
+    ``allow_defaults=True``（默认，兼容老调用/界面手填行）保留 historical 兜底值；
+    ``allow_defaults=False`` 用于**保存路径**：缺失即 None（unknown），由网关按
+    "未声明窗口=unknown 放行" 处理，杜绝把兜底当事实落盘。
+    """
     ctx = _num(spec.get("context_window"))
     max_out = _num(spec.get("max_tokens"))
     tier = str(spec.get("tier") or "cheap")
     if tier not in ("cheap", "strong", "mid"):
         tier = "cheap"
-    out = {
-        "context_window": int(ctx or 131072),
-        "max_tokens": int(max_out or 8192),
+    if allow_defaults:
+        ctx_val, max_val = int(ctx or 131072), int(max_out or 8192)
+    else:
+        ctx_val = int(ctx) if isinstance(ctx, int) and ctx > 0 else None
+        max_val = int(max_out) if isinstance(max_out, int) and max_out > 0 else None
+    out: dict[str, Any] = {
+        "context_window": ctx_val,
+        "max_tokens": max_val,
         "vision": bool(spec.get("vision")),
         "tools": bool(spec.get("tools", True)),
         "tier": tier,
@@ -842,6 +876,9 @@ def _norm_model_spec(spec: dict) -> dict:
     label = str(spec.get("label") or "").strip()
     if label:
         out["label"] = label[:120]
+    note = str(spec.get("note") or "").strip()
+    if note:
+        out["note"] = note[:400]
     return out
 
 
@@ -933,6 +970,7 @@ def _save_upstream(payload: dict) -> dict:
     max_rpm = _num(item.get("max_rpm")) or 50
     doc = _load_upstreams_doc()
     raw_list = doc.get("upstreams") or []
+    raw_list_before = json.loads(json.dumps(raw_list))  # 改前快照（只读，用于保存后 diff）
     existing = next((u for u in raw_list if u.get("id") == uid), None)
     env_name = str(item.get("api_key_env") or "").strip()
     if not env_name:
@@ -949,9 +987,22 @@ def _save_upstream(payload: dict) -> dict:
             raise ValueError(f"模型 id 非法：{model_id!r}")
         if not isinstance(spec, dict):
             raise ValueError(f"模型 {model_id} 的元数据必须是对象")
-        norm_models[model_id] = _norm_model_spec(spec)
+        # 2026-11-23 防再犯②：保存路径不再把缺失窗口填成 131072/8192 假值
+        norm_models[model_id] = _norm_model_spec(spec, allow_defaults=False)
     if not norm_models:
         raise ValueError("至少保留一个模型（或先读取模型清单）")
+
+    # ── 2026-11-23 防再犯①：防「残缺表整表覆盖」────────────────────────────
+    # 背景（11-22 23:25 事故）：上游 443 超时 ⇒ 界面只拿到部分模型 ⇒ 点保存按残缺表
+    # 整表替换 ⇒ 上游模型数缩水。此处默认**拒绝缩表**，除非显式
+    # allow_drop=true（删模型是有意为之时由调用方明示），并把将被删的 id 报回来。
+    old_models = dict((existing or {}).get("models") or {})
+    dropped = [m for m in old_models if m not in norm_models]
+    if dropped and not bool(payload.get("allow_drop")):
+        raise ValueError(
+            "拒绝保存：本次提交会删除 %d 个已有模型（%s）。"
+            "若确属有意删除，请带 allow_drop=true 重试。"
+            % (len(dropped), ", ".join(dropped[:8]) + (" …" if len(dropped) > 8 else "")))
 
     new_item = {
         "id": uid,
@@ -968,7 +1019,16 @@ def _save_upstream(payload: dict) -> dict:
         raw_list.append(new_item)
     doc["upstreams"] = raw_list
     backup = _backup_upstreams()
+    before_counts = {u.get("id"): len(u.get("models") or {}) for u in (raw_list_before or [])}
     _atomic_write(_upstreams_path(), json.dumps(doc, ensure_ascii=False, indent=2) + "\n")
+    # 2026-11-23 防再犯③：保存后比对「改前/改后」模型数，任一上游减少即 WARNING 留痕，
+    # 供 23:50 审计与人工复核（不阻塞保存——缩表已在上面被 allow_drop 闸拦住，
+    # 走到这里还减少的，只可能是显式 allow_drop 或同名 id 变更，属信息项）。
+    after_counts = {u.get("id"): len(u.get("models") or {}) for u in raw_list}
+    shrunk = {k: (before_counts.get(k), v) for k, v in after_counts.items()
+              if k in before_counts and v < before_counts[k]}
+    if shrunk:
+        LOG.warning("管理界面保存后模型数减少：%s（上游=%s）", shrunk, uid)
 
     api_key = str(payload.get("api_key") or "").strip()
     if api_key:
@@ -985,7 +1045,10 @@ def _save_upstream(payload: dict) -> dict:
     if not gateway.get_secret(env_name):
         warnings.append(f"密钥未设置（{env_name}），相关调用会失败")
     price_sync = _kick_price_sync()
+    if dropped:
+        warnings.append("已按 allow_drop=true 删除模型：" + ", ".join(dropped))
     return {"ok": True, "saved": new_item["id"], "backup": backup, "warnings": warnings,
+            "dropped": dropped,
             "price_sync": price_sync,
             "upstreams": _upstreams_public()["upstreams"]}
 

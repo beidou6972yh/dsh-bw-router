@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 import price_resolver
+import price_state  # 1.0.3.10 #5：价格三态单一真源
 
 _GATEWAY = None
 _LOCK = threading.Lock()
@@ -856,20 +857,13 @@ def _cost_micro(prices: dict, tokens_in: int, tokens_out: int, cache_rate: float
 
 
 def _price_state_for(info: dict) -> str:
-    provider = str(info.get("provider") or "").strip()
-    cid = str(info.get("id") or "")
-    if provider == "provider_b" or cid.startswith("provider_b/"):
-        return "local"
-    price = info.get("price") if isinstance(info.get("price"), dict) else None
-    if isinstance(price, dict):
-        for key in ("input_per_mtok", "output_per_mtok"):
-            block = price.get(key)
-            if isinstance(block, (int, float)) and not isinstance(block, bool):
-                return "priced"
-            if isinstance(block, dict) and any(
-                    isinstance(v, (int, float)) and not isinstance(v, bool) for v in block.values()):
-                return "priced"
-    return "unpriced"
+    """价格三态：委托单一真源 price_state.py（1.0.3.10 #5）。
+
+    原实现只认 provider_b 与两段价，和 /v1/route/prices 的 main.price_state_of
+    口径不一致；统一后两处调用同一函数，杜绝口径漂移。
+    """
+    return price_state.state_of(info.get("id"), info.get("provider"),
+                                info.get("price") if isinstance(info.get("price"), dict) else {})
 
 
 def _price_for(info: dict, est_in: int, est_out: int, period: str,

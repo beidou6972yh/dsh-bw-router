@@ -193,6 +193,7 @@ except ImportError:  # pragma: no cover
 import local_unavailable as local_unavail
 import occupancy_host as occ_host
 import price_resolver
+import price_state  # 1.0.3.10 #5：价格三态单一真源
 import admin_ui
 import router_strategies as rstrat
 import router_shadow
@@ -1909,16 +1910,11 @@ def _is_local_provider(pid: str, cid: str) -> bool:
 
 
 def price_state_of(candidate: str, provider: str | None, block) -> str:
-    """价格三态（1.0.3.5 口径）：local＝本地零价；priced＝有真实单价；unpriced＝待用户录入。
+    """价格三态：委托单一真源 price_state.py（1.0.3.10 #5）。
 
-    判定顺序：先看 provider/前缀是不是本地（本地集合见 LOCAL_PROVIDER_IDS）；
-    再看有没有任何数字；绝不把「没填价」当成 0 元或免费。
+    判定逻辑原样迁至 price_state.state_of，本函数保留为兼容入口（行为零变化）。
     """
-    pid = str(provider or "").strip()
-    cid = str(candidate or "")
-    if _is_local_provider(pid, cid):
-        return "local"
-    return "priced" if _price_has_number(block) else "unpriced"
+    return price_state.state_of(candidate, provider, block)
 
 
 def price_label_of(state: str, fallback_label: str | None) -> str:
@@ -2049,7 +2045,11 @@ def capability_model_entry(candidate: str) -> dict:
 # 而本函数只在请求期（/health、/admin/api/price-consistency）被调用，模块加载期不会执行。
 # ---------------------------------------------------------------------------
 
-STALL_NOTIFY_PATH = "/opt/wb-router/tools/stall-notify.mjs"
+# 1.0.3.10 #12：不再写死安装路径；按当前网关树定位工具，可用环境变量覆盖。
+STALL_NOTIFY_PATH = os.environ.get(
+    "STALL_NOTIFY_PATH",
+    str(Path(os.environ.get("DSH_HOME") or BASE_DIR.parent) / "tools" / "stall-notify.mjs"),
+)
 STALL_NOTIFY_KEY = "price:dual-source"
 STALL_NOTIFY_COOLDOWN_MIN = 360          # 与 stall-notify 自身的去重窗口一致
 _STALL_NOTIFY_MIN_INTERVAL_S = 900.0     # 进程内节流：最多 15 分钟拉起一次 node（防 /health 轮询刷进程）

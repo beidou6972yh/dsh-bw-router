@@ -26,7 +26,7 @@
 - **空草稿点 Pro 给提示**：不再「无反应」。
 
 ### 验证
-- 新增 `gateway/tests/test_stage_models_pin.py` **13 例**（钉选生效/数字键/部分钉选/重出一致/fail-open/坏形状/不落盘/优先于 learnedOverride），生产树与公开树各 13/13 OK。
+- 新增 `gateway/tests/test_stage_models_pin.py` **13 例**（钉选生效/数字键/部分钉选/重出一致/fail-open/坏形状/不落盘/优先于 learnedOverride），部署树与公开树各 13/13 OK。
 - 影子实例活体冒烟：不传钉选复现「全弹回」，传三路钉选精确落位。
 
 ## 0.2.4 — 2026-11-24

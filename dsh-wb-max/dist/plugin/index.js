@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 
 export const inject = ['webServer'];
 const GATEWAY_BASE = (process.env.WB_GATEWAY_BASE || 'http://127.0.0.1:18790').replace(/\/+$/, '');
-const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE || '/opt/wb-router/config/wb-gateway.local.json';
+const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE || (process.env.DSH_HOME ? process.env.DSH_HOME + '/config/gateway.local.json' : '');
 
 function gatewayKey() {
   const env = (process.env.WB_GATEWAY_API_KEY || '').trim();
@@ -113,7 +113,7 @@ export function apply(ctx) {
             const r = await proxy(`/router/ledger?limit=${limit}`, 'GET');
             let annotations = [];
             try {
-              const file = '/opt/wb-router/tools/router-gateway-v1.1d3/数据/annotations.jsonl';
+              const file = process.env.WB_ANNOTATIONS_FILE || (process.env.DSH_HOME ? process.env.DSH_HOME + '/annotations.jsonl' : '');
               annotations = readFileSync(file, 'utf8').split('\n').filter(Boolean).map((line) => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean).filter((row) => !planId || row.plan_id === planId).slice(-limit);
             } catch {}
             return json(res, 200, { ok: true, planId, filter: planId ? 'plan_id + 最近网关请求' : '最近网关请求', ledger: r.data?.data || r.data || [], annotations });

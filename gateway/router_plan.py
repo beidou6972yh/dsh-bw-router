@@ -7,7 +7,7 @@
   - auto 策略不参与自动学习；cost/capability/function 才学；
   - 三次“同一用户 + 同策略 + 同节点 + 同模型”的已确认任务才自动写。
 
-本模块只读写 config/learned-state.json、数据/annotations.jsonl、数据/auto-learn-audit.jsonl，
+本模块只读写 config/learned-state.json、annotations.jsonl、数据/auto-learn-audit.jsonl，
 策略写回经 router_strategies.upsert_learned_override()。
 """
 
@@ -190,7 +190,7 @@ def _discipline_check(turn_ctx: dict | None, model_key: str,
 
 
 def discipline_report(range_key: str = "7d") -> dict:
-    """只读聚合 `数据/annotations.jsonl` 里带 discipline_violation 的行（B1 违约台账）。"""
+    """只读聚合 `annotations.jsonl` 里带 discipline_violation 的行（B1 违约台账）。"""
     days = {"today": 1, "1d": 1, "7d": 7, "30d": 30}.get(str(range_key or "7d"), 7)
     cutoff = time.time() - days * 86400
     path = annotations_path()

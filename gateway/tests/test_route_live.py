@@ -135,7 +135,7 @@ class SnapshotBasics(_LiveTestBase):
             self.assertEqual(role["requests"], 0)
             self.assertEqual(role["models"], [])
         self.assertEqual(snap["ctx"]["bands"], {"pass": 0, "reject": 0, "unknown": 0})
-        # deciders 读 config/deciders.json（生产树有、临时树无）⇒ 只断言形状，不断言具体计数。
+        # deciders 读 config/deciders.json（部署树有、临时树无）⇒ 只断言形状，不断言具体计数。
         overview = snap["deciders"]["overview"]
         self.assertEqual(set(overview), {"off", "shadow", "active"})
         for value in overview.values():

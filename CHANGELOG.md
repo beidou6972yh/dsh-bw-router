@@ -2,11 +2,11 @@
 
 ## 1.0.3.10 — 2026-11-25
 
-内测残留项 #5 / #12 真修复（哥哥 2026-11-25 13:22 批准）。仅两项改动，行为零回归：
+内测残留项 #5 / #12 真修复（2026-11-25 评审通过）。仅两项改动，行为零回归：
 
 ### 修复
 - **#5 价格三态单一真源**：新增 `gateway/price_state.py`，`main.price_state_of` 与 `router_plan._price_state_for` 一律委托它。此前两处各判一遍（main 认 4 类本地 provider＋3 段价，plan 只认 provider_b＋2 段价），`/v1/route/prices` 与出计划口径可能漂移。判定逻辑从 main 原样迁入，245 组入参两实现逐位一致（diff=0）。
-- **#12 清除写死安装路径**：网关 `main.py`（STALL_NOTIFY_PATH）、`router_deciders.py`（凭据文件）、`admin_ui.py`（plugin-reconcile）、`run-18790.sh`（凭据路径）改为按 DSH_HOME/当前树相对定位，可用环境变量覆盖；不再写死 `/opt/wb-router` 或 `/workspace/dsh-home`。
+- **#12 清除写死安装路径**：网关 `main.py`（STALL_NOTIFY_PATH）、`router_deciders.py`（凭据文件）、`admin_ui.py`（plugin-reconcile）、`run-18790.sh`（凭据路径）改为按 DSH_HOME/当前树相对定位，可用环境变量覆盖；不再写死安装树的绝对路径。
 
 ### 验证
 - 新增 2 组测试：`tests/test_price_state_single_source.py`（3 例，单一真源＋两条委托）、`tests/test_no_abs_install_path.py`（1 例，生效运行文件 0 写死路径）。

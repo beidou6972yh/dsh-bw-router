@@ -182,7 +182,7 @@ export function splitModelKey(modelKey) {
  * Providers that are DSH 直连桥：网关不代理它们，只有原生一种写法。
  * 给它们加网关候选只会多一次注定失败的往返。
  */
-const DIRECT_BRIDGE_PROVIDERS = ['provider_i', 'workbuddy'];
+const DIRECT_BRIDGE_PROVIDERS = ['provider_i', 'provider_h'];
 /**
  * Ordered (provider, model) candidates for one registry key.
  *
@@ -201,7 +201,7 @@ const DIRECT_BRIDGE_PROVIDERS = ['provider_i', 'workbuddy'];
  * 否则 `provider_h/*` 这类未列入白名单的候选只会走原生，绕过网关
  * （无链内回落/记账），正是本次要消灭的 anti-pattern。
  * 原生兜底保持既有语义：无条件追加在网关候选之后，只在网关失败时才用得上。
- * provider_i / workbuddy 是 DSH 直连桥，网关不代理 ⇒ 只有原生一种候选。
+ * provider_i / provider_h 是 DSH 直连桥，网关不代理 ⇒ 只有原生一种候选。
  */
 export function selectTargets(modelKey) {
     const raw = String(modelKey ?? '');

@@ -15,7 +15,7 @@ GET  /router/ledger?limit=N  最近 N 条判定账本
 GET  /router/stats           各上游调用数/失败数/熔断/近 1 分钟速率/累计 token + hint 计数 + AFP 闸门计数
 GET  /router/config          脱敏运行配置（只有密钥"是否已加载"，绝无密钥值）
 
-hint 提示头（契约 v1.0，projects/模型路由融合/契约/接口契约-v0.1.md）
+hint 提示头（契约 v1.0）
 --------------------------------------------------------------------
 请求头 X-DSH-Route = base64(JSON{v, tier, model, stage, session, reason, confirm?})：
 - v 主版本不符 / 头超 8KB / 解码失败 / 非法 JSON / reason 违纪 → 忽略＋计数 hint_invalid，默认路由 200；
@@ -25,7 +25,7 @@ hint 提示头（契约 v1.0，projects/模型路由融合/契约/接口契约-v
 - hint 只对虚拟模型（auto*）生效；请求体显式指定 upstream/model 时透传优先；
 - 灰度开关 config/routing.json → hint.mode：record（默认，仅记录不执行）/ execute（执行），改后重启生效。
 
-换挡守门（接口单 v1.0，projects/模型路由融合/契约/接口单-换挡守门-v1.0-灰狼-20261112.md）
+换挡守门（接口单 v1.0）
 --------------------------------------------------------------------
 请求头 X-DSH-Check = base64(JSON{prev:{tier,model,contextTokens,goalHash,ctxId},
 next:{session,contextTokens,goalHash,ctxId,check:{goal,done,next,why,ctx}}})，
@@ -138,7 +138,7 @@ AFP 感知分流（2026-11-12 管理员 17:0x 反馈①：火山 429 治理）
 
 启动
 ----
-    cd /opt/wb-router/projects/模型路由网关 && python3 main.py
+    cd /opt/wb-router/ && python3 main.py
 固定监听 127.0.0.1:18790。
 """
 
@@ -1266,7 +1266,7 @@ def afp_snapshot(now_ts: float | None = None) -> dict | None:
     """读额度快照（内容级缓存：原始字节未变则复用解析结果，变了立即重解析）。
 
     1.0.3.5-r6（2026-11-23 根治）：缓存判据由「(mtime_ns, size) 元数据」改为「原始字节比较」，
-    消除「同 mtime 同 size 内容变却命中旧值」的边界（对侧复核保留项；虎虎已复现
+    消除「同 mtime 同 size 内容变却命中旧值」的边界（对侧复核保留项；对侧已复现
     「真实余额 0、缓存仍 8、闸门放行」）。代价：每请求一次 open+read（KB 级小文件，微秒量级），
     内容未变时跳过 JSON 解析；写端非原子时读到半文件会解析失败 ⇒ None（保守放行，不猜价）。
 
@@ -1675,7 +1675,7 @@ def ascii_reason(features: Features, stage: str, period: str, decision: str) -> 
 
 
 # ---------------------------------------------------------------------------
-# hint 提示头（契约 v1.0：插件 → 网关；详见 projects/模型路由融合/契约/接口契约-v0.1.md）
+# hint 提示头（契约 v1.0：插件 → 网关）
 # ---------------------------------------------------------------------------
 
 HINT_HEADER = "X-DSH-Route"

@@ -67,7 +67,7 @@ const STRESS_PROFILE = `# cordis.patch.yml — 对侧 0.2.1-rc.2 web profile（�
             contextWindow: 200000
             inputPerMTok: 0
             outputPerMTok: 0
-      deepseek-account:
+      provider_a:
         displayName: 供应商A账号
         models:
           - id: model_a1
@@ -128,7 +128,7 @@ describe('多行纯量：YAML 的折行续写不再让整份配置报废（灰�
   it('config>0: the same profile yields providers, prices and windows', async () => {
     const document = parseYamlLite(STRESS_PROFILE);
     const found = providerConfigsFromDocument(document);
-    expect(found.providers.map((provider) => provider.id)).toEqual(['freellmapi', 'deepseek-account']);
+    expect(found.providers.map((provider) => provider.id)).toEqual(['freellmapi', 'provider_a']);
 
     const flash = found.providers[1]!.models[0]!;
     // Price and window are the two fields the defect report says are unreadable.
@@ -159,7 +159,7 @@ describe('多行纯量：YAML 的折行续写不再让整份配置报废（灰�
     expect(sources.config).toBeGreaterThan(0);
     expect(sources.config).toBe(2);
     const models = answer.models as { key: string; priceKnown: boolean; contextWindow: number | null }[];
-    const flash = models.find((model) => model.key === 'deepseek-account/model_a1')!;
+    const flash = models.find((model) => model.key === 'provider_a/model_a1')!;
     expect(flash.priceKnown).toBe(true);
     expect(flash.contextWindow).toBe(1_048_576);
   });

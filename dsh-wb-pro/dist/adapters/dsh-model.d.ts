@@ -149,7 +149,7 @@ export declare function splitModelKey(modelKey: string): {
  * registry key and the gateway owns in-chain fallback and accounting, so a key
  * that is not on a hand-written allowlist must not silently bypass it (verifier
  * C3, `provider_h/*`). The native `head/rest` pair is appended as the fallback.
- * provider_i / workbuddy are DSH direct bridges and get the native pair only.
+ * provider_i / provider_h are DSH direct bridges and get the native pair only.
  */
 export declare function selectTargets(modelKey: string): Array<{
     provider: string;

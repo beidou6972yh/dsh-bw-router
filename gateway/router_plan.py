@@ -1448,7 +1448,7 @@ def annotate(payload: dict, principal: dict | None = None) -> tuple[dict, int]:
         try:
             price = _price_for(_model_entry(model_key), actual_in, actual_out, _period())
             if price.get("known"):
-                # ── N5（2026-11-19 包子复测）：差额行改用「微元」精度 ──────────────
+                # ── N5（2026-11-19 书童侧复测）：差额行改用「微元」精度 ──────────────
                 # 旧实现：actual_cost = round(price["cost"], 6)，但 price["cost"] 本身
                 #   已在 _price_for 里被 round(...,3) 截断 ⇒ 61 in + 8 out 这类小样本
                 #   实付被清零，显示 0 元（实测）。

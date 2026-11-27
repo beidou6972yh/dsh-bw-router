@@ -75,7 +75,7 @@ async function doSwitch(ctx, body) {
   const sessionId = String(body?.sessionId || '').trim();
   let modelKey = String(body?.modelKey || '').trim();
   if (modelKey.startsWith('wb-gateway/')) modelKey = modelKey.slice('wb-gateway/'.length);
-  const dshDirect = /^(provider_i|workbuddy)\//.test(modelKey);
+  const dshDirect = /^(provider_i|provider_h)\//.test(modelKey);
   const provider = dshDirect ? modelKey.split('/')[0] : 'wb-gateway';
   const model = dshDirect ? modelKey.split('/').slice(1).join('/') : modelKey;
   if (!sessionId) return { status: 400, data: { ok: false, error: 'sessionId required' } };

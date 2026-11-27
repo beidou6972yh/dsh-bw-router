@@ -844,7 +844,7 @@ def _probe_capabilities(base_url: str, key: str, model: str, timeout: float = 45
 # ---------------------------------------------------------------------------
 
 
-# 2026-11-23 Q-dycoding 防再犯②：缺失窗口/无明确证据的能力一律**留 null（unknown）**，
+# 2026-11-23 上游接入防再犯②：缺失窗口/无明确证据的能力一律**留 null（unknown）**，
 # 不再用 131072/8192 兜底——兜底值会被后续误当实测事实写进配置（23:25 事故即如此）。
 _UNKNOWN_CTX_DEFAULTS = {"context_window": 131072, "max_tokens": 8192}
 

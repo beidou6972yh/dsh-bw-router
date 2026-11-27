@@ -53,7 +53,7 @@ const body = [
   '            maxTokens: 16384',
   '            inputPerMTok: 0',
   '            outputPerMTok: 0',
-  '      deepseek-account:',
+  '      provider_a:',
   '        displayName: 供应商A账号',
   '        models:',
   '          - id: model_a1',

@@ -627,10 +627,10 @@ window.__ModuleLoader__.load({
         const slash = key.indexOf("/");
         const head = slash > 0 ? key.slice(0, slash) : "";
         const rest = slash > 0 ? key.slice(slash + 1) : "";
-        const KNOWN = [...KNOWN_EXTRA, "provider_c", "provider_d", "provider_a", "deepseek-account",
-                       "provider_i", "workbuddy", "provider_b", "local-auto", "llama-review"];
-        // provider_i / workbuddy 是 DSH 直连桥，网关不代理 ⇒ 只能给原生 (provider, model)
-        if (head === "provider_i" || head === "workbuddy") return [{ provider: head, model: rest }];
+        const KNOWN = [...KNOWN_EXTRA, "provider_c", "provider_d", "provider_a", "provider_a",
+                       "provider_i", "provider_h", "provider_b", "model_e1", "model_e2"];
+        // provider_i / provider_h 是 DSH 直连桥，网关不代理 ⇒ 只能给原生 (provider, model)
+        if (head === "provider_i" || head === "provider_h") return [{ provider: head, model: rest }];
         const out = [{ provider: "wb-gateway", model: key }];
         if (KNOWN.includes(head)) out.push({ provider: head, model: rest });
         return out;

@@ -9,7 +9,7 @@ import type { ModelEntry, StagePlan } from '../src/core/types.js';
 import { allModels, bigBrain, coder, makeModel, painter } from './fixtures/models.js';
 
 /**
- * M1-4FIX: the six defects 大白 found in the M1-2 pass, each pinned by a test
+ * M1-4FIX: the six defects found in the prior pass in the M1-2 pass, each pinned by a test
  * that fails loudly if the behaviour comes back.
  *
  *   A1 计划卡 canStart 只看"每段有模型" ⇒ 卡片说可开工、switch 被拒

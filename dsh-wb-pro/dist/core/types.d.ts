@@ -10,7 +10,7 @@ export type CapabilityKind = 'reasoning' | 'coding' | 'writing' | 'summarizing' 
 /** Where a capability entry came from. Provenance is never dropped. */
 export type CapabilitySource = 'dsh-config' | 'dsh-runtime' | 'local-endpoint' | 'manual-import';
 /**
- * Per-million-token price. 人民币 CNY / Mtok（261117 起口径；本文件历史注释里的
+ * Per-million-token price. 人民币 CNY / Mtok（早期口径；本文件历史注释里的
  * “USD” 是旧措辞，数值与网关 pricebook 的 CNY 口径一致，比较时仍只看相对大小）。
  *
  * `null` means "unknown", and unknown is never treated as free: a model whose

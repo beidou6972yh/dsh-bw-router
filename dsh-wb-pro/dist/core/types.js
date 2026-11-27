@@ -20,7 +20,7 @@ export function pricingKnown(pricing) {
 export function availableAnd(known, incoming) {
     return known === true && incoming === true;
 }
-/** Best-effort cost of a single call（261117 起金额口径为人民币 CNY；裸数值不带符号）. Null when the price is unknown. */
+/** Best-effort cost of a single call（早期起金额口径为人民币 CNY；裸数值不带符号）. Null when the price is unknown. */
 export function costOf(pricing, inputTokens, outputTokens) {
     if (!pricingKnown(pricing))
         return null;

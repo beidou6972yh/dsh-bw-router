@@ -223,7 +223,7 @@ export function describeSavings(estimate) {
 /**
  * `¥0.060` — a plain amount with no claim about the future.
  *
- * 261117: 金额口径统一人民币 ¥ + 3 位小数（原 `$0.0600`）。函数名保留 `formatUSD`
+ * 早期: 金额口径统一人民币 ¥ + 3 位小数（原 `$0.0600`）。函数名保留 `formatUSD`
  * 以免动到已导出的包 API（dist/index.js 仍导出它），实际输出已是 CNY。
  */
 export function formatUSD(amount) {

@@ -4,7 +4,7 @@
 
 期望值来自**当前部署的配置**（config/routing.json ＋ upstreams.json），
 由 ``tests/config_ref.py`` 现场推导；用例里不再写死上游 id / 模型名，
-所以同一套用例在脱敏样例配置与任何一方的真实配置下都能跑（跨侧交付 v1.1d3）。
+所以同一套用例在脱敏样例配置与任何一方的真实配置下都能跑（跨侧交付）。
 
 运行：
     cd <网关树根>            # 树根需含 main.py 与 config/routing.json、upstreams.json

@@ -229,151 +229,15 @@
   </style>
 </head>
 <body>
-<nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#wb-模型路由网关-使用说明书零编码基础版"
-id="toc-wb-模型路由网关-使用说明书零编码基础版">WB 模型路由网关 ·
-使用说明书（零编码基础版）</a>
-<ul>
-<li><a href="#一句话说明" id="toc-一句话说明">1.1 一句话说明</a></li>
-<li><a href="#它由哪几件组成" id="toc-它由哪几件组成">1.2
-它由哪几件组成</a></li>
-<li><a href="#适合谁-不适合谁" id="toc-适合谁-不适合谁">1.3 适合谁 /
-不适合谁</a></li>
-<li><a href="#三个先划清的边界" id="toc-三个先划清的边界">1.4
-三个先划清的边界</a></li>
-<li><a href="#它对准的五个真问题" id="toc-它对准的五个真问题">2.1
-它对准的五个真问题</a></li>
-<li><a href="#四步链像请装修队" id="toc-四步链像请装修队">2.2
-四步链：像请装修队</a></li>
-<li><a href="#它和自动换模型的工具差在哪"
-id="toc-它和自动换模型的工具差在哪">2.3
-它和「自动换模型」的工具差在哪</a></li>
-<li><a href="#系统要求不扩大范围" id="toc-系统要求不扩大范围">3.1
-系统要求（不扩大范围）</a></li>
-<li><a href="#要先准备四样东西" id="toc-要先准备四样东西">3.2
-要先准备四样东西</a></li>
-<li><a href="#三个心理准备" id="toc-三个心理准备">3.3
-三个心理准备</a></li>
-<li><a href="#建目录并进入" id="toc-建目录并进入">4.1
-建目录并进入</a></li>
-<li><a href="#第-1-步解包三件" id="toc-第-1-步解包三件">4.2 第 1
-步：解包三件</a></li>
-<li><a href="#第-2-步用样例配置起跑" id="toc-第-2-步用样例配置起跑">4.3
-第 2 步：用样例配置起跑</a></li>
-<li><a href="#第-3-步把凭据放进环境变量"
-id="toc-第-3-步把凭据放进环境变量">4.4 第 3
-步：把凭据放进环境变量</a></li>
-<li><a href="#第-4-步装两个-python-依赖"
-id="toc-第-4-步装两个-python-依赖">4.5 第 4 步：装两个 Python
-依赖</a></li>
-<li><a href="#第-5-步启动" id="toc-第-5-步启动">4.6 第 5
-步：启动</a></li>
-<li><a href="#第-6-步自检-health" id="toc-第-6-步自检-health">4.7 第 6
-步：自检 <code>/health</code></a></li>
-<li><a href="#安装期常见报错一张表" id="toc-安装期常见报错一张表">4.8
-安装期常见报错一张表</a></li>
-<li><a href="#装完的验收清单" id="toc-装完的验收清单">4.9
-装完的验收清单</a></li>
-<li><a href="#总览" id="toc-总览">5.1 总览</a></li>
-<li><a href="#upstreams.json有哪些上游"
-id="toc-upstreams.json有哪些上游">5.2
-<code>upstreams.json</code>：有哪些上游</a></li>
-<li><a href="#routing.json怎么选" id="toc-routing.json怎么选">5.3
-<code>routing.json</code>：怎么选</a></li>
-<li><a href="#pricebook.json每个模型多少钱"
-id="toc-pricebook.json每个模型多少钱">5.4
-<code>pricebook.json</code>：每个模型多少钱</a></li>
-<li><a href="#api-keys.json谁能用" id="toc-api-keys.json谁能用">5.5
-<code>api-keys.json</code>：谁能用</a></li>
-<li><a href="#改完统一这样验证四步" id="toc-改完统一这样验证四步">5.6
-改完统一这样验证（四步）</a></li>
-<li><a href="#三条配置纪律" id="toc-三条配置纪律">5.7
-三条配置纪律</a></li>
-<li><a href="#先选路径" id="toc-先选路径">6.1 先选路径</a></li>
-<li><a href="#最省事本机直连无钥匙模式"
-id="toc-最省事本机直连无钥匙模式">6.2
-最省事：本机直连（无钥匙模式）</a></li>
-<li><a href="#dsh-里点开就用两种插件"
-id="toc-dsh-里点开就用两种插件">6.3 DSH 里点开就用（两种插件）</a></li>
-<li><a href="#给别的机器或程序用先签发钥匙"
-id="toc-给别的机器或程序用先签发钥匙">6.4
-给别的机器或程序用：先签发钥匙</a></li>
-<li><a href="#换模型不丢上下文" id="toc-换模型不丢上下文">6.5
-换模型不丢上下文</a></li>
-<li><a href="#直连-api先计划再执行再回写"
-id="toc-直连-api先计划再执行再回写">6.6 直连
-API：先计划，再执行，再回写</a></li>
-<li><a href="#填进任意-openai-客户端"
-id="toc-填进任意-openai-客户端">6.7 填进任意 OpenAI 客户端</a></li>
-<li><a href="#钱是怎么算出来的" id="toc-钱是怎么算出来的">7.1
-钱是怎么算出来的</a></li>
-<li><a href="#plan-的估价怎么读" id="toc-plan-的估价怎么读">7.2 plan
-的估价怎么读</a></li>
-<li><a href="#你确认之后发生什么" id="toc-你确认之后发生什么">7.3
-你确认之后发生什么</a></li>
-<li><a href="#estimate_delta-怎么读" id="toc-estimate_delta-怎么读">7.4
-<code>estimate_delta</code> 怎么读</a></li>
-<li><a href="#v1routereport预估-vs-实付"
-id="toc-v1routereport预估-vs-实付">7.5
-<code>/v1/route/report</code>：预估 vs 实付</a></li>
-<li><a href="#v1routereplay只读复算" id="toc-v1routereplay只读复算">7.6
-<code>/v1/route/replay</code>：只读复算</a></li>
-<li><a href="#admin-系列三个页面看什么"
-id="toc-admin-系列三个页面看什么">7.7 <code>/admin</code>
-系列三个页面看什么</a></li>
-<li><a href="#一周一次的对账习惯与排查顺序"
-id="toc-一周一次的对账习惯与排查顺序">7.8
-一周一次的对账习惯与排查顺序</a></li>
-<li><a href="#出厂默认一览" id="toc-出厂默认一览">8.1
-出厂默认一览</a></li>
-<li><a href="#建议的开启节奏" id="toc-建议的开启节奏">8.2
-建议的开启节奏</a></li>
-<li><a href="#上下文治理-context_governor默认-shadow"
-id="toc-上下文治理-context_governor默认-shadow">8.3 上下文治理
-<code>context_governor</code>（默认 shadow）</a></li>
-<li><a href="#其余开关怎么开看什么怎么回滚"
-id="toc-其余开关怎么开看什么怎么回滚">8.4
-其余开关：怎么开、看什么、怎么回滚</a></li>
-<li><a href="#一次只动一个记录模板" id="toc-一次只动一个记录模板">8.5
-一次只动一个（记录模板）</a></li>
-<li><a href="#凭据三条铁律" id="toc-凭据三条铁律">10.1
-凭据三条铁律</a></li>
-<li><a href="#账本与隐私" id="toc-账本与隐私">10.2 账本与隐私</a></li>
-<li><a href="#管理面只在内网" id="toc-管理面只在内网">10.3
-管理面只在内网</a></li>
-<li><a href="#改之前先备份" id="toc-改之前先备份">10.4
-改之前先备份</a></li>
-<li><a href="#回滚三步" id="toc-回滚三步">10.5 回滚三步</a></li>
-<li><a href="#对外分享前检查四件事" id="toc-对外分享前检查四件事">10.6
-对外分享前检查四件事</a></li>
-<li><a href="#端点速查" id="toc-端点速查">11.1 端点速查</a></li>
-<li><a href="#错误码速查" id="toc-错误码速查">11.2 错误码速查</a></li>
-<li><a href="#配置文件字段速查" id="toc-配置文件字段速查">11.3
-配置文件字段速查</a></li>
-<li><a href="#环境变量速查" id="toc-环境变量速查">11.4
-环境变量速查</a></li>
-<li><a href="#版本与变更摘要1.0.3.98-组能力各一句"
-id="toc-版本与变更摘要1.0.3.98-组能力各一句">11.5
-版本与变更摘要（1.0.3.9，8 组能力各一句）</a></li>
-<li><a href="#待确认-未验证清单" id="toc-待确认-未验证清单">11.6 待确认
-/ 未验证清单</a></li>
-<li><a href="#术语小词典" id="toc-术语小词典">11.7 术语小词典</a></li>
-<li><a href="#本书来源" id="toc-本书来源">11.8 本书来源</a></li>
-<li><a href="#内容来源对照" id="toc-内容来源对照">12.1
-内容来源对照</a></li>
-<li><a href="#本书标注为未验证-需你自配的部分"
-id="toc-本书标注为未验证-需你自配的部分">12.2 本书标注为「未验证 /
-需你自配」的部分</a></li>
-<li><a href="#自检结果" id="toc-自检结果">12.3 自检结果</a></li>
-</ul></li>
-</ul>
-</nav>
-<h1 id="wb-模型路由网关-使用说明书零编码基础版">WB 模型路由网关 ·
-使用说明书（零编码基础版）</h1>
+<header id="title-block-header">
+<h1 class="title">WB-Router-User-Guide.v1.0.0</h1>
+</header>
+<h1
+id="wb驭档模型智能换挡系统网关-使用说明书零编码基础版">WB驭档·模型智能换挡系统网关
+· 使用说明书（零编码基础版）</h1>
 <blockquote>
-<p><strong>版本</strong>：1.0.3.9（2026-11-24）　<strong>展示名</strong>：WB
-模型路由网关（英文可用 WB Router）
+<p><strong>版本</strong>：1.0.3.15（2026-11-27）　<strong>展示名</strong>：WB驭档·模型智能换挡系统网关（英文可用
+WB-GearPilot）
 <strong>读者</strong>：不会写代码，但会解压文件、会复制粘贴命令的人
 <strong>一句话</strong>：把「这次该用哪个模型、这一步要花多少钱」变成一次看得见、可确认、可复盘的流程——你点同意，它才花钱。
 <strong>开源状态</strong>：<strong>已于 2026-11-22 开源</strong>；仓库
@@ -610,9 +474,9 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 <h3 id="第-1-步解包三件">4.2 第 1 步：解包三件</h3>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/wb-router</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.9.tar.gz</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.9.tar.gz</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.9.tar.gz</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.15.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.15.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.15.tar.gz</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div>
 <p><strong>你会看到</strong>（三件）：<code>gateway  plugins  skill-mcp</code>。其中
 <code>gateway/</code> 里有
@@ -665,9 +529,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="
 另开一个终端执行 <code>ss -ltn | grep 18790</code>，能看到一行
 <code>LISTEN</code>。</p>
 <p>停止：在这个窗口按
-<code>Ctrl+C</code>。<strong>长期运行</strong>建议交给进程管理器（发布方生产部署用
-supervisor，服务名
-<code>router-gateway</code>）；具体写法随环境不同，本书不展开。</p>
+<code>Ctrl+C</code>。<strong>长期运行</strong>建议交给进程管理器(按你的部署环境选择，服务名自定义)；具体写法随环境不同，本书不展开。</p>
 <h3 id="第-6-步自检-health">4.7 第 6 步：自检 <code>/health</code></h3>
 <div class="sourceCode" id="cb7"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> http://127.0.0.1:18790/health <span class="kw">|</span> <span class="ex">python3</span> <span class="at">-m</span> json.tool <span class="kw">|</span> <span class="fu">head</span> <span class="at">-20</span></span></code></pre></div>
@@ -688,9 +550,9 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="
 <code>auto</code>、<code>auto-fast</code>、<code>auto-strong</code>
 三个虚拟模型名。</p>
 <blockquote>
-<p>发布方自己的生产部署上还能看到价格自证（27
-个可计价模型全部有单价来源、drift 0）和 你部署的上游全
-<code>ok</code>——这是<strong>发布方部署的口径</strong>，你自建后数量按你自己的配置算，判据仍是上面三条。</p>
+<p>发布方自己的生产部署上还能看到价格自证区块与上游状态（<strong>上游家数与价格自证一律以你部署的
+<code>/health</code>
+为准</strong>）——这是<strong>发布方部署的口径</strong>，你自建后数量按你自己的配置算，判据仍是上面三条。</p>
 </blockquote>
 <h3 id="安装期常见报错一张表">4.8 安装期常见报错一张表</h3>
 <table>
@@ -786,7 +648,7 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="
 </tbody>
 </table>
 <blockquote>
-<p>回归数字：发布方出厂验证是<strong>两段各 579 个用例全绿、exit
+<p>回归数字：发布方出厂验证是<strong>两段各 596 个用例全绿、exit
 0</strong>。你自己跑时判据是「<strong>两段一致 ＋
 全绿</strong>」，不必盯固定数字——用例数会随配置展开而变。</p>
 </blockquote>
@@ -992,9 +854,11 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href=
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/price-attest.py</span></code></pre></div>
 <p>看到 <code>status</code> 为
 <code>consistent</code>、<code>unsourced</code> 为 0、<code>drift</code>
-为 0 就算过。发布方生产部署的口径是 <strong>27/27（27
-个可计价模型全部有单价来源）、drift
-0</strong>；你自建后按你填了多少模型算。</p>
+为 0 就算过。本版<strong>不对固定数字作承诺</strong>——发布方部署在
+2026-11-27
+实测仍有新接入/本地自建候选未登记单价来源，故判据一律以你部署的
+<code>/health.price_consistency</code>
+为准；你自建后按你填了多少模型算。</p>
 <h3 id="api-keys.json谁能用">5.5 <code>api-keys.json</code>：谁能用</h3>
 <p>这份文件管<strong>给别人用的钥匙</strong>（网关自己的 Bearer
 key），跟上游密钥是两套，别混。</p>
@@ -1124,13 +988,13 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href=
 <code>data: [DONE]</code>。</p>
 <h3 id="dsh-里点开就用两种插件">6.3 DSH 里点开就用（两种插件）</h3>
 <p><strong>装插件</strong>：解包
-<code>plugins-1.0.3.9.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.5</code>
+<code>plugins-1.0.3.15.tar.gz</code>，得到 <code>dsh-wb-pro-0.2.5</code>
 与 <code>dsh-wb-max-0.2.5</code> 两个目录。把它们覆盖到你的 DSH
 插件目录（对应宿主版本的那份），刷新页面；涉及宿主侧文件的改动需重启一次
 DSH。</p>
 <blockquote>
-<p>插件公开下载：GitHub Release <code>v1.0.3.9</code> 资产
-<code>plugins-1.0.3.9.tar.gz</code>（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.9
+<p>插件公开下载：GitHub Release <code>v1.0.3.15</code> 资产
+<code>plugins-1.0.3.15.tar.gz</code>（https://github.com/beidou6972yh/dsh-bw-router/releases/tag/v1.0.3.15
 ）。</p>
 </blockquote>
 <p><strong>用起来（Max，走网关）</strong>：① 在 DSH
@@ -1623,8 +1487,7 @@ B5，一次只动一个；<strong>任何异常先关开关</strong>（不必卸�
 <td>价格自证（默认开）</td>
 <td>默认开（<code>ROUTER_PRICE_ATTEST=1</code>）</td>
 <td><code>/health.price_consistency</code> 的
-<code>status</code>/<code>unsourced</code>/<code>drift</code>；发布方口径
-27/27、drift 0</td>
+<code>status</code>/<code>unsourced</code>/<code>drift</code>（以你部署实测为准）</td>
 <td>设 <code>0</code> 并重启</td>
 </tr>
 <tr class="even">
@@ -2180,8 +2043,8 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href=
 </tr>
 </tbody>
 </table>
-<h3 id="版本与变更摘要1.0.3.98-组能力各一句">11.5
-版本与变更摘要（1.0.3.9，8 组能力各一句）</h3>
+<h3 id="版本与变更摘要1.0.3.158-组能力各一句">11.5
+版本与变更摘要（1.0.3.15，8 组能力各一句）</h3>
 <table>
 <colgroup>
 <col style="width: 50%" />
@@ -2228,11 +2091,13 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href=
 </tr>
 </tbody>
 </table>
-<p><strong>出厂验证口径（发布方数据）</strong>：价格自证
-<strong>27/27</strong>、drift 0；当前部署接入 <strong>你部署的上游（云端＋本地）；<strong>3 种入口</strong>（DSH Pro 插件 /
-DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>579</strong>
-个用例两段全绿；异机压测 <strong>2166 请求 / 0 失败</strong>；能力分
-<strong>8 组</strong>；账本<strong>只记特征、不记正文</strong>。</p>
+<p><strong>出厂验证口径（发布方数据，2026-11-27
+实测）</strong>：网关回归<strong>两段各 596
+个用例全绿</strong>、失败集合一致、canary 按预期红、exit 0；<strong>3
+种入口</strong>（DSH Pro 插件 / DSH Max 插件 / OpenAI 兼容直连）；能力分
+<strong>8
+组</strong>；账本<strong>只记特征、不记正文</strong>。价格自证分区与上游家数一律以你自己部署的
+<code>/health</code> 为准。</p>
 <h3 id="待确认-未验证清单">11.6 待确认 / 未验证清单</h3>
 <table>
 <colgroup>
@@ -2271,8 +2136,8 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>579</strong>
 <tr class="odd">
 <td>插件公开下载渠道</td>
 <td><strong>GitHub Release</strong></td>
-<td><code>plugins-1.0.3.9.tar.gz</code> / Release
-<code>v1.0.3.9</code></td>
+<td><code>plugins-1.0.3.15.tar.gz</code> / Release
+<code>v1.0.3.15</code></td>
 </tr>
 <tr class="even">
 <td>公网接入方案</td>
@@ -2326,10 +2191,10 @@ DSH Max 插件 / OpenAI 兼容直连）；回归 <strong>579</strong>
 <ul>
 <li>事实表：（内部编制资料，不随包）</li>
 <li>网关文档：<code>README.md</code>、<code>README.md</code>（网关代码树内）</li>
-<li>版本文档：<code>变更说明-1.0.3.9.md</code>、<code>开关开启与观察.md</code></li>
+<li>版本文档：<code>变更说明-1.0.3.15.md</code>、<code>开关开启与观察.md</code></li>
 <li>样例配置：<code>gateway/upstreams.json</code>、<code>gateway/config/routing.json</code>；字段另行核对
 <code>config/pricebook.json</code>、<code>config/api-keys.json</code></li>
-<li>其余细节以交付包内 <code>docs-1.0.3.9/</code> 与
+<li>其余细节以交付包内 <code>docs-1.0.3.15/</code> 与
 <code>README.md</code> 为准</li>
 </ul>
 <hr />
@@ -2435,8 +2300,9 @@ key 不生效、升级与回滚、换模型后上下文是否还在</td>
 </tr>
 <tr class="odd">
 <td>硬数字</td>
-<td>只用事实表 §6 的 27/27、5 家、3 种入口、579、2166 请求/0 失败、8
-组、只记特征不记正文；其余为操作参数（状态码、270/600
+<td>只用事实表 §6 的 596（两段各）全绿、3 种入口、8
+组、只记特征不记正文（价格自证改注「以部署方 <code>/health</code>
+为准」；其余历史数字只在变更说明中作历史陈述）；其余为操作参数（状态码、270/600
 秒、1024、0.2、<code>127.0.0.1:18790</code>、Python 3.12、24
 小时计划状态、60 秒本地冷却、20 秒等待上限），均出自事实表 §2/§5/§8
 与上述 repo 文档</td>

@@ -19,7 +19,7 @@
 - 绝不驱动卸载、不调外部命令（卸载由宿主做）；
 - 上游原文只进账本备核，不进响应（`raw` ≤300 字符）。
 
-对应规格：`规格-v1.1d2-内部接口-dabai.md` §0 ＋ §2 全部。
+对应规格：内部接口规格 §0 ＋ §2 全部。
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ CODE_CARD_BUSY = "card_busy"
 REASON_VRAM = "vram_insufficient"
 REASON_BUSY = "card_busy"
 WAIT_LOCAL_HEADER = "X-Route-Wait-Local"
-ALLOW_CLOUD_HEADER = "X-Route-Allow-Cloud"   # 大白自定（契约只说"调用方显式允许"）
+ALLOW_CLOUD_HEADER = "X-Route-Allow-Cloud"   # 按契约约定（契约只说"调用方显式允许"）
 MAX_WAIT_SECONDS = 20.0
 LOCAL_HOST_COOLDOWN_SECONDS = 60.0
 ERROR_STATUS = 503

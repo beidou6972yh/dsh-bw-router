@@ -1,10 +1,10 @@
 {
   "name": "dsh-wb-pro",
   "version": "0.2.5",
-  "description": "WB 路由 · Pro：DSH 本地模型自动计划、逐段原生模型选择、会话内切模型（不依赖网关）",
+  "description": "WB-GearPilot Pro：DSH 本地模型自动计划、逐段原生模型选择、会话内切模型（不依赖网关）",
   "type": "module",
   "license": "MIT",
-  "author": "beidou6972家的大灰狼 & 金灵龟家的小棒",
+  "author": "B&W",
   "keywords": [
     "dsh-plugin",
     "deepseek-harness",

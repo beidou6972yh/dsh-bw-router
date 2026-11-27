@@ -1,4 +1,4 @@
-# WB 模型路由网关 · Agent 安装说明（可直接投喂给 Agent）
+# WB驭档·模型智能换挡系统网关 · Agent 安装说明（可直接投喂给 Agent）
 
 > **给 Agent 的话**：这是一份可执行安装任务书。请严格按步骤做，每步有「期望」与「失败怎么办」。
 > 你不需要读源码；**不许跳步、不许改包外文件、不许把密钥打印到输出里**。
@@ -6,9 +6,9 @@
 
 | 项 | 值 |
 |---|---|
-| 产品 | WB 模型路由网关 v1.0.3.9（OpenAI 兼容，自托管） |
+| 产品 | WB驭档·模型智能换挡系统网关 v1.0.3.15（OpenAI 兼容，自托管） |
 | 用户画像 | 无编码基础；不会读日志也能看懂你的回报 |
-| 交付包 | `gateway-1.0.3.9.tar.gz`、`plugins-1.0.3.9.tar.gz`、`skill-mcp-1.0.3.9.tar.gz` |
+| 交付包 | `gateway-1.0.3.15.tar.gz`、`plugins-1.0.3.15.tar.gz`、`skill-mcp-1.0.3.15.tar.gz` |
 | 完成判据 | 见 §5（4 条全过才算装好） |
 
 ---
@@ -44,9 +44,9 @@ df -h "$HOME" | tail -1           # 至少留 2GB
 ```bash
 ROOT=~/wb-router
 mkdir -p "$ROOT" && cd "$ROOT"
-tar -xzf gateway-1.0.3.9.tar.gz
-tar -xzf plugins-1.0.3.9.tar.gz
-tar -xzf skill-mcp-1.0.3.9.tar.gz
+tar -xzf gateway-1.0.3.15.tar.gz
+tar -xzf plugins-1.0.3.15.tar.gz
+tar -xzf skill-mcp-1.0.3.15.tar.gz
 ls    # 期望：gateway  plugins  skill-mcp
 test -f gateway/main.py && test -d gateway/config && echo PKG_OK
 ```
@@ -113,7 +113,7 @@ python3 main.py
 
 期望：打印一行「凭据已加载：N 个 ref」，然后停在前台不返回（这就是在跑）。用 `Ctrl+C` 可停。
 
-> 需要常驻时，交给用户环境里现成的进程管理器（supervisor 服务名建议 `router-gateway`，systemd 单元同理）；**不要**自己发明开机自启方式。
+> 需要常驻时，交给用户环境里现成的进程管理器（服务名按你的部署环境自定义）；**不要**自己发明开机自启方式。
 
 ### 3.6 自检（另开终端）
 
@@ -191,4 +191,4 @@ cp -a config/routing.json.bak   config/routing.json
 
 ---
 
-*版本 1.0.3.9；更多细节见同目录《使用说明书》（26 页）与包内 `gateway/README.md`、`gateway/docs-1.0.3.9/`。*
+*版本 1.0.3.15；更多细节见同目录《使用说明书》（28 页）与包内 `gateway/README.md`、`gateway/docs-1.0.3.15/`。*

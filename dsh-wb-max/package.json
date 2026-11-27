@@ -1,10 +1,10 @@
 {
   "name": "dsh-wb-max",
   "version": "0.2.5",
-  "description": "WB 路由 · Max：DSH 调用 WB 模型路由决策器（网关）的 Max 模式前端",
+  "description": "WB-GearPilot Max：DSH 调用 WB-GearPilot 换挡决策器（网关）的 Max 模式前端",
   "type": "module",
   "license": "MIT",
-  "author": "beidou6972家的大灰狼 & 金灵龟家的小棒",
+  "author": "B&W",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

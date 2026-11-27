@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""金额口径（CNY / 3 位小数）与汇率换算单元测试（2026-11-17 用户令第 2、3 条）。
+"""金额口径（CNY / 3 位小数）与汇率换算单元测试（2026-11-17 约定第 2、3 条）。
 
 覆盖：
   - estimate_cost 保留 3 位小数（原 8 位）；
@@ -127,7 +127,7 @@ class TestFxRate(_FxFixture):
             self.assertIsNone(pr.fx_rate(bad))
 
     def test_rate_is_rounded_to_3_decimals(self):
-        """用户令第 2 条定稿：汇率取 3 位小数（超过 3 位的按 3 位生效，不做隐式全精度）。"""
+        """约定第 2 条定稿：汇率取 3 位小数（超过 3 位的按 3 位生效，不做隐式全精度）。"""
         self._use_fx({"USDCNY": 7.123456}, name="fx-6dp.json")
         self.assertEqual(pr.fx_rate("USD"), 7.123, "6 位汇率必须收敛到 3 位")
         self.assertEqual(pr.convert_to_cny(1.0, "USD"), 7.123)

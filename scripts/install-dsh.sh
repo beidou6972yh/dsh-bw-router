@@ -21,7 +21,7 @@ say(){ printf '%s\n' "$*"; }
 step(){ printf '\n== %s ==\n' "$*"; }
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # 1.0.3.5：显式回显解析结果，装错目录时一眼能看出来
-DSH_HOME="${DSH_HOME:-/opt/wb-router}"
+DSH_HOME="${DSH_HOME:?请设置 DSH_HOME 为你的部署根目录}"
 say "· DSH home（可被 DSH_HOME 覆盖）：$DSH_HOME"
 PROFILE="${PROFILE:-web}"
 PROFILE_DIR="$DSH_HOME/profiles/$PROFILE"

@@ -1,4 +1,5 @@
 import { estimateStage, estimateWithoutModel, formatEstimate, sumEstimates, } from '../core/budget.js';
+import { normalizeModelKey } from '../adapters/dsh-model.js';
 import { decideModel, decidePlan } from '../core/decider.js';
 import { guardSwitch, singleShotMaxTokens } from '../core/guard.js';
 import { DEFAULT_CONTEXT_THRESHOLDS, compactionNotice, decideContext, emptyHandover, handoverComplete, readThresholds, renderHandover, validateHandover, } from '../core/context-guard.js';
@@ -725,6 +726,9 @@ export class PluginHost {
      * switch we can observe.
      */
     async switchForStage(stageId, targetKey, contextTokens, expectedOutputTokens, requiredCapabilities = [], planId, options = {}) {
+        // 2026-11-26 修复：selection.current() 已剥 `wb-gateway/` 前缀，targetKey 未剥 ⇒
+        // 「计划用 wb-gateway/x、回读得 x」永远不等，误报切换失败。两侧统一到注册键空间再比。
+        const normalizedTargetKey = normalizeModelKey(targetKey);
         const gate = this.planGate(planId, stageId, targetKey);
         if (!gate.ok) {
             this.ledger.recordBlocked(stageId, targetKey, gate.message, planId);
@@ -773,7 +777,7 @@ export class PluginHost {
             };
         }
         const from = this.selection.current(options.sessionId);
-        if (from === targetKey) {
+        if (from === normalizedTargetKey) {
             // B1: the session is already on the model this stage needs. That is the
             // outcome asked for, so it is a success, not a refusal — reporting 409
             // here made a retried switch look like a failure and, worse, taught
@@ -812,7 +816,7 @@ export class PluginHost {
         }
         // Platforms may accept `select` and ignore it. Trust the read-back, not the ack.
         const after = this.selection.current(options.sessionId);
-        if (after !== targetKey) {
+        if (after !== normalizedTargetKey) {
             const message = `the platform accepted the switch but the session still runs ${after} ` +
                 `(wanted ${targetKey}); ledger records it as unverified.`;
             this.ledger.recordUnverified(stageId, targetKey, after, planId);
@@ -1378,7 +1382,7 @@ export class RouterSession {
      * `actual` usage wins over any plan-time estimate. A stage that reports done
      * **without** token counts is not booked, and the state says so (`unbooked`):
      * recording "done, $0.0000" made the wallet look free (B2).（该 `$0.0000` 为
-     * 261117 之前的历史渲染文字，保留以记录事故；现口径 `¥` + 3 位小数。）The stage still
+     * 早期之前的历史渲染文字，保留以记录事故；现口径 `¥` + 3 位小数。）The stage still
      * finishes — a host that cannot count tokens must not be stuck — but nothing
      * on screen may imply the run was costed.
      */

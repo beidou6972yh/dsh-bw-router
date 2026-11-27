@@ -143,7 +143,7 @@ export declare function splitModelKey(modelKey: string): {
     model: string;
 };
 /**
- * Ordered (provider, model) candidates for one registry key (261117 Bug B).
+ * Ordered (provider, model) candidates for one registry key (早期 Bug B).
  *
  * The gateway candidate comes first, **unconditionally**: the session holds a
  * registry key and the gateway owns in-chain fallback and accounting, so a key

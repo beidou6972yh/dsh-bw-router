@@ -1,12 +1,61 @@
+## 1.0.3.15 — 2026-11-27
+
+公开件脱敏第三轮整改（对侧二次复核 P3）与发版卫生加固：
+- **清整族内部任务号**：整族内部任务号（日期编号 .DSH 全族）从公开包与仓库源码清除（原 `price_resolver.py` / `router_plan.py` 引用泛化为中性描述）。
+- **清历史包内执行记录与内部引用**：公开包不再夹带内部执行记录、内测编号、空占位残句与内部文档引用。
+- **修插件鉴权兜底缺陷**：不再内置任何部署路径/凭据文件名；鉴权只认显式注入的 `WB_GATEWAY_API_KEY` / `WB_GATEWAY_KEY_FILE`，缺失时明确 503，不再静默发无鉴权请求；annotations 改为可选增强，仅显式配置 `WB_ANNOTATIONS_FILE` 时读取。
+- **统一署名**：npm 子包 `author` 统一为 `B&W`。
+- **闸加严**：脱敏闸新增 `internal-task-family` 规则（整族任务号/内测编号），清洗器不再误改功能文件名、不再留空 code span。
+- 产品代码功能零改动（仅公开件文案/默认值与脱敏工具）；回归全绿。
+
+## 1.0.3.13 — 2026-11-27
+
+对侧预检 1.0.3.12 发现两处问题，修复后重出。
+
+### 修复
+- **清空真实余额快照**：`dsh-wb-max/dist/client/client.js` 的 `SNAP` 原含真实金额与账户标识（具体数值与账户名不在公开件复述），已清为 `{"fetched_at":null,"items":[]}`；`sanitize-bundles.mjs` 补 SNAP 清空逻辑，防再犯。
+- **补顶层 SHA256SUMS.txt**：包目录随包提供 tar 级校验清单（此前只有包内清单）。
+
+### 说明
+- 产品代码零改动；run-tests.sh 的 MODULES 补 price_state.py 沿用 1.0.3.12。
+
+## 1.0.3.12 — 2026-11-27
+
+修复 run-tests.sh 模块清单漏拷（对侧复测 1.0.3.11 时发现）。
+
+### 修复
+- `gateway/run-tests.sh`：MODULES 补 `price_state.py`（main.py 已 import 它；缺这一行时临时树整段 import 失败，脚本误报双源、退出码 5）。
+- 产品代码零改动；补行后两段各 596 例全绿、失败集合一致、canary 按预期红。
+
+## 1.0.3.11 — 2026-11-26
+
+产品改名 **WB驭档·模型智能换挡系统（WB-GearPilot）**，并修复 Pro 模式「生成计划」无反应（P0–P3）。
+
+### 改名（展示名，技术标识零改动）
+- 中文展示名：WB 模型路由 → **WB驭档·模型智能换挡系统**；英文：**WB-GearPilot**。
+- 覆盖：DSH 插件（Pro/Max）、网关（含管理界面）、Skill（wb-max-router）、MCP（wb-max-mcp）、README/文档/海报文案。
+- 第一原则：npm 包名（`dsh-wb-pro`/`dsh-wb-max`/`wb-max-mcp`）、skill name（`wb-max-router`）、MCP 工具名（`wb_route_*`）、API 路由（`/router/*`）、槽位名、触发词 `[WB-Max路由]` 全部保持不变。
+
+### 修复（P0–P3，Pro/Max 客户端）
+- P0：空草稿点「生成计划」不再静默吞掉，改为 publish/setNotice 明确提示。
+- P1：「生成计划」按钮 disabled 只依赖 pending，不再因空草稿点不动。
+- P2：hint/error 提示不受 hero/active 阶段门槛限制，任何阶段可见。
+- P3：草稿读取加 DOM 兜底（`[contenteditable][data-composer-input]`），`useInput.draft` 为空时从 composer 取真实文本。
+
+### 验证
+- `scripts/verify-plan-fix.mjs`：P0–P3 静态断言 8/8 PASS（RED 8 失败 → GREEN 全过）。
+- `scripts/verify-rename.mjs`：新名 9/9 + 旧名清除 9/9 PASS。
+- 网关 pytest **596 passed / 114 subtests**；两个 bundle `node --check` 通过；浏览器实测加载补丁 bundle 且无 JS 报错。
+
 # Changelog
 
 ## 1.0.3.10 — 2026-11-25
 
-内测残留项 #5 / #12 真修复（2026-11-25 评审通过）。仅两项改动，行为零回归：
+早期问题 真修复（2026-11-25 评审通过）。仅两项改动，行为零回归：
 
 ### 修复
-- **#5 价格三态单一真源**：新增 `gateway/price_state.py`，`main.price_state_of` 与 `router_plan._price_state_for` 一律委托它。此前两处各判一遍（main 认 4 类本地 provider＋3 段价，plan 只认 provider_b＋2 段价），`/v1/route/prices` 与出计划口径可能漂移。判定逻辑从 main 原样迁入，245 组入参两实现逐位一致（diff=0）。
-- **#12 清除写死安装路径**：网关 `main.py`（STALL_NOTIFY_PATH）、`router_deciders.py`（凭据文件）、`admin_ui.py`（plugin-reconcile）、`run-18790.sh`（凭据路径）改为按 DSH_HOME/当前树相对定位，可用环境变量覆盖；不再写死安装树的绝对路径。
+- **价格三态单一真源**：新增 `gateway/price_state.py`，`main.price_state_of` 与 `router_plan._price_state_for` 一律委托它。此前两处各判一遍（main 认 4 类本地 provider＋3 段价，plan 只认 provider_b＋2 段价），`/v1/route/prices` 与出计划口径可能漂移。判定逻辑从 main 原样迁入，245 组入参两实现逐位一致（diff=0）。
+- **清除写死安装路径**：网关 `main.py`（STALL_NOTIFY_PATH）、`router_deciders.py`（凭据文件）、`admin_ui.py`（plugin-reconcile）、`run-18790.sh`（凭据路径）改为按 DSH_HOME/当前树相对定位，可用环境变量覆盖；不再写死安装树的绝对路径。
 
 ### 验证
 - 新增 2 组测试：`tests/test_price_state_single_source.py`（3 例，单一真源＋两条委托）、`tests/test_no_abs_install_path.py`（1 例，生效运行文件 0 写死路径）。
@@ -47,9 +96,9 @@
 
 配合网关 **1.0.3.7** 发行：修跨宿主文档路径缺陷（对照外部实测报告 A/B 两项 + 同病扩展）。
 
-### 修复 A：SKILL.md CLI 路径不再写死 `/opt/wb-router`
-- `skill-mcp/wb-max-router/SKILL.md` 中 3 处 `CLI="${DSH_HOME:-/opt/wb-router}/tools/wb-max-mcp/bin/wb-max.mjs"` 改为探测式解析（与 `scripts/check-tools.sh` 同款顺序）：`WB_MAX_CLI` 环境变量 → 仓库相对路径 → `$DSH_HOME/tools` → 旧默认；找不到即明确报错退出 2。
-- 凭据文件默认路径改为可覆盖：`WB_GATEWAY_KEY_FILE` 优先，`/opt/wb-router/config/wb-remote.json` 仅作旧默认。
+### 修复 A：SKILL.md CLI 路径不再写死安装路径
+- `skill-mcp/wb-max-router/SKILL.md` 中 3 处 旧的写死 CLI 路径 改为探测式解析（与 `scripts/check-tools.sh` 同款顺序）：`WB_MAX_CLI` 环境变量 → 仓库相对路径 → `$DSH_HOME/tools` → 旧默认；找不到即明确报错退出 2。
+- 凭据文件默认路径改为可覆盖：`WB_GATEWAY_KEY_FILE` 优先，旧的凭据文件默认路径仅作兼容。
 - 影响：Windows / 非标准安装路径下，MCP 挂不上时的 CLI 兜底不再直接失效。
 
 ### 修复 B：安装说明的 upstreams 配置路径写错
@@ -102,7 +151,7 @@ HTTP 路由接入 DSH 连接信任闸（DSH 插件市场对注册 HTTP 路由的
 
 - 融合前序版本成果：网关主代码相对 1.0.3.2 零功能性改动（B1–B5、A0/L5、R4/R5 全部保留）。
 - 新增 `tests/test_price_aggregate.py` 6 例（`?model=` 聚合视图回归）；网关回归两段各 568/OK。
-- 运维件：重启闸 autorestart 审计（只记不拦）＋修「±600s 洗白」。
+- 运维件：重启审计（只记不拦）＋修「±600s 洗白」。
 - 观测：`config/shadow_judge.json` 采样门 16k→150k（仅影子观测）。
 - 文档：`docs-open/`（使用说明书/快速上手/Agent 安装说明/海报）与 `release-notes-1.0.3.3/`。
 - 本仓新增 `gateway/`、`dsh-wb-max/`、`dsh-wb-pro/`、`skill-mcp/`；`dsh-wb-max` 前端余额快照已脱敏（`SNAP.items=[]`）。

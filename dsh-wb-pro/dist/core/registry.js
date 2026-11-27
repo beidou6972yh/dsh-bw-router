@@ -11,7 +11,7 @@ function rank(source) {
     return index < 0 ? SOURCE_PRECEDENCE.length : index;
 }
 /**
- * 单位价（¥/百万 token）的**展示**口径：小数点后 3 位（261117 用户令）。
+ * 单位价（¥/百万 token）的**展示**口径：小数点后 3 位（早期约定）。
  *
  * 未知价不是 0：`null`/`undefined` 一律返回 `'unknown'`，绝不显示成 `0.000`。
  * 只用于给人看的字符串；排序与冲突判定仍用 `outputPerMTok` 的全精度原值。

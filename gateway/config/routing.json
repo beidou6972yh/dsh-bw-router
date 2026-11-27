@@ -183,7 +183,7 @@
   "afp": {
     "enabled": false,
     "upstream": "up-d",
-    "quota_path": "/srv/router-gateway/数据/quota-snapshot.json",
+    "quota_path": "<部署数据目录>/quota-snapshot.json",
     "rate_per_token": 0.0,
     "reserve": 0.1,
     "min_charge_afp": 1.0,
@@ -457,7 +457,7 @@
     "upstream_models": true
   },
   "ledger": {
-    "path": "数据/ledger.jsonl"
+    "path": "<部署数据目录>/ledger.jsonl"
   },
   "_note": "本文件为脱敏样例：上游与模型名已替换为占位（up-a/up-b/up-c/up-d/local-lan），价格字段一律 null（未报价）、AFP 闸门默认关闭且额度路径为占位。部署前请按你侧上游改 routes / strategies / capability_meta 三处的 \"<上游>/<模型>\" 键，并自行填 price 与 afp 参数。字段含义见 README.md 第 7/9/11 节。",
   "context_governor": {

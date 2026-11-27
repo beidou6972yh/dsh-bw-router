@@ -188,7 +188,7 @@ export function renderStatusBar(state) {
  * · ~$0.13 ±61% (save 81% …") — a reader skims that and trusts the number less.
  * One of the two is enough: the priced one, or the reason it is not priced.
  *
- * （上面那行引用的是 261117 之前的历史渲染：旧版用 `$` + 4 位小数；
+ * （上面那行引用的是 早期之前的历史渲染：旧版用 `$` + 4 位小数；
  * 现口径为 `¥` + 3 位小数，重复问题与符号无关，故保留原样作历史说明。）
  */
 function footerMoney(total) {

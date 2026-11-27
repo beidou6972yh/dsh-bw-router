@@ -4,7 +4,7 @@
 set -uo pipefail
 SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SKILL="$SKILL_DIR/SKILL.md"
-# 1.0.3.5：不再硬编码安装路径（写死 /opt/wb-router 换环境必挂）。
+# 1.0.3.5：不再硬编码安装路径（写死安装路径换环境必挂）。
 # 解析顺序：WB_MCP_SERVER 环境变量 → 同级 ../wb-max-mcp → 上两级 → 旧默认路径（向后兼容）
 SERVER="${WB_MCP_SERVER:-}"
 if [ -z "$SERVER" ]; then

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""router_deciders.py —— 每条策略的可替换「决策模型」层（2026-11-20 用户令）
+"""router_deciders.py —— 每条策略的可替换「决策模型」层（2026-11-20 约定）
 
 用户原话：「我们路由策略里，"功能"这个策略里预留了决策模型，现在可以考虑在每条策略里都加一个
 决策模型的选项，这样让路由策略在执行任务时，先由决策模型判断，再由下面的模型执行」。
@@ -40,7 +40,7 @@ _LEVELS = {"L1", "L2", "L3"}
 
 _STATE = {"doc": None, "loaded_at": 0.0, "fail_streak": {}, "open_until": {}}
 _CACHE_TTL = 5.0
-# 1.0.3.10 #12：凭据路径按当前工作副本定位，可用环境变量覆盖（原写死 /opt/wb-router）。
+# 凭据路径按当前工作副本定位，可用环境变量覆盖（原写死安装路径）。
 _CRED_FILE = os.environ.get(
     "ROUTER_CREDENTIALS_PATH",
     os.path.join(os.path.dirname(os.path.abspath(__file__)), ".credentials.yaml"),
@@ -248,7 +248,7 @@ def decide(strategy: str, payload_meta: dict, actual: dict | None = None,
         return None
     t0 = time.time()
     try:
-        # [2026-11-21 用户令「接吧」] 两种 decider 后端：
+        # [2026-11-21 约定「接吧」] 两种 decider 后端：
         #   openai-compatible（默认）＝chat/completions + 文本 JSON 解析；
         #   decider_a＝结构化打分模型（读 logprobs，不做 generate），见 intern_decision_client。
         if str(spec.get("kind") or "").lower() == "decider_a":

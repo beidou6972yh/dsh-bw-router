@@ -4,11 +4,11 @@ window.__ModuleLoader__.load({
     const React = require("react");
     const BASE = "/router";
     const PRO_KEY = "wb.pro.enabled";
-    try { console.info("[WB-UI] A5-20261117 loaded · pro"); } catch {}
+    try { console.info("[WB-GearPilot] ui-a5 loaded · pro"); } catch {}
     const DEFAULT_STAGES = ["分析任务", "执行", "验收"];
 
     // ── 价格快照（2026-11-16 生成，来源 config/pricebook.json；客户端离线比价）──
-    const WB_PRICES = {"generated_at":"2026-11-16T19:18:11+08:00","activity":{"provider_c":0.85,"provider_d":0.6},"models":{"model_a3":{"offers":[{"provider":"provider_a","model_id":"model_a1","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":2.0,"offpeak":1.0},"cache_hit":{"peak":0.04,"offpeak":0.02},"output":{"peak":8.0,"offpeak":4.0}}},{"provider":"provider_c","model_id":"model_a3","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":1.0,"output":4.0,"cache_hit":0.02},"multipliers":[{"h0":14,"h1":18,"f":2.0},{"h0":9,"h1":12,"f":2.0}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A3","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"hour_offpeak","price":{"input":{"peak":2.0,"offpeak":1.0},"output":{"peak":8.0,"offpeak":4.0},"cache_hit":{"peak":0.04,"offpeak":0.02}},"offpeak_hours":[[2,8]]}]},"model_a5":{"offers":[{"provider":"provider_a","model_id":"model_a5","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":9.0,"offpeak":4.5},"cache_hit":{"peak":0.3,"offpeak":0.15},"output":{"peak":27.0,"offpeak":13.5}}},{"provider":"provider_c","model_id":"model_a5","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":4.5,"output":13.5,"cache_hit":0.15},"multipliers":[{"h0":14,"h1":18,"f":2.0},{"h0":9,"h1":12,"f":2.0}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A5","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":12.0},"output":{"flat":24.0},"cache_hit":{"flat":1.0}}}]},"model_b2":{"offers":[{"provider":"provider_c","model_id":"model_b2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.2}}},{"provider":"provider_d","model_id":"org/Model_B2","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.23}}}]},"model_b1":{"offers":[{"provider":"provider_c","model_id":"model_b1","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"gc-chat":0.6,"default":1},"schedule":"flat","price":{"input":{"flat":8.0},"output":{"flat":28.0},"cache_hit":{"flat":2.0}}},{"provider":"provider_d","model_id":"org/Model_B1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":8.0},"output":{"flat":28.0},"cache_hit":{"flat":2.0}}}]},"model_d2":{"offers":[{"provider":"provider_c","model_id":"model_d2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":13.0},"output":{"flat":68.0},"cache_hit":{"flat":1.3}}}]},"model_c1":{"offers":[{"provider":"provider_d","model_id":"org/Model_C1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":3.0},"output":{"flat":12.0}}}]}}};
+    const WB_PRICES = {"generated_at":"2026-11-16T19:18:11+08:00","activity":{"provider_c":0.85,"provider_d":0.6},"models":{"model_a3":{"offers":[{"provider":"provider_a","model_id":"model_a1","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":2,"offpeak":1},"cache_hit":{"peak":0.04,"offpeak":0.02},"output":{"peak":8,"offpeak":4}}},{"provider":"provider_c","model_id":"model_a3","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":1,"output":4,"cache_hit":0.02},"multipliers":[{"h0":14,"h1":18,"f":2},{"h0":9,"h1":12,"f":2}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A3","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"hour_offpeak","price":{"input":{"peak":2,"offpeak":1},"cache_hit":{"peak":0.04,"offpeak":0.02},"output":{"peak":8,"offpeak":4}},"offpeak_hours":[[2,8]]}]},"model_a5":{"offers":[{"provider":"provider_a","model_id":"model_a5","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":9,"offpeak":4.5},"cache_hit":{"peak":0.3,"offpeak":0.15},"output":{"peak":27,"offpeak":13.5}}},{"provider":"provider_c","model_id":"model_a5","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":4.5,"output":13.5,"cache_hit":0.15},"multipliers":[{"h0":14,"h1":18,"f":2},{"h0":9,"h1":12,"f":2}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A5","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":12},"output":{"flat":24},"cache_hit":{"flat":1}}}]},"model_b1":{"offers":[{"provider":"provider_c","model_id":"model_b1","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"gc-chat":0.6,"default":1},"schedule":"flat","price":{"input":{"flat":8},"output":{"flat":28},"cache_hit":{"flat":2}}},{"provider":"provider_d","model_id":"org/Model_B1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":8},"output":{"flat":28},"cache_hit":{"flat":2}}}]},"model_b2":{"offers":[{"provider":"provider_c","model_id":"model_b2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.2}}},{"provider":"provider_d","model_id":"org/Model_B2","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.23}}}]},"model_d2":{"offers":[{"provider":"provider_c","model_id":"model_d2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":13},"output":{"flat":68},"cache_hit":{"flat":1.3}}}]},"model_c1":{"offers":[{"provider":"provider_d","model_id":"org/Model_C1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":3},"output":{"flat":12}}}]}}};
     const WB_FAMILY = {
       "provider_a/model_a1": "model_a3",
       "provider_a/model_a2": "model_a3",
@@ -75,7 +75,7 @@ window.__ModuleLoader__.load({
       const rows = wbRows(modelKey);
       if (!rows || !rows.length) return "";
       const r = rows[0];
-      // 单位价（¥/百万 token）口径：3 位小数（261117 用户令）；"-" = 价目快照里没这一项（不是 0）。
+      // 单位价（¥/百万 token）口径：3 位小数（早期约定）；"-" = 价目快照里没这一项（不是 0）。
       const f = (v) => (v === null || v === undefined ? "-" : Number(v).toFixed(3));
       return ` · ¥${f(r.prices.input)}/${f(r.prices.output)}`;
     }
@@ -96,10 +96,22 @@ window.__ModuleLoader__.load({
     }
 
 
+    // P3（10311）：宿主 useInput 的 draft 可能取空 ⇒ 从 composer 的 contenteditable 兜底读取真实草稿。
+    function readDraftFromDom() {
+      try {
+        const nodes = document.querySelectorAll('[data-input-scroll] [contenteditable="true"], [contenteditable="true"][data-composer-input], textarea[data-composer-input]');
+        for (const el of nodes) {
+          const text = String(el.innerText || el.value || "").trim();
+          if (text) return text;
+        }
+      } catch {}
+      return "";
+    }
+    const draftFallback = (draftValue) => String(draftValue || "").trim() ? String(draftValue) : readDraftFromDom();
     const store = { view: undefined, listeners: new Set() };
     let lastTaskText = "";
 
-    // ── 发送闸门（2026-11-16 用户令）────────────────────────────
+    // ── 发送闸门（2026-11-16 约定）────────────────────────────
     // 1) 插件只负责确认模型与策略，不替代输入框「⬆️」；
     // 2) 勾选 Pro/Max 且计划未确认时，「⬆️」置灰不可点；
     // 3) 取消勾选 = 取消计划 + 恢复传统提交流程。
@@ -247,7 +259,7 @@ window.__ModuleLoader__.load({
       });
       const [pending, setPending] = React.useState(false);
       const liveInput = typeof props?.useInput === "function" ? props.useInput((s) => s) : props?.input;
-      const draft = String(liveInput?.draft || "");
+      const draft = draftFallback(liveInput?.draft);
       const lastPlanned = React.useRef("");
       const timer = React.useRef(null);
 
@@ -297,7 +309,6 @@ window.__ModuleLoader__.load({
         setMaxActive(false); setOn(true);
         setSendGate(true, "先确认计划，再点 ⬆️ 发送");
         if (draft.trim()) { lastPlanned.current = draft; setPending(true); makePlan(draft).finally(() => setPending(false)); }
-        // 2026-11-24：空草稿点 Pro 给明确提示，不再「无反应」。
         else publish({ state: "hint", message: "Pro 已开启 · 请先在输入框写任务，会自动生成计划（也可点「生成计划」）" });
       };
       const enableMax = () => {
@@ -312,7 +323,10 @@ window.__ModuleLoader__.load({
         window.dispatchEvent(new CustomEvent("wb-mode-changed", { detail: { max: false } }));
       };
       const generate = () => {
-        if (!draft.trim()) return;
+        if (!draft.trim()) {
+          publish({ state: "hint", message: "请先在输入框写任务，再点「生成计划」；或输入后等待自动生成。" });
+          return;
+        }
         setPending(true);
         makePlan(draft).finally(() => setPending(false));
       };
@@ -331,7 +345,7 @@ window.__ModuleLoader__.load({
       }, label);
 
       return React.createElement("div", {
-        "data-dsh-pro": "toggle", "data-wb-ui": "A5-20261117",
+        "data-dsh-pro": "toggle", "data-wb-ui": "ui-a5",
         style: { display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", whiteSpace: "nowrap" }
       },
         React.createElement("div", {
@@ -340,7 +354,7 @@ window.__ModuleLoader__.load({
         }, segBtn("off", "关"), segBtn("pro", "Pro"), segBtn("max", "Max")),
         on && !maxActive ? React.createElement("button", {
           type: "button",
-          disabled: pending || !draft.trim(),
+          disabled: pending,
           onClick: generate,
           style: { font: "inherit", fontSize: "11px", padding: "3px 9px", borderRadius: "7px", border: "1px solid #dbe3ec", background: "#fff", cursor: pending ? "progress" : "pointer" }
         }, pending ? "规划中…" : "生成计划") : null
@@ -465,7 +479,7 @@ window.__ModuleLoader__.load({
       }, []);
       const sessionId = props?.session?.sessionId || bridgeSid || bridgeSessionId;
       const state = useStatus(planId, approved);
-      /* 2026-11-16 23:5x 灰狼：删掉对 /api/session/list 的 900ms 轮询。
+      /* 2026-11-16 23:5x 维护者：删掉对 /api/session/list 的 900ms 轮询。
          实测该旧接口在本机 38–43s、单包 9.3MB（2669 个会话全量构造）；900ms 一轮会把浏览器
          同源 6 条连接占满 ⇒ 整页「假死」、切模型/模型操作请求排队超时后报「模型操作失败」。
          running 改用宿主 session.running 或 SessionBridge 发出的 wb-running-changed 事件。 */
@@ -572,11 +586,20 @@ window.__ModuleLoader__.load({
       // 阶段闸：一张计划卡在任何时刻只渲染一次。
       // hero 阶段 composer.dock 不渲染（宿主 L19164）⇒ 此时由 input.dock 上的实例出图；
       // active/settling 阶段反过来，保持既有会话的卡片位置与行为不变。
-      if (slot === "composer" && phase === "hero") return null;
-      if (slot === "dock" && phase !== "hero") return null;
+      // P2（10311）：hint/error 提示卡任何阶段都要可见；但只能出一份（防 hero/active 双卡）。
+      // 单写者仲裁：dock 槽（hero 阶段唯一存在）负责渲染；composer 槽对提示一律让位。
+      // 这样既不丢提示，也不会两张卡同时出现在同一会话里。
+      const showNotice = view?.state === "hint" || view?.state === "error";
+      if (showNotice) {
+        if (slot !== "dock") return null;
+      } else {
+        if (slot === "composer" && phase === "hero") return null;
+        if (slot === "dock" && phase !== "hero") return null;
+      }
       if (maxOn) return null;
       if (!card) {
         if (view?.state === "error") return React.createElement("div", { "data-dsh-pro": "card", style: { fontSize: "12px", color: "#b42318" } }, view.message);
+        // 2026-11-24：空草稿点 Pro 给明确提示，不再「无反应」。
         if (view?.state === "hint") return React.createElement("div", { "data-dsh-pro": "card", style: { fontSize: "12px", color: "#1d4ed8", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: "8px", padding: "4px 9px", width: "fit-content" } }, view.message);
         return null;
       }
@@ -615,8 +638,8 @@ window.__ModuleLoader__.load({
       });
       const cmpModel = (((card && card.rows) || [])[0] || {}).modelKey;
       const statusLine = state?.active
-        ? `[WB路由] 第 ${Math.min((state.cursor || 0) + 1, state.total || 1)}/${state.total || 1} 段 · ${state.current?.modelLabel || state.stages?.[state.cursor]?.modelLabel || "—"}`
-        : (approved ? "[WB路由] 已开工" : "");
+        ? `[WB-GearPilot] 第 ${Math.min((state.cursor || 0) + 1, state.total || 1)}/${state.total || 1} 段 · ${state.current?.modelLabel || state.stages?.[state.cursor]?.modelLabel || "—"}`
+        : (approved ? "[WB-GearPilot] 已开工" : "");
       return React.createElement("div", {
         "data-dsh-pro": "card",
         style: { border: "1px solid #e5e7eb", borderRadius: "12px", padding: "10px 12px", margin: "6px 0 12px 0", background: "#fff", fontSize: "12px", display: "inline-flex", flexDirection: "column", width: "min(520px, 100%)", maxWidth: "100%", alignSelf: "flex-start", marginRight: "auto", boxShadow: "0 6px 18px rgba(15,23,42,.06)", maxHeight: cmp ? "72vh" : "34vh", overflowY: "auto", position: "relative", zIndex: 20 }

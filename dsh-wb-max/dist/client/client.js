@@ -3,10 +3,22 @@ window.__ModuleLoader__.load({
   factory(require) {
     const React = require("react");
     const MAX_KEY = "wb.max.enabled";
-    try { console.info("[WB-UI] A5-20261117 loaded · max"); } catch {}
+    try { console.info("[WB-GearPilot] ui-a5 loaded · max"); } catch {}
+    // P3（10311）：宿主 useInput 的 draft 可能取空 ⇒ 从 composer 的 contenteditable 兜底读取真实草稿。
+    function readDraftFromDom() {
+      try {
+        const nodes = document.querySelectorAll('[data-input-scroll] [contenteditable="true"], [contenteditable="true"][data-composer-input], textarea[data-composer-input]');
+        for (const el of nodes) {
+          const text = String(el.innerText || el.value || "").trim();
+          if (text) return text;
+        }
+      } catch {}
+      return "";
+    }
+    const draftFallback = (draftValue) => String(draftValue || "").trim() ? String(draftValue) : readDraftFromDom();
 
     // ── 价格快照（2026-11-16 生成，来源 config/pricebook.json；客户端离线比价）──
-    const WB_PRICES = {"generated_at":"2026-11-16T19:18:11+08:00","activity":{"provider_c":0.85,"provider_d":0.6},"models":{"model_a3":{"offers":[{"provider":"provider_a","model_id":"model_a1","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":2.0,"offpeak":1.0},"cache_hit":{"peak":0.04,"offpeak":0.02},"output":{"peak":8.0,"offpeak":4.0}}},{"provider":"provider_c","model_id":"model_a3","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":1.0,"output":4.0,"cache_hit":0.02},"multipliers":[{"h0":14,"h1":18,"f":2.0},{"h0":9,"h1":12,"f":2.0}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A3","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"hour_offpeak","price":{"input":{"peak":2.0,"offpeak":1.0},"output":{"peak":8.0,"offpeak":4.0},"cache_hit":{"peak":0.04,"offpeak":0.02}},"offpeak_hours":[[2,8]]}]},"model_a5":{"offers":[{"provider":"provider_a","model_id":"model_a5","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":9.0,"offpeak":4.5},"cache_hit":{"peak":0.3,"offpeak":0.15},"output":{"peak":27.0,"offpeak":13.5}}},{"provider":"provider_c","model_id":"model_a5","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":4.5,"output":13.5,"cache_hit":0.15},"multipliers":[{"h0":14,"h1":18,"f":2.0},{"h0":9,"h1":12,"f":2.0}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A5","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":12.0},"output":{"flat":24.0},"cache_hit":{"flat":1.0}}}]},"model_b2":{"offers":[{"provider":"provider_c","model_id":"model_b2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.2}}},{"provider":"provider_d","model_id":"org/Model_B2","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.23}}}]},"model_b1":{"offers":[{"provider":"provider_c","model_id":"model_b1","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"gc-chat":0.6,"default":1},"schedule":"flat","price":{"input":{"flat":8.0},"output":{"flat":28.0},"cache_hit":{"flat":2.0}}},{"provider":"provider_d","model_id":"org/Model_B1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":8.0},"output":{"flat":28.0},"cache_hit":{"flat":2.0}}}]},"model_d2":{"offers":[{"provider":"provider_c","model_id":"model_d2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":13.0},"output":{"flat":68.0},"cache_hit":{"flat":1.3}}}]},"model_c1":{"offers":[{"provider":"provider_d","model_id":"org/Model_C1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":3.0},"output":{"flat":12.0}}}]}}};
+    const WB_PRICES = {"generated_at":"2026-11-16T19:18:11+08:00","activity":{"provider_c":0.85,"provider_d":0.6},"models":{"model_a3":{"offers":[{"provider":"provider_a","model_id":"model_a1","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":2,"offpeak":1},"cache_hit":{"peak":0.04,"offpeak":0.02},"output":{"peak":8,"offpeak":4}}},{"provider":"provider_c","model_id":"model_a3","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":1,"output":4,"cache_hit":0.02},"multipliers":[{"h0":14,"h1":18,"f":2},{"h0":9,"h1":12,"f":2}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A3","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"hour_offpeak","price":{"input":{"peak":2,"offpeak":1},"cache_hit":{"peak":0.04,"offpeak":0.02},"output":{"peak":8,"offpeak":4}},"offpeak_hours":[[2,8]]}]},"model_a5":{"offers":[{"provider":"provider_a","model_id":"model_a5","billing":"per_token","confidence":0.99,"comparable":true,"estimated":false,"gp":{},"schedule":"peak_windows","price":{"input":{"peak":9,"offpeak":4.5},"cache_hit":{"peak":0.3,"offpeak":0.15},"output":{"peak":27,"offpeak":13.5}}},{"provider":"provider_c","model_id":"model_a5","billing":"expr","confidence":0.95,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"multipliers","price":{"input":4.5,"output":13.5,"cache_hit":0.15},"multipliers":[{"h0":14,"h1":18,"f":2},{"h0":9,"h1":12,"f":2}],"weekday_guard":false},{"provider":"provider_d","model_id":"org/Model_A5","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":12},"output":{"flat":24},"cache_hit":{"flat":1}}}]},"model_b1":{"offers":[{"provider":"provider_c","model_id":"model_b1","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"gc-chat":0.6,"default":1},"schedule":"flat","price":{"input":{"flat":8},"output":{"flat":28},"cache_hit":{"flat":2}}},{"provider":"provider_d","model_id":"org/Model_B1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":8},"output":{"flat":28},"cache_hit":{"flat":2}}}]},"model_b2":{"offers":[{"provider":"provider_c","model_id":"model_b2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.2}}},{"provider":"provider_d","model_id":"org/Model_B2","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":0.8},"output":{"flat":2.8},"cache_hit":{"flat":0.23}}}]},"model_d2":{"offers":[{"provider":"provider_c","model_id":"model_d2","billing":"per_token","confidence":0.9,"comparable":true,"estimated":false,"gp":{"default":1,"gc-chat":0.6},"schedule":"flat","price":{"input":{"flat":13},"output":{"flat":68},"cache_hit":{"flat":1.3}}}]},"model_c1":{"offers":[{"provider":"provider_d","model_id":"org/Model_C1","billing":"per_token","confidence":0.95,"comparable":true,"estimated":false,"gp":{},"schedule":"flat","price":{"input":{"flat":3},"output":{"flat":12}}}]}}};
     const WB_FAMILY = {
       "provider_a/model_a1": "model_a3",
       "provider_a/model_a2": "model_a3",
@@ -73,7 +85,7 @@ window.__ModuleLoader__.load({
       const rows = wbRows(modelKey);
       if (!rows || !rows.length) return "";
       const r = rows[0];
-      const f = (v) => (v === null || v === undefined ? "-" : Number(v).toFixed(3));  // 单位价 3 位（2026-11-17 用户令）
+      const f = (v) => (v === null || v === undefined ? "-" : Number(v).toFixed(3));  // 单位价 3 位（2026-11-17 约定）
       return ` · ¥${f(r.prices.input)}/${f(r.prices.output)}`;
     }
     function PriceTable(props) {
@@ -93,7 +105,7 @@ window.__ModuleLoader__.load({
     }
 
     const STRATEGY_LABELS = { auto: "自动", cost: "价格优先", capability: "能力优先", function: "预设功能", recommend: "推荐" };
-    // [2026-11-20 用户令] 决策模型开关（可替换 decider 的用户级控制）：off 关 / shadow 只记录 / active 先判后用
+    // [2026-11-20 约定] 决策模型开关（可替换 decider 的用户级控制）：off 关 / shadow 只记录 / active 先判后用
     const DECIDER_KEY = "wb.decider.mode";
     const DECIDER_LABELS = { off: "决策·关", shadow: "决策·影子", active: "决策·生效" };
     function deciderMode() { try { const v = localStorage.getItem(DECIDER_KEY); return (v === "shadow" || v === "active") ? v : "off"; } catch { return "off"; } }
@@ -102,17 +114,6 @@ window.__ModuleLoader__.load({
     // ⇒ plan 请求与 1.0.3.1 逐字节一致（零差异）。
     const AUTOMATION_KEY = "wb.automation.level";
     const ADVANCED_KEY = "wb.max.advanced.open";
-    const AUTOMATION_LABELS = { L1: "L1 严格", L2: "L2 知会", L3: "L3 草稿" };
-    function automationLevel() { try { const v = localStorage.getItem(AUTOMATION_KEY); return (v === "L2" || v === "L3") ? v : "L1"; } catch { return "L1"; } }
-    function automationBody(body) { const lv = automationLevel(); return lv === "L1" ? body : { ...body, automation_level: lv }; }
-    function automationHeaders() { const lv = automationLevel(); return lv === "L1" ? undefined : { "X-WB-Automation-Level": lv }; }
-    const FUNCTIONS = ["vision", "coding", "code_testing", "long_context", "decision", "writing", "system_control", "memory"];
-    const RECOMMEND_MODES = [["price", "价格优先"], ["capability", "能力优先"], ["preset", "预设功能"]];
-    let sessionFace;
-    let maxStrategy = "auto";
-    let maxRecommendMode = "price";  // 推荐策略模式：price（默认，价格优先）/ capability / preset（用户 2026-11-17 定）
-    let maxFunction = "coding";
-    let bridgeSessionId = "";
     // 2026-11-24 会话钉选：三路模型按 stage id 存本地，出计划时随请求发给网关。
     // 只在显式选模/确认时写入，取消勾选或关闭路由时清空 ⇒ 不污染直连会话。
     const PINS_KEY = "wb.max.stage.models";
@@ -127,6 +128,17 @@ window.__ModuleLoader__.load({
       const i = s.indexOf("/");
       if (i > 0) KNOWN_EXTRA.add(s.slice(0, i));
     }
+    const AUTOMATION_LABELS = { L1: "L1 严格", L2: "L2 知会", L3: "L3 草稿" };
+    function automationLevel() { try { const v = localStorage.getItem(AUTOMATION_KEY); return (v === "L2" || v === "L3") ? v : "L1"; } catch { return "L1"; } }
+    function automationBody(body) { const lv = automationLevel(); return lv === "L1" ? body : { ...body, automation_level: lv }; }
+    function automationHeaders() { const lv = automationLevel(); return lv === "L1" ? undefined : { "X-WB-Automation-Level": lv }; }
+    const FUNCTIONS = ["vision", "coding", "code_testing", "long_context", "decision", "writing", "system_control", "memory"];
+    const RECOMMEND_MODES = [["price", "价格优先"], ["capability", "能力优先"], ["preset", "预设功能"]];
+    let sessionFace;
+    let maxStrategy = "auto";
+    let maxRecommendMode = "price";  // 推荐策略模式：price（默认，价格优先）/ capability / preset（用户 2026-11-17 定）
+    let maxFunction = "coding";
+    let bridgeSessionId = "";
     let bridgeRunning = false;
     function SessionBridge(props) {
       const sid = props?.session?.sessionId || "";
@@ -142,7 +154,7 @@ window.__ModuleLoader__.load({
       return null;
     }
 
-    // ── 发送闸门（2026-11-16 用户令）────────────────────────────
+    // ── 发送闸门（2026-11-16 约定）────────────────────────────
     // 1) 插件只负责确认模型与策略，不替代输入框「⬆️」；
     // 2) 勾选 Max 且计划未确认时，「⬆️」置灰不可点；
     // 3) 取消勾选 = 取消计划 + 恢复传统提交流程。
@@ -235,7 +247,7 @@ window.__ModuleLoader__.load({
       if (!rejectedAsNew) return first;
       const fallback = await post("/wb-max/plan", body, signal);
       if (fallback.ok) {
-        try { console.info("[WB-UI] 网关不支持 automation_level，已按 L1 兼容重发（档位未生效）"); } catch {}
+        try { console.info("[WB-GearPilot] 网关不支持 automation_level，已按 L1 兼容重发（档位未生效）"); } catch {}
         return { ...fallback, automationFallback: true };
       }
       return first;
@@ -256,7 +268,7 @@ window.__ModuleLoader__.load({
         cost: (() => {
           const v = s.estimate?.cost_known;
           if (v === null || v === undefined) return "未估价";
-          return `¥${Number(v).toFixed(3)}`;   // 2026-11-17 用户令：一律人民币、成本估算 3 位小数
+          return `¥${Number(v).toFixed(3)}`;   // 2026-11-17 约定：一律人民币、成本估算 3 位小数
         })(),
       }));
     }
@@ -266,7 +278,7 @@ window.__ModuleLoader__.load({
         get("/wb-max/models").then((r) => {
           if (!r.ok) return;
           for (const m of (r.data.models || [])) noteKnownProvider(m && m.model);
-          // 2026-11-17 用户令：虚拟模型（auto / auto-* / auto-fn-*）只用于网关与插件后台
+          // 2026-11-17 约定：虚拟模型（auto / auto-* / auto-fn-*）只用于网关与插件后台
           // 识别·控制·调度，**不进 DSH 前台**；计划卡下拉只列真实候选（provider/model）。
           setModels((r.data.models || []).filter((m) => String(m?.model || "").includes("/")).map((m) => ({
             key: m.model,
@@ -311,10 +323,10 @@ window.__ModuleLoader__.load({
       const [advOpen, setAdvOpen] = React.useState(() => { try { return localStorage.getItem(ADVANCED_KEY) === "1"; } catch { return false; } });
       const running = useRunning() || !!props?.session?.running;
       const live = typeof props?.useInput === "function" ? props.useInput((s) => s) : props?.input;
-      const draft = String(live?.draft || "");
+      const draft = draftFallback(live?.draft);
       const last = React.useRef("");
       const timer = React.useRef(null);
-      /* 261118 灰狼 · 修「点『关』报 RangeError: Maximum call stack size exceeded」：
+      /* 早期· 修「点『关』报 RangeError: Maximum call stack size exceeded」：
          setMode 同步派发 `wb-mode-changed`，而本组件下面的 `h` 监听器在 React state
          尚未提交时仍读到旧值 on===true ⇒ 又调 setMode(false) ⇒ 同步无限递归。
          这里加一道防重入：重入调用直接忽略；外层调用随后照常完成 setSendGate 等清理。
@@ -477,12 +489,12 @@ window.__ModuleLoader__.load({
         strategy === "recommend" ? React.createElement("select", { key: "rec", value: recMode, disabled: pending, onChange: (e) => pickRecommendMode(e.target.value), title: "推荐模式", style: { fontSize: "11px", maxWidth: "84px" } }, RECOMMEND_MODES.map(([k, v]) => React.createElement("option", { key: k, value: k }, v))) : null,
         React.createElement("span", { key: "hint", style: { color: "#64748b", fontSize: "10px", whiteSpace: "nowrap" } }, "档位只改确认节奏，不改选模结果"),
       ] : [];
-      return React.createElement("div", { "data-dsh-max": "toggle", "data-wb-ui": "A6-20261121", "data-wb-automation": autoLevel, style: { display: "flex", alignItems: "center", gap: "5px", padding: "0", fontSize: "11px", whiteSpace: "nowrap" } },
+      return React.createElement("div", { "data-dsh-max": "toggle", "data-wb-ui": "ui-a6", "data-wb-automation": autoLevel, style: { display: "flex", alignItems: "center", gap: "5px", padding: "0", fontSize: "11px", whiteSpace: "nowrap" } },
         React.createElement("select", { "data-wb-automation-level": autoLevel, value: autoLevel, disabled: pending, onChange: (e) => pickAutomation(e.target.value), title: "自动化档位：L1 严格（默认，每段确认）/ L2 知会（按已审计划自动执行，段末推送）/ L3 草稿（自动执行，结果进草稿待放行）。档位只改确认节奏，不改选模结果。", style: { fontSize: "11px", maxWidth: "96px" } }, autoOptions),
         React.createElement("button", { type: "button", "data-wb-advanced": advOpen ? "1" : "0", onClick: () => { const next = !advOpen; setAdvOpen(next); try { localStorage.setItem(ADVANCED_KEY, next ? "1" : "0"); } catch {} }, title: "高级：折叠保留原有 策略 / 决策模型 / 功能 / 推荐模式 入口", style: { font: "inherit", fontSize: "11px", padding: "2px 7px", borderRadius: "7px", border: "1px solid #dbe3ec", background: advOpen ? "#f1f5f9" : "#fff", cursor: "pointer" } }, advOpen ? "高级 ▾" : "高级 ▸"),
         ...advControls,
         React.createElement("span", { "data-wb-boundary": "1", title: "边界纪律（B1）：同一轮内不换模型。当前回复未结束时禁止切换模型/策略，收到本段结束事件（running=false）后自动放行。", style: { color: running ? "#b42318" : "#64748b", fontSize: "10px", whiteSpace: "nowrap" } }, running ? "本段执行中·不换模" : "本段同轮不换模"),
-        React.createElement("button", { type: "button", disabled: pending || !draft.trim(), onClick: () => { setPending(true); makePlan(draft, strategy, fn).finally(() => setPending(false)); }, style: { font: "inherit", fontSize: "11px", padding: "2px 8px", borderRadius: "7px", border: "1px solid #dbe3ec", background: "#fff", cursor: "pointer" } }, pending ? "规划中…" : "生成计划"),
+        React.createElement("button", { type: "button", disabled: pending, onClick: () => { if (!draft.trim()) { setNotice("请先在输入框写任务，再点「生成计划」"); return; } setPending(true); makePlan(draft, strategy, fn).finally(() => setPending(false)); }, style: { font: "inherit", fontSize: "11px", padding: "2px 8px", borderRadius: "7px", border: "1px solid #dbe3ec", background: "#fff", cursor: "pointer" } }, pending ? "规划中…" : "生成计划"),
         notice ? React.createElement("span", { title: notice, style: { color: "#b42318", maxWidth: "220px", overflow: "hidden", textOverflow: "ellipsis" } }, notice) : null
       );
     }
@@ -551,11 +563,11 @@ window.__ModuleLoader__.load({
       }, []);
       const sessionId = props?.session?.sessionId || bridgeSid || bridgeSessionId;
       const live = typeof props?.useInput === "function" ? props.useInput((s) => s) : props?.input;
-      const draft = String(live?.draft || "");
+      const draft = draftFallback(live?.draft);
       const rows = plan ? planRows(plan) : [];
       const cmpModel = ((rows[0] || {}).modelKey) || "";
 
-      /* 2026-11-16 23:5x 灰狼：删掉对 /api/session/list 的 900ms 轮询。
+      /* 2026-11-16 23:5x 维护者：删掉对 /api/session/list 的 900ms 轮询。
          实测该旧接口在本机 38–43s、单包 9.3MB（2669 个会话全量构造）；900ms 一轮会把浏览器
          同源 6 条连接占满 ⇒ 整页「假死」、切模型/模型操作请求排队超时后报「模型操作失败」。
          running 改用宿主 session.running 或 SessionBridge 发出的 wb-running-changed 事件。 */
@@ -593,7 +605,7 @@ window.__ModuleLoader__.load({
       }, [draft]);
 
       async function replan(nextStrategy = maxStrategy, nextFn = maxFunction) {
-        if (!draft.trim()) return;
+        if (!draft.trim()) { setNotice("请先在输入框写任务"); return; }
         setBusy(true); setMsg("");
         try { if (planAbort) planAbort.abort(); } catch {}
         planAbort = typeof AbortController !== "undefined" ? new AbortController() : null;
@@ -603,7 +615,7 @@ window.__ModuleLoader__.load({
         setBusy(false);
         if (!r.ok) {
           if (r && r.data && r.data.aborted) return;
-          // 计划失败时再探一次网关：若是网关掉线，按用户口径提示并回退，不把用户卡在勾选态。
+          // 计划失败时再探一次网关：若是网关掉线，按产品口径提示并回退，不把用户卡在勾选态。
           const healthy = await checkHealth();
           if (!healthy) { setSendGate(false, ""); return; }
           setMsg(`计划失败：${err(r)}`);
@@ -616,10 +628,10 @@ window.__ModuleLoader__.load({
       }
       function dshTargets(rawKey) {
         // 会话切模型必须给 DSH 的 (provider, model)。返回**有序候选**。
-        // 2026-11-17 修（用户令第 1 条「新建对话 Pro/Max 不能用」）：
+        // 2026-11-17 修（约定第 1 条「新建对话 Pro/Max 不能用」）：
         //   原实现把网关注册的候选（如 provider_a/model_a5）直接当成
-        //   「原生供应商 + 模型」下发，但原生 llm-deepseek 只声明了 model_a1 /
-        //   model_a2 等，**没有 model_a5** ⇒ selectModel 回
+        //   「原生供应商 + 模型」下发，但原生 llm-deepseek 只声明了 deepseek-flash /
+        //   deepseek-v4-flash 等，**没有 model_a5** ⇒ selectModel 回
         //   session/model-unavailable ⇒ 确认失败 ⇒ 发送闸门永久关闭。
         //   改为：先走网关（wb-gateway/<完整候选键>，即设计口径——会话持有候选，
         //   网关负责链内回落与记账），网关不认再退原生 provider。
@@ -627,10 +639,12 @@ window.__ModuleLoader__.load({
         const slash = key.indexOf("/");
         const head = slash > 0 ? key.slice(0, slash) : "";
         const rest = slash > 0 ? key.slice(slash + 1) : "";
-        const KNOWN = [...KNOWN_EXTRA, "provider_c", "provider_d", "provider_a", "provider_a",
-                       "provider_i", "provider_h", "provider_b", "model_e1", "model_e2"];
-        // provider_i / provider_h 是 DSH 直连桥，网关不代理 ⇒ 只能给原生 (provider, model)
-        if (head === "provider_i" || head === "provider_h") return [{ provider: head, model: rest }];
+        // 原生回落白名单：宿主/网关已注册的上游（KNOWN_EXTRA，动态推导）优先在前；
+        // 后面是匿名兜底键（不对应任何真实上游，仅保证网关异常时仍有一条直连路径）。
+        const KNOWN = [...new Set([...KNOWN_EXTRA,
+                       "provider_c", "provider_d", "provider_a", "model_x", "provider_h", "provider_e", "provider_f"])];
+        // model_x / provider_h 是 DSH 直连桥，网关不代理 ⇒ 只能给原生 (provider, model)
+        if (head === "model_x" || head === "provider_h") return [{ provider: head, model: rest }];
         const out = [{ provider: "wb-gateway", model: key }];
         if (KNOWN.includes(head)) out.push({ provider: head, model: rest });
         return out;
@@ -760,7 +774,7 @@ window.__ModuleLoader__.load({
         React.createElement("div", { style: { color: "#9a3412", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: "6px", padding: "3px 7px", marginTop: "5px", fontSize: "11px", lineHeight: 1.45 } }, "模型路由可能调用 DSH 直连模型与网关模型；直连段不进网关台账（无回退、无记账），为保证计费准确，建议优先使用网关模型。"),
         React.createElement("div", { style: { color: "#64748b", marginTop: "4px" } }, plan.pricing?.notice || ""),
         msg ? React.createElement("div", { style: { color: "#a15c00", marginTop: "4px" } }, msg) : null,
-        approved ? React.createElement("div", { style: { color: "#1d4ed8", marginTop: "4px" } }, `[WB路由] 第 ${Math.min(current + 1, rows.length)}/${rows.length} 段`) : null,
+        approved ? React.createElement("div", { style: { color: "#1d4ed8", marginTop: "4px" } }, `[WB-GearPilot] 第 ${Math.min(current + 1, rows.length)}/${rows.length} 段`) : null,
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "8px", marginTop: "4px" } },
           React.createElement("button", { type: "button", onClick: () => setCmp((v) => !v), style: { font: "inherit", fontSize: "11px", padding: "2px 8px", borderRadius: "7px", border: "1px solid #dbe3ec", background: "#fff", cursor: "pointer" } }, cmp ? "收起比价" : "比价"),
           React.createElement("span", { style: { color: "#94a3b8", fontSize: "11px" } }, "价格快照 " + String(WB_PRICES.generated_at || "").slice(5, 16))),
@@ -785,7 +799,7 @@ window.__ModuleLoader__.load({
       planAbort = typeof AbortController !== "undefined" ? new AbortController() : null;
       const signal = planAbort ? planAbort.signal : undefined;
       try {
-        // 2026-11-24：带上会话钉选的三路模型，避免重出计划时被网关策略链弹回官方默认。
+        // 2026-11-24：带上会话钉选的三路模型，避免重出计划时被网关策略链弹回官方 Flash。
         const pins = loadPins();
         const stageModels = Object.keys(pins).length ? pins : undefined;
         const r = await postPlan({ task: text, strategy, decider: deciderMode(), ...(stageModels ? { stage_models: stageModels } : {}), ...(strategy === "function" ? { function: functionKey } : {}), ...(strategy === "recommend" ? { mode: maxRecommendMode } : {}) }, signal);
@@ -829,4 +843,108 @@ window.__ModuleLoader__.load({
   }
 });
 
+/* ===== WB-MAX 供应商余额 BEGIN（inject-wbmax-balance.mjs 生成，勿手改） ===== */
+(function () {
+  "use strict";
+  // ── 余额快照（服务端 scripts/balance_refresh.py 抓取；前端只读，不含任何密钥）──
+  var SNAP = {"fetched_at":null,"items":[]};
+  if (!SNAP || !SNAP.items || !SNAP.items.length) return;
 
+  var byId = {};
+  SNAP.items.forEach(function (it) { if (it && it.id) byId[it.id] = it; });
+
+  // 供应商 displayName 关键词 → upstream id（与 profiles/web/cordis.patch.yml 的 displayName 对应）
+  var MAP = [
+    ["\u7845\u57fa\u6d41\u52a8", "provider_d"],      // 硅基流动
+    ["\u591a\u5143\u63a2\u7d22", "provider_c"],          // 多元探索
+    ["DeepSeek \u5b98\u65b9", "provider_a"],      // DeepSeek 官方
+    ["\u672c\u673a LiteLLM", "provider_e"],             // 本机 LiteLLM
+    ["\u767e\u70bc", "model_x"]                        // 百炼
+  ];
+
+  function chip(it) {
+    var s = document.createElement("span");
+    s.className = "wb-bal-chip";
+    s.setAttribute("data-bal-id", it.id || "");
+    var state = it.state || "none";
+    var color = state === "ok" ? { bg: "#e7f6ec", fg: "#0a7b3e" }
+              : state === "local" ? { bg: "#eef4ff", fg: "#2563eb" }
+              : state === "error" ? { bg: "#fdecea", fg: "#b42318" }
+              : { bg: "#eef2f7", fg: "#818a97" };
+    s.textContent = it.display || "\u2014";
+    s.title = (it.detail || "") + (SNAP.fetched_at ? "\n\u5feb\u7167\uff1a" + SNAP.fetched_at.slice(5, 16).replace("T", " ") : "");
+    s.style.cssText = [
+      "display:inline-flex", "align-items:center", "margin-left:6px",
+      "padding:0 6px", "height:18px", "border-radius:9px",
+      "font-size:11px", "line-height:18px", "font-weight:600",
+      "white-space:nowrap", "pointer-events:none", "user-select:none",
+      "background:" + color.bg, "color:" + color.fg, "flex:none"
+    ].join(";");
+    return s;
+  }
+
+  var busy = false;
+  function decorate() {
+    if (busy) return;
+    busy = true;
+    try {
+      // 只在弹层/列表区域找，避免全页扫描开销
+      var roots = [];
+      var dlg = document.querySelector('[role="dialog"], [role="listbox"], [role="menu"]');
+      if (dlg) roots.push(dlg);
+      roots.push(document.body);
+
+      var done = {};
+      for (var r = 0; r < roots.length; r++) {
+        var els = roots[r].querySelectorAll("div,span,header,button,li,h1,h2,h3,h4");
+        for (var i = 0; i < els.length; i++) {
+          var el = els[i];
+          if (el.offsetParent === null) continue;
+          if (el.querySelector && el.querySelector(".wb-bal-chip")) continue;
+          var t = (el.innerText || "").trim();
+          if (!t || t.length > 44) continue;
+          for (var m = 0; m < MAP.length; m++) {
+            var needle = MAP[m][0].replace(/\\u([0-9a-fA-F]{4})/g, function (_, hex) {
+              return String.fromCharCode(parseInt(hex, 16));
+            });
+            if (t.indexOf(needle) === -1) continue;
+            var it = byId[MAP[m][1]];
+            if (!it || done[MAP[m][1]]) break;
+            // 只装饰最内层组标题：子元素文字都很短
+            var kidsTooLong = false;
+            for (var k = 0; k < el.children.length; k++) {
+              if (((el.children[k].innerText || "").trim()).length > 60) { kidsTooLong = true; break; }
+            }
+            if (kidsTooLong) break;
+            el.appendChild(chip(it));
+            done[MAP[m][1]] = 1;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      try { console.warn("[WB-UI] balance decorate failed", e && e.message); } catch (_) {}
+    } finally {
+      busy = false;
+    }
+  }
+
+  var timer = null;
+  function schedule() {
+    if (timer) return;
+    timer = setTimeout(function () { timer = null; decorate(); }, 120);
+  }
+
+  function boot() {
+    decorate();
+    try {
+      new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+    } catch (e) {}
+    // 兜底：弹层可能是点击后惰性挂载，低频补扫
+    setInterval(schedule, 2500);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
+})();
+/* ===== WB-MAX 供应商余额 END ===== */

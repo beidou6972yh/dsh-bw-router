@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Minimal MCP stdio server for WB router. No dependencies.
+// Minimal MCP stdio server for WB-GearPilot. No dependencies.
 import { createInterface } from 'node:readline';
 import { readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -42,7 +42,7 @@ async function api(path, method = 'GET', body) {
 const TOOLS = [
   {
     name: 'wb_route_plan',
-    description: '向 WB 模型路由决策器生成分段计划。无副作用；返回 plan_id/stages/估算，执行前必须让用户确认。',
+    description: '向 WB-GearPilot 换挡决策器生成分段计划。无副作用；返回 plan_id/stages/估算，执行前必须让用户确认。',
     inputSchema: { type: 'object', properties: {
       task: { type: 'string', description: '用户任务' },
       context: { type: 'string', description: '紧凑上下文/约束（可选）' },

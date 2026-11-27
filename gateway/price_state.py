@@ -1,4 +1,4 @@
-"""价格三态单一真源（1.0.3.10 · #5）。
+"""价格三态单一真源（单一真源）。
 
 local＝本地零价；priced＝有真实单价；unpriced＝待用户录入（绝不当免费）。
 main.price_state_of 与 router_plan._price_state_for 一律委托本模块，

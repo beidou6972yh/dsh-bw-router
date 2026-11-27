@@ -2,7 +2,7 @@
 // Thin CLI for non-MCP clients: wb-max plan ... / wb-max exec ...
 import { readFileSync } from 'node:fs';
 const BASE = (process.env.WB_GATEWAY_URL || 'http://127.0.0.1:18790').replace(/\/+$/, '');
-// 1.0.3.10 #12：不再写死安装路径；按包内相对位置定位，可用环境变量覆盖。
+// 不再写死安装路径；按包内相对位置定位，可用环境变量覆盖。
 const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE
   || new URL('../../config/wb-remote.json', import.meta.url).pathname;
 function key(){const e=(process.env.WB_GATEWAY_API_KEY||'').trim();if(e)return e;try{return String(JSON.parse(readFileSync(KEY_FILE,'utf8')).token||'').trim()}catch{return ''}}

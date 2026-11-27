@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT))
 
 import main as router  # noqa: E402
 
-# 样例配置对齐（跨侧交付 v1.1d3）：把「期望的上游 / 模型 / 档位链」改为从当前部署的配置
+# 样例配置对齐（跨侧交付）：把「期望的上游 / 模型 / 档位链」改为从当前部署的配置
 # 现场推导。config_ref 只读 config/routing.json 与 upstreams.json，**不 import main**——
 # 期望值与被测件各自独立解析配置，断言才不会退化成"用被测件的加载器算期望"。
 sys.path.insert(0, str(Path(__file__).resolve().parent))

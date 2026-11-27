@@ -42,7 +42,7 @@ export class DshModelAdapter {
         return typeof this.sessionId === 'function' ? this.sessionId() : this.sessionId;
     }
     current(sessionId) {
-        // 261118 灰狼：网关候选优先（selectTargets）会让会话实际落在 `wb-gateway/<原生键>`，
+        // 早期灰狼：网关候选优先（selectTargets）会让会话实际落在 `wb-gateway/<原生键>`，
         // 而计划/台账用的是原生键 `provider/model` ⇒ 原样比较永远不相等，每次切段都被判
         // 「unverified」（用户遇到的「第 1 段模型切换失败…请再点一次」）。
         // 这里统一读成**注册键空间**：剥掉一层 `wb-gateway/` 前缀。
@@ -102,7 +102,7 @@ export class DshModelAdapter {
             // which a real DSH host answers with `session/not-found`.
             throw new Error('session-unknown: no session id was stated by the caller and the host named none');
         }
-        // 261117 Bug B：一个注册候选可能对应多个宿主 (provider, model) 写法，
+        // 早期B：一个注册候选可能对应多个宿主 (provider, model) 写法，
         // 逐个试、全部失败才报错（有序候选见 selectTargets）。
         const targets = selectTargets(modelKey);
         const attempts = [];
@@ -186,7 +186,7 @@ const DIRECT_BRIDGE_PROVIDERS = ['provider_i', 'provider_h'];
 /**
  * Ordered (provider, model) candidates for one registry key.
  *
- * 261117 Bug B（用户令「新建对话 Pro/Max 不能用」）：网关注册的候选
+ * 早期B（约定「新建对话 Pro/Max 不能用」）：网关注册的候选
  * `provider_a/model_a5` 被拆成原生 provider + model 直接下发，
  * 但原生 llm-deepseek 只声明了 `model_a1` / `model_a2` 等，
  * **没有 `model_a5`** ⇒ 会话 RPC 回 `session/model-unavailable` ⇒
@@ -197,7 +197,7 @@ const DIRECT_BRIDGE_PROVIDERS = ['provider_i', 'provider_h'];
  * 由网关负责链内回落与记账；Lead 实测同候选走网关返回 200），
  * 网关不认再退原生 `head/rest`。
  *
- * 261117 verifier C3：网关候选**无条件**排在首位，不再按 HEAD 白名单发放——
+ * 早期C3：网关候选**无条件**排在首位，不再按 HEAD 白名单发放——
  * 否则 `provider_h/*` 这类未列入白名单的候选只会走原生，绕过网关
  * （无链内回落/记账），正是本次要消灭的 anti-pattern。
  * 原生兜底保持既有语义：无条件追加在网关候选之后，只在网关失败时才用得上。

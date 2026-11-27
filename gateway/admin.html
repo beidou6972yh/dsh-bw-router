@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>模型路由网关 · 供应商管理</title>
+<title>WB驭档·模型智能换挡系统网关 · 供应商管理</title>
 <style>
   :root { --bg:#f5f6f8; --card:#fff; --line:#e3e6ea; --text:#1c2430; --muted:#69727d; --accent:#2563eb; --ok:#0a7b3e; --bad:#b42318; --warn:#a15c00; }
   * { box-sizing: border-box; }
@@ -74,7 +74,7 @@
 </head>
 <body>
 <header>
-  <h1>模型路由网关 · 供应商管理</h1>
+  <h1>WB驭档·模型智能换挡系统网关 · 供应商管理</h1>
   <span class="meta" id="gwMeta">—</span>
   <span class="spacer"></span>
   <span class="meta" id="userLabel"></span>
@@ -139,7 +139,7 @@
 
   <section class="card" id="wbCard">
     <div class="card-head">
-      <h2>WB 路由 · API Key / 自动学习</h2>
+      <h2>WB-GearPilot · API Key / 自动学习</h2>
       <span class="spacer"></span>
       <label class="muted" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="autoLearnToggle"> 自动学习（默认开）</label>
     </div>
@@ -693,7 +693,7 @@ async function testUpstream(id) {
   } catch (err) { log(`❌ ${id}：${err.message}`); }
 }
 
-/* ---------------- WB 路由 API Key / 自动学习 ---------------- */
+/* ---------------- WB-GearPilot API Key / 自动学习 ---------------- */
 async function loadWb() {
   try {
     const keys = await api("/admin/api/api-keys");
@@ -731,7 +731,7 @@ async function loadWb() {
       if (!confirm(`删除 learnedOverride ${strategy}/${capability}？`)) return;
       await api("/admin/api/learned-overrides/delete", { strategy, capability }); log("learnedOverride 已删除"); loadWb();
     });
-  } catch (err) { log("WB 路由管理载入失败：" + err.message); }
+  } catch (err) { log("WB-GearPilot管理载入失败：" + err.message); }
 }
 
 $("keyCreate").onclick = async () => {
@@ -779,7 +779,7 @@ refreshMe();
 <!-- ===== UI v2 覆盖层 BEGIN（本块由 apply-admin-uiv2.mjs 生成，请勿手改） ===== -->
 <style id="v2CssInline">
 /* ============================================================================
- * 模型路由网关 · 管理界面 UI v2 覆盖层（源文件）
+ * WB驭档·模型智能换挡系统网关 · 管理界面 UI v2 覆盖层（源文件）
  * 建档 2026-11-17｜依据：SKILL「ui-consistency-redesign」G1 token + G2 组件 + G5 覆盖层
  *
  * 设计原则（铁律）：
@@ -1017,7 +1017,7 @@ window.__BALANCES__ = {"fetched_at":"2026-11-22T00:00:04+08:00","items":[],"lock
 </script>
 <script id="v2JsInline">
 /* ============================================================================
- * 模型路由网关 · 管理界面 UI v2 交互层（源文件）
+ * WB驭档·模型智能换挡系统网关 · 管理界面 UI v2 交互层（源文件）
  * 建档 2026-11-17｜依据：SKILL「ui-consistency-redesign」G5 覆盖层实施
  *
  * 与 admin-v2.css 配套。铁律：
@@ -1380,7 +1380,7 @@ window.__BALANCES__ = {"fetched_at":"2026-11-22T00:00:04+08:00","items":[],"lock
   }
 
   /* 供以外调试：v2 版本号 */
-  window.__ADMIN_UI_V2__ = "261117.1";
+  window.__ADMIN_UI_V2__ = "ui-v2";
 })();
 
 /* ============================================================================

@@ -93,7 +93,7 @@ export function errorStatement(state, uncertainty) {
  * 100%". An unknown price is not zero, so it is excluded from the savings sum and
  * named, and the caller prints "未知" instead of a number.
  *
- * （`$0.0000` 是 261117 之前的历史渲染；现口径 `¥` + 3 位小数。事故的教训是
+ * （`$0.0000` 是 早期之前的历史渲染；现口径 `¥` + 3 位小数。事故的教训是
  * 「未知不等于 0」，与符号无关，故保留原样作历史说明。）
  */
 export function savingsExclusion(estimates) {

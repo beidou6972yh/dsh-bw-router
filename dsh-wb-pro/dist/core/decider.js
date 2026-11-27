@@ -85,7 +85,7 @@ function priceOf(model) {
 }
 function explain(entry, stage, needs) {
     const windowK = Math.round(entry.model.limits.contextWindow / 1000);
-    // 261117 用户令：单位价（¥/百万 token）也按小数点后 3 位计；比较/排序仍用全精度原值。
+    // 早期约定：单位价（¥/百万 token）也按小数点后 3 位计；比较/排序仍用全精度原值。
     // Q2-7：未定价不再只说 "price unknown" —— 本地显式 0（本地），云端显式「待录入」。
     const pricing = entry.model.pricing || {};
     const stateSuffix = pricing.state === 'local' ? ' · 本地'

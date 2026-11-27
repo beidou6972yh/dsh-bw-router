@@ -1,6 +1,6 @@
 """WB 网关 · 计划 API / 标注 API / 自动学习（P1）。
 
-契约来自《261116.DSH.WB路由产品设计.v1.0.0》：
+契约来自《内部项目文档》：
   - POST /v1/route/plan       无状态、只出计划；
   - POST /v1/route/annotation 关联 plan/stage/model/usage，并驱动 learnedOverrides；
   - learnedOverrides 是“策略 + 能力/角色 → 模型”的隔离层，不改 L1/L2/L3 主链；
@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any
 
 import price_resolver
-import price_state  # 1.0.3.10 #5：价格三态单一真源
+import price_state  # 价格三态单一真源
 
 _GATEWAY = None
 _LOCK = threading.Lock()
@@ -857,7 +857,7 @@ def _cost_micro(prices: dict, tokens_in: int, tokens_out: int, cache_rate: float
 
 
 def _price_state_for(info: dict) -> str:
-    """价格三态：委托单一真源 price_state.py（1.0.3.10 #5）。
+    """价格三态：委托单一真源 price_state.py（单一真源）。
 
     原实现只认 provider_b 与两段价，和 /v1/route/prices 的 main.price_state_of
     口径不一致；统一后两处调用同一函数，杜绝口径漂移。
@@ -1448,7 +1448,7 @@ def annotate(payload: dict, principal: dict | None = None) -> tuple[dict, int]:
         try:
             price = _price_for(_model_entry(model_key), actual_in, actual_out, _period())
             if price.get("known"):
-                # ── N5（2026-11-19 书童侧复测）：差额行改用「微元」精度 ──────────────
+                # ── N5（对侧复测）：差额行改用「微元」精度 ──────────────
                 # 旧实现：actual_cost = round(price["cost"], 6)，但 price["cost"] 本身
                 #   已在 _price_for 里被 round(...,3) 截断 ⇒ 61 in + 8 out 这类小样本
                 #   实付被清零，显示 0 元（实测）。

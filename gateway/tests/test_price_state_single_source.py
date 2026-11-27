@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""1.0.3.10 #5：价格三态必须单一真源。
+"""价格三态必须单一真源。
 
 现网缺陷：main.price_state_of 与 router_plan._price_state_for 各判一遍，
 口径可能漂移。本测试要求两条路径都委托同一个共享模块 price_state.py。

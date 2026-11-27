@@ -419,7 +419,7 @@ FAMILIES = {
     "model_b1": {"provider_c": "model_b1", "provider_d": "org/Model_B1"},
     "model_d2": {"provider_c": "model_d2"},
     "model_c1": {"provider_d": "org/Model_C1"},
-    # 2026-11-19 用户授权补 14 个未定价模型：先从公开源补能核到的
+    # 2026-11-19 按配置补未定价模型：先从公开源补能核到的
     "model_e1": {"provider_c": "model_e1"},
     "model_e2": {"provider_c": "model_e2"},
     "model_d1": {"provider_c": "model_d1"},

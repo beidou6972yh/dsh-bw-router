@@ -478,7 +478,7 @@ function getState(query, deps) {
  *
  * B2: reporting "done" without token counts used to be accepted silently and
  * booked as 0 — the bar then said "已花 $0.0000" for work that really cost
- * money.（`$0.0000` 是 261117 之前的历史渲染文字，保留原样以记录当时的事故；
+ * money.（`$0.0000` 是 早期之前的历史渲染文字，保留原样以记录当时的事故；
  * 现口径 `¥` + 3 位小数。）A finish that claims success must carry usage; a `failed: true` finish
  * may omit it, because nothing ran. The action stays idempotent-friendly by
  * naming exactly what is missing, so a caller can fix one field.

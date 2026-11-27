@@ -1,4 +1,4 @@
-"""模型路由网关 · 路由策略（价格优先 / 能力优先 / 预设功能 / 推荐）。
+"""WB驭档·模型智能换挡系统网关 · 路由策略（价格优先 / 能力优先 / 预设功能 / 推荐）。
 
 存储：$BASE_DIR/config/router-strategies.json（管理界面保存；网关按 mtime 热读，无需重启）。
 读取：main.build_candidates 在请求时调用 chain()；admin_ui 提供读写 API。
@@ -33,7 +33,7 @@ import price_resolver
 STAGES = ("L1", "L2", "L3", "image")
 PERIODS = ("peak", "offpeak")
 
-# 推荐策略（2026-11-17 用户令）：三种预设模式；默认 price（价格优先）
+# 推荐策略（2026-11-17 约定）：三种预设模式；默认 price（价格优先）
 RECOMMEND_MODES = ("price", "capability", "preset")
 RECOMMEND_DEFAULT_MODE = "price"
 
@@ -337,7 +337,7 @@ def save(raw: dict) -> tuple[dict, list[str]]:
 
 
 def _round3(value) -> float | None:
-    """单位价统一到 3 位小数（2026-11-17 用户令）；非数字/bool/None ⇒ None（不猜价）。"""
+    """单位价统一到 3 位小数（2026-11-17 约定）；非数字/bool/None ⇒ None（不猜价）。"""
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
     return round(float(value), 3)
@@ -355,7 +355,7 @@ def _recommend_price_view(candidate: str) -> tuple[float | None, float | None]:
         if offer is not None:
             priced = price_resolver.effective_price(offer)
             prices = priced.get("prices") or {}
-            # 单位价按 3 位小数计（2026-11-17 用户令），与显示口径一致
+            # 单位价按 3 位小数计（2026-11-17 约定），与显示口径一致
             in_p = _round3(prices.get("input"))
             out_p = _round3(prices.get("output"))
             if in_p is not None or out_p is not None:

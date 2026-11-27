@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 """价格解析（Price Resolver）：把 pricebook 的报价算成"此刻真实价 / 最优价 / 单次成本"。
 
-设计口径（2026-11-16 与用户对齐，见 261116.DSH.模型网关-价格接入与性价比路由设计）：
+设计口径（2026-11-16 与用户对齐，见 内部项目文档）：
   - pricebook 保留 "base/峰谷块 × 峰谷乘数 × 分组倍率 × 活动折率"，本模块是唯一换算出口；
   - 所有时段判断一律 Asia/Shanghai；节假日表可由调用方注入；默认不猜价；
   - 三种视图：list（刊例，原样返回）/ effective（当前时刻真实价）/ best_case（最优时段+最优分组）；
   - 本模块只读、无网络、无副作用，便于单测与被 main.py 引入。
 
-币种口径（2026-11-17 用户令第 2、3 条）：
+币种口径（2026-11-17 约定第 2、3 条）：
   - 计划/成本金额一律人民币（CNY）且**保留 3 位小数**（estimate_cost / convert_to_cny）；
   - 非 CNY 报价走 convert_to_cny()，汇率真源 config/fx-rates.json（键名 <币种>CNY，如 USDCNY）；
   - **缺文件 / 缺币种键 / 汇率非正数 ⇒ 返回 None（不猜价）**，调用方须把该模型视为“价未知”。
@@ -273,7 +273,7 @@ def _load_fx_doc(path: Path | str | None = None) -> dict:
 def fx_rate(currency: str | None, path: Path | str | None = None) -> float | None:
     """1 单位 currency 折 CNY 的汇率。CNY/RMB ⇒ 1.0；缺文件/缺键/非正数 ⇒ None（不猜价）。
 
-    口径（2026-11-17 用户令第 2 条定稿）：汇率**取 3 位小数**（`round(rate, 3)`）。
+    口径（2026-11-17 约定第 2 条定稿）：汇率**取 3 位小数**（`round(rate, 3)`）。
     于是「汇率」与「换算结果」都是 3 位口径，可复算、可对账；手工往 fx-rates.json
     写了更多位时同样按 3 位生效，不做隐式全精度。
     """

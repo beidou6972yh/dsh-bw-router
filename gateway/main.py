@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""本地大模型路由网关（OpenAI 兼容，单文件实现）。
+"""本地大WB驭档·模型智能换挡系统网关（OpenAI 兼容，单文件实现）。
 
 接口
 ----
@@ -98,7 +98,7 @@ Token 估算
 
 安全
 ----
-密钥从 /opt/wb-router/.credentials.yaml 的 refs 节点读取（环境变量同名优先），只在内存中使用；
+密钥从部署目录的凭据文件（.credentials.yaml）的 refs 节点读取（环境变量同名优先），只在内存中使用；
 日志、账本、接口都不输出密钥；账本只记长度类特征，不记录任何请求正文。
 
 入口鉴权（可选，默认关）
@@ -138,7 +138,7 @@ AFP 感知分流（2026-11-12 管理员 17:0x 反馈①：火山 429 治理）
 
 启动
 ----
-    cd /opt/wb-router/ && python3 main.py
+    cd ~/wb-router && python3 main.py
 固定监听 127.0.0.1:18790。
 """
 
@@ -193,7 +193,7 @@ except ImportError:  # pragma: no cover
 import local_unavailable as local_unavail
 import occupancy_host as occ_host
 import price_resolver
-import price_state  # 1.0.3.10 #5：价格三态单一真源
+import price_state  # 价格三态单一真源
 import admin_ui
 import router_strategies as rstrat
 import router_shadow
@@ -885,7 +885,7 @@ PEAK_WINDOWS = [
 ]
 VIRTUAL_MODELS: dict[str, dict] = dict(CONFIG.get("virtual_models") or {})
 # 2026-11-17 四条策略虚拟模型（三策略改名＋新增推荐；策略文件由管理界面维护，网关按 mtime 热读）
-# 注意：虚拟模型只用于模型网关与插件在后台识别、控制、调度，不在 DSH 前台输入框和模型管理中体现（用户令）。
+# 注意：虚拟模型只用于模型网关与插件在后台识别、控制、调度，不在 DSH 前台输入框和模型管理中体现（约定）。
 for _name, _desc in {
     "auto-cost": "价格优先策略：按档位走「价格优先」链（一般任务优先省钱）",
     "auto-capability": "能力优先策略：按档位走「最强组合」链（创意/思考，不计成本）",
@@ -1522,7 +1522,7 @@ _DECIDER_STRATEGY = {
     "auto-recommend": "recommend", "auto-fast": "fast", "auto-strong": "strong",
 }
 
-try:  # [2026-11-20 用户令] 每条策略可挂「决策模型」：先判后用；默认 off，行为零变化
+try:  # [2026-11-20 约定] 每条策略可挂「决策模型」：先判后用；默认 off，行为零变化
     import router_deciders as _deciders
 except Exception:  # noqa: BLE001
     _deciders = None
@@ -1910,7 +1910,7 @@ def _is_local_provider(pid: str, cid: str) -> bool:
 
 
 def price_state_of(candidate: str, provider: str | None, block) -> str:
-    """价格三态：委托单一真源 price_state.py（1.0.3.10 #5）。
+    """价格三态：委托单一真源 price_state.py（单一真源）。
 
     判定逻辑原样迁至 price_state.state_of，本函数保留为兼容入口（行为零变化）。
     """
@@ -1952,7 +1952,7 @@ def capability_model_entry(candidate: str) -> dict:
         _derived_block, _, _derived_errors = derived_price(candidate)
         if _derived_block is not None:
             price_block = _shim_number_types(_derived_block, price_block)
-    # 2026-11-19 用户授权补价：capability_meta 没填价的模型，若 pricebook 有有效报价，
+    # 2026-11-19 按配置补价：capability_meta 没填价的模型，若 pricebook 有有效报价，
     # 就用 pricebook 的当前有效价补出 price 块（单一真源仍是 pricebook；不猜价）。
     # 这样 /v1/route/prices、plan 估价、DSH 价格表导出三处口径一致。
     if not _price_has_number(price_block):
@@ -2045,7 +2045,7 @@ def capability_model_entry(candidate: str) -> dict:
 # 而本函数只在请求期（/health、/admin/api/price-consistency）被调用，模块加载期不会执行。
 # ---------------------------------------------------------------------------
 
-# 1.0.3.10 #12：不再写死安装路径；按当前网关树定位工具，可用环境变量覆盖。
+# 不再写死安装路径；按当前网关树定位工具，可用环境变量覆盖。
 STALL_NOTIFY_PATH = os.environ.get(
     "STALL_NOTIFY_PATH",
     str(Path(os.environ.get("DSH_HOME") or BASE_DIR.parent) / "tools" / "stall-notify.mjs"),
@@ -2876,7 +2876,7 @@ def _offer_view(offer: dict, view: str, group: str | None) -> dict:
 def _fmt_price(v: Any) -> str:
     """单价格式化：¥入/出 两个数，**固定 3 位小数**（用户 2026-11-17 定）。
 
-    2026-11-17 13:15 用户令「单位价（¥/百万 token）也按小数点后三位计」⇒ 由 `:g`（1.2 / 2）
+    2026-11-17 13:15 约定「单位价（¥/百万 token）也按小数点后三位计」⇒ 由 `:g`（1.2 / 2）
     改为 `:.3f`（1.200 / 2.000）。缺价 → 空串，不写 0 假数。
     """
     if isinstance(v, bool) or not isinstance(v, (int, float)):
@@ -4358,7 +4358,7 @@ class RouterHandler(BaseHTTPRequestHandler):
         return self._send_json(200, body), "occupancy_report"
 
     def _handle_passthrough(self, path: str) -> tuple[int, str]:
-        """P6（2026-11-16 用户令「加 /v1/embeddings、/v1/rerank 转发」）：向量/重排轻量转发。
+        """P6（2026-11-16 约定「加 /v1/embeddings、/v1/rerank 转发」）：向量/重排轻量转发。
 
         只接受显式 upstream/model（不做自动路由、不计占用、不写账本）；其余字段原样透传；
         密钥仍是上游 api_key_env（只在本进程内存）。
@@ -4491,7 +4491,7 @@ class RouterHandler(BaseHTTPRequestHandler):
         stage, period = classify(features), current_period()
         function_name = (self.headers.get("X-DSH-Route-Function")
                          or self.headers.get("X-Router-Function") or "").strip().lower()[:64]
-        # 推荐策略模式头（2026-11-17 用户令）：price（默认）/ capability / preset
+        # 推荐策略模式头（2026-11-17 约定）：price（默认）/ capability / preset
         route_mode = (self.headers.get("X-DSH-Route-Mode") or "").strip().lower()[:32]
         # [2026-11-20] 决策模型开关的用户级覆盖：off|shadow|active（不在集合里就回落策略配置）
         decider_override = (self.headers.get("X-WB-Decider") or "").strip().lower()[:16] or None
@@ -5261,7 +5261,7 @@ def main() -> None:
         LOG.exception("occupancy 文件通道轮询启动失败（不影响路由）")
 
     server = RouterHTTPServer((HOST, PORT), RouterHandler)
-    LOG.info("模型路由网关已启动：http://%s:%d（listen_backlog=%d，Ctrl+C 退出）",
+    LOG.info("WB驭档·模型智能换挡系统网关已启动：http://%s:%d（listen_backlog=%d，Ctrl+C 退出）",
              HOST, PORT, server.request_queue_size)
     try:
         server.serve_forever(poll_interval=0.5)

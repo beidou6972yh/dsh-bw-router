@@ -1,4 +1,4 @@
-"""模型路由网关 · 本地管理界面（stdlib-only；PyYAML 复用 main 的可选依赖）。
+"""WB驭档·模型智能换挡系统网关 · 本地管理界面（stdlib-only；PyYAML 复用 main 的可选依赖）。
 
 职责：
   - 用 OpenAI 协议探测供应商 `/v1/models`，读取模型清单与能力字段；
@@ -52,7 +52,7 @@ LIVE_HTML_FILE = Path(__file__).with_name("admin-live.html")
 # B2 复盘页（1.0.3.2 T4）：静态骨架，不含任何金额；登录后由 /admin/api/report 拉数据。
 REVIEW_HTML = """<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>复盘 · WB 路由</title>
+<title>复盘 · WB-GearPilot</title>
 <style>body{font:16px/1.6 system-ui,sans-serif;margin:24px;color:#222}
 h1{font-size:20px}table{border-collapse:collapse;width:100%;margin-top:12px}
 td,th{border:1px solid #ddd;padding:6px 8px;text-align:left;font-size:14px}
@@ -92,7 +92,7 @@ td,th{border:1px solid #ddd;padding:6px 8px;text-align:left;font-size:14px}
 BALANCES_FILE = Path(__file__).with_name("config") / "balances.json"
 _BALANCES_LINE_RE = re.compile(r"window\.__BALANCES__\s*=\s*[^\n]*")
 
-# ── N3（2026-11-19 需求方令「/admin 去明文余额要改」）────────────────────────────
+# ── N3（2026-11-19 配置约定「/admin 去明文余额要改」）────────────────────────────
 # 旧行为：inject 时把 balances.json 的 items（人民币/美元余额数字）整份塞进 HTML，
 #   于是**未登录** GET /admin/ 的响应体里就有明文金额（而 /admin/api/balances 是 401）。
 # 新行为：静态页/未登录只给骨架 —— fetched_at（时间戳，非金额）+ 空 items + locked 标记；
@@ -137,7 +137,7 @@ def balances_public() -> dict:
 
 def plugin_status_summary(profile: str = "web", timeout: int = 25) -> dict:
     """N8③：插件装配状态（只读）。复用 tools/plugin-reconcile.mjs --show --json。"""
-    # 1.0.3.10 #12：按 DSH_HOME/当前树向上找 tools/，可用环境变量覆盖（原写死本机绝对路径）。
+    # 版本迭代：按 DSH_HOME/当前树向上找 tools/，可用环境变量覆盖（原写死本机绝对路径）。
     env_tool = os.environ.get("PLUGIN_RECONCILE_PATH")
     if env_tool:
         tool = Path(env_tool)

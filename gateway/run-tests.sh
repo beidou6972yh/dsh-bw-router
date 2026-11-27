@@ -3,7 +3,7 @@
 # run-tests.sh — 我方（灰狼侧）网关回归入口 v1.0.0（2026-11-16 融入 r4 套件）
 #
 # 由来：
-#   - 测试套件来自小棒 v1.1d3r4「配置无关」版（tests/*.py 与 r4 包逐字节一致）；
+#   - 测试套件来自对侧「配置无关」版（tests/*.py 与参考包逐字节一致）；
 #   - 与我方差异：我方是**完整版**（main.py + admin_ui / api_keys / router_plan /
 #     router_strategies 共 7 个 py 模块），所以临时树要复制全部模块（r4 原脚本只拷 3 件）；
 #   - r4 原脚本里「main.py sha256 必须等于包内 MANIFEST」的硬闸门不适用：我方 main.py 已
@@ -21,7 +21,7 @@
 #   原注释 367 与旧期待值口径均已过期，以本条为准。
 #   ⚠️ 已知：我方配置价目表未填时，`test_capabilities_occupancy.py::
 #      test_priced_models_filled_and_unpriced_null` 会因「没有已填价模型」红 1 条
-#      （用例夹具自检；0009 2026-11-16 00:26 已与对方确认，属配置待补，非代码问题）。
+#      （用例夹具自检；已与对侧确认，属配置待补，非代码问题）。
 #
 # 🔭 两段口径（2026-11-20 起，P1b）——两者应给出**同一失败集合**：
 #   ① 主段「配置无关判据」＝临时树（只拷 routing.json + upstreams.json，**不拷 pricebook.json**）。
@@ -65,7 +65,7 @@ done
 # 我方完整版模块清单（缺一即 import 失败）
 # [2026-11-21 T1] 新增 router_live.py：admin_ui.py 顶层 import 它（/admin/live 路由），
 #   临时树缺此文件会让 admin_ui import 失败 ⇒ 必须一并拷进临时树。
-MODULES="main.py local_unavailable.py occupancy_host.py admin_ui.py api_keys.py router_plan.py router_strategies.py router_deciders.py router_shadow.py price_resolver.py router_live.py"
+MODULES="main.py price_state.py local_unavailable.py occupancy_host.py admin_ui.py api_keys.py router_plan.py router_strategies.py router_deciders.py router_shadow.py price_resolver.py router_live.py"
 for m in $MODULES; do
   [ -f "$SRC_ROOT/$m" ] || { echo "❌ 缺模块：$SRC_ROOT/$m" >&2; exit 2; }
 done

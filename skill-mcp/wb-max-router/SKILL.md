@@ -1,16 +1,16 @@
 ---
 name: wb-max-router
-description: 非 DSH 用户的 WB-Max 路由：收到「[WB-Max路由]」或用户要求用 WB 模型路由决策器时，调用网关生成分段计划，经用户确认后逐段执行。Use when the user says "[WB-Max路由]" or asks to route a task through the WB model routing gateway.
+description: 非 DSH 用户的 WB-GearPilot Max：收到「[WB-Max路由]」或用户要求用 WB-GearPilot 换挡决策器时，调用网关生成分段计划，经用户确认后逐段执行。Use when the user says "[WB-Max路由]" or asks to route a task through the WB-GearPilot switching gateway.
 ---
 
-# WB-Max 路由（非 DSH）
+# WB-GearPilot Max（非 DSH）
 
-本技能是 **WB 模型路由决策器（网关）** 的前端：计划来自网关，执行走网关 chat，账本由网关记录（P1 的 plan/annotation）。
+本技能是 **WB-GearPilot 换挡决策器（网关）** 的前端：计划来自网关，执行走网关 chat，账本由网关记录（P1 的 plan/annotation）。
 
 ## 触发
 
 - 用户消息含 `[WB-Max路由]`；
-- 或用户明确说“用 WB-Max 路由 / 用 WB 模型路由决策器跑这个任务”。
+- 或用户明确说“用 WB-GearPilot Max / 用 WB-GearPilot 换挡决策器跑这个任务”。
 
 ## 铁律
 
@@ -99,7 +99,7 @@ $NODE $CLI doctor     # exit 0 可达 / 2 不可达
 ## 输出格式
 
 ```text
-WB-Max 路由计划（策略：cost；3 段）
+WB-GearPilot Max计划（策略：cost；3 段）
 1. 分析 → model-a  context 1M  token≈...  金额不可用
 2. 实现 → model-b ...
 3. 验收 → model-c ...

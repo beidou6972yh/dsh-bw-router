@@ -32,7 +32,7 @@ _CACHE = {"mtime": None, "doc": None}
 _LOCK = threading.Lock()
 _INFLIGHT = {"count": 0}
 
-# [2026-11-21 用户令「接吧，同时对照跑 8 小时」] 支持多 decider 同时判定同一条流量：
+# [2026-11-21 约定「接吧，同时对照跑 8 小时」] 支持多 decider 同时判定同一条流量：
 # 配置写 `deciders: ["decider_b","decider_a"]` 即在同一条消息上并行跑多个判定、
 # 各写一行（行里带 decider 字段）；只写 `decider: "x"` 时行为与改前一致（单判定）。
 def decider_names(cfg: dict | None = None) -> list:

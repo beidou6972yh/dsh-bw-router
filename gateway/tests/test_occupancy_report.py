@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""occupancy_host 单元测试：逐条覆盖内部规格 v1.1-d2 §1.7 的 ①–⑭。
+"""occupancy_host 单元测试：逐条覆盖接口规格 §1.7 的 ①–⑭。
 
 不联网、不起监听端口、不写生产账本、不依赖真实时钟：
 - 时间一律注入 `now_ms`（基准常量 `BASE_MS`）；

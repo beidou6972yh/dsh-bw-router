@@ -3,15 +3,19 @@ import { readFileSync } from 'node:fs';
 
 export const inject = ['webServer'];
 const GATEWAY_BASE = (process.env.WB_GATEWAY_BASE || 'http://127.0.0.1:18790').replace(/\/+$/, '');
-const KEY_FILE = process.env.WB_GATEWAY_KEY_FILE || (process.env.DSH_HOME ? process.env.DSH_HOME + '/config/gateway.local.json' : '');
+// 公开件不内置任何部署路径/凭据文件名。鉴权只认显式注入的环境变量：
+//   WB_GATEWAY_API_KEY（直给）或 WB_GATEWAY_KEY_FILE（凭据 JSON 路径）。
+// 两者都没配时返回 null，proxy 会给出明确 503，不再静默发无鉴权请求（1.0.3.15 修）。
+const KEY_FILE = (process.env.WB_GATEWAY_KEY_FILE || '').trim();
 
 function gatewayKey() {
   const env = (process.env.WB_GATEWAY_API_KEY || '').trim();
   if (env) return env;
+  if (!KEY_FILE) return null;
   try {
     const doc = JSON.parse(readFileSync(KEY_FILE, 'utf8'));
-    return String(doc.token || doc.api_key || '').trim();
-  } catch { return ''; }
+    return String(doc.token || doc.api_key || '').trim() || null;
+  } catch { return null; }
 }
 
 function json(res, status, body) {
@@ -27,6 +31,8 @@ function readBody(req) {
 }
 async function proxy(path, method, body, extraHeaders) {
   const key = gatewayKey();
+  // 显式缺鉴权就 fail loud，不再静默发无鉴权请求（1.0.3.15 修；生产由部署方注入环境变量）
+  if (key === null) return { status: 503, data: { ok: false, error: 'gateway auth not configured (set WB_GATEWAY_API_KEY or WB_GATEWAY_KEY_FILE)' } };
   const headers = { accept: 'application/json', ...(extraHeaders || {}) };
   if (key) headers.authorization = `Bearer ${key}`;
   if (body !== undefined) headers['content-type'] = 'application/json';
@@ -102,7 +108,11 @@ export function apply(ctx) {
         const path = url.pathname.replace(/^\/wb-max/, '') || '/';
         const method = (req.method || 'GET').toUpperCase();
         try {
-          if (method === 'GET' && path === '/debug') { return json(res, 200, { ok: true, services: sessionDebug(ctx) }); }
+          if (method === 'GET' && path === '/debug') {
+            const key = gatewayKey();
+            if (key === null) return json(res, 503, { ok: false, error: 'gateway auth not configured' });
+            return json(res, 200, { ok: true, services: sessionDebug(ctx) });
+          }
           if (method === 'GET' && path === '/health') {
             const r = await proxy('/health', 'GET');
             return json(res, r.status, { ok: r.status === 200, gateway: r.data, base: GATEWAY_BASE });
@@ -111,11 +121,16 @@ export function apply(ctx) {
             const planId = String(url.searchParams.get('planId') || '').trim();
             const limit = Math.max(1, Math.min(200, Number(url.searchParams.get('limit') || 100) || 100));
             const r = await proxy(`/router/ledger?limit=${limit}`, 'GET');
+            // 1.0.3.15：缺鉴权/上游失败时透传状态码，不再硬编码 200+ok:true（工程侧三方核查 B3）
+            if (r.status !== 200) return json(res, r.status, r.data);
             let annotations = [];
-            try {
-              const file = process.env.WB_ANNOTATIONS_FILE || (process.env.DSH_HOME ? process.env.DSH_HOME + '/annotations.jsonl' : '');
-              annotations = readFileSync(file, 'utf8').split('\n').filter(Boolean).map((line) => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean).filter((row) => !planId || row.plan_id === planId).slice(-limit);
-            } catch {}
+            // 公开件不内置数据目录：annotations 为可选增强，只有显式配置 WB_ANNOTATIONS_FILE 才读取（1.0.3.15 修）
+            const file = (process.env.WB_ANNOTATIONS_FILE || '').trim();
+            if (file) {
+              try {
+                annotations = readFileSync(file, 'utf8').split('\n').filter(Boolean).map((line) => { try { return JSON.parse(line); } catch { return null; } }).filter(Boolean).filter((row) => !planId || row.plan_id === planId).slice(-limit);
+              } catch {}
+            }
             return json(res, 200, { ok: true, planId, filter: planId ? 'plan_id + 最近网关请求' : '最近网关请求', ledger: r.data?.data || r.data || [], annotations });
           }
           if (method === 'GET' && path === '/models') {
@@ -136,7 +151,7 @@ export function apply(ctx) {
             const body = await readBody(req);
             // 推荐策略模式透传（2026-11-17）：mode → 请求头 X-DSH-Route-Mode
             const mode = String(body?.mode || '').trim().toLowerCase();
-            // [2026-11-20 用户令] 决策模型开关：面板选择经 body.decider 透传为 X-WB-Decider（off|shadow|active）
+            // [2026-11-20 约定] 决策模型开关：面板选择经 body.decider 透传为 X-WB-Decider（off|shadow|active）
             const dec = String(body?.decider || '').trim().toLowerCase();
             const hdr = {};
             if (mode) hdr['X-DSH-Route-Mode'] = mode;

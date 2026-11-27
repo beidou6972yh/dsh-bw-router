@@ -506,7 +506,10 @@ export function declaredDocumentPath(declared) {
     return typeof declared === 'string' && declared.trim() !== '' ? declared : undefined;
 }
 /** Discovery is read-only and never fatal: a broken config is "no models yet". */
-const PRICE_FILE = `${process.env.DSH_HOME || '/opt/wb-router'}/config/wb-model-prices.json`;
+// 1.0.3.15：不再内置任何部署路径；DSH_HOME 缺失即显式报错，不留生产路径兜底
+const _dshHome = process.env.DSH_HOME;
+if (!_dshHome) throw new Error('DSH_HOME is required (set it to your deployment root)');
+const PRICE_FILE = `${_dshHome}/config/wb-model-prices.json`;
 let _priceCache = { mtime: -1, map: {} };
 async function priceOverrides() {
     try {

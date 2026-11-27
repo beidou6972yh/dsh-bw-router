@@ -11,7 +11,7 @@
 
 运行：
     python3 scripts/capability_from_pricebook.py --dry-run   # 只打印差异
-    python3 scripts/capability_from_pricebook.py --write     # 写回 routing.json（需用户令）
+    python3 scripts/capability_from_pricebook.py --write     # 写回 routing.json（需约定）
 """
 
 from __future__ import annotations

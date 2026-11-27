@@ -157,7 +157,7 @@ if __name__ == "__main__":
     unittest.main()
 
 class TestUnitPriceThreeDecimals(unittest.TestCase):
-    """2026-11-17 用户令：单位价（¥/百万 token）按小数点后 3 位计。"""
+    """2026-11-17 约定：单位价（¥/百万 token）按小数点后 3 位计。"""
 
     def test_effective_price_values_rounded_to_3(self):
         offer = {"id": "x", "price": {"input": {"offpeak": 2.0}, "output": {"offpeak": 8.0},

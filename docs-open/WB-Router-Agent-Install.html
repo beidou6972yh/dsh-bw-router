@@ -229,54 +229,12 @@
   </style>
 </head>
 <body>
-<nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#wb-模型路由网关-agent-安装说明可直接投喂给-agent"
-id="toc-wb-模型路由网关-agent-安装说明可直接投喂给-agent">WB
-模型路由网关 · Agent 安装说明（可直接投喂给 Agent）</a>
-<ul>
-<li><a href="#开工前先问用户三个问题一次问完别反复打扰"
-id="toc-开工前先问用户三个问题一次问完别反复打扰">1.
-开工前：先问用户三个问题（一次问完，别反复打扰）</a></li>
-<li><a href="#环境检查全部通过再往下" id="toc-环境检查全部通过再往下">2.
-环境检查（全部通过再往下）</a></li>
-<li><a href="#安装照抄root-改成用户选的目录"
-id="toc-安装照抄root-改成用户选的目录">3. 安装（照抄；<code>$ROOT</code>
-改成用户选的目录）</a>
-<ul>
-<li><a href="#解包" id="toc-解包">3.1 解包</a></li>
-<li><a href="#装依赖" id="toc-装依赖">3.2 装依赖</a></li>
-<li><a href="#写配置两处必改改前先备份"
-id="toc-写配置两处必改改前先备份">3.3
-写配置（两处必改，改前先备份）</a></li>
-<li><a href="#放密钥只进环境变量" id="toc-放密钥只进环境变量">3.4
-放密钥（只进环境变量）</a></li>
-<li><a href="#启动" id="toc-启动">3.5 启动</a></li>
-<li><a href="#自检另开终端" id="toc-自检另开终端">3.6
-自检（另开终端）</a></li>
-<li><a href="#真调一次会花一点钱先问用户同意"
-id="toc-真调一次会花一点钱先问用户同意">3.7
-真调一次（会花一点钱，先问用户同意）</a></li>
-</ul></li>
-<li><a href="#可选管理面板与密钥" id="toc-可选管理面板与密钥">4.
-可选：管理面板与密钥</a></li>
-<li><a href="#完成判据4-条全过才算装好"
-id="toc-完成判据4-条全过才算装好">5. 完成判据（4
-条全过才算装好）</a></li>
-<li><a href="#禁止事项违反即视为任务失败"
-id="toc-禁止事项违反即视为任务失败">6.
-禁止事项（违反即视为任务失败）</a></li>
-<li><a href="#出问题怎么处理" id="toc-出问题怎么处理">7.
-出问题怎么处理</a></li>
-<li><a href="#回滚" id="toc-回滚">8. 回滚</a></li>
-<li><a href="#交给用户的回报格式就用这-6-行别多写"
-id="toc-交给用户的回报格式就用这-6-行别多写">9.
-交给用户的回报格式（就用这 6 行，别多写）</a></li>
-</ul></li>
-</ul>
-</nav>
-<h1 id="wb-模型路由网关-agent-安装说明可直接投喂给-agent">WB
-模型路由网关 · Agent 安装说明（可直接投喂给 Agent）</h1>
+<header id="title-block-header">
+<h1 class="title">WB-Router-Agent-Install</h1>
+</header>
+<h1
+id="wb驭档模型智能换挡系统网关-agent-安装说明可直接投喂给-agent">WB驭档·模型智能换挡系统网关
+· Agent 安装说明（可直接投喂给 Agent）</h1>
 <blockquote>
 <p><strong>给 Agent
 的话</strong>：这是一份可执行安装任务书。请严格按步骤做，每步有「期望」与「失败怎么办」。
@@ -298,7 +256,7 @@ id="toc-交给用户的回报格式就用这-6-行别多写">9.
 <tbody>
 <tr class="odd">
 <td>产品</td>
-<td>WB 模型路由网关 v1.0.3.9（OpenAI 兼容，自托管）</td>
+<td>WB驭档·模型智能换挡系统网关 v1.0.3.15（OpenAI 兼容，自托管）</td>
 </tr>
 <tr class="even">
 <td>用户画像</td>
@@ -306,7 +264,7 @@ id="toc-交给用户的回报格式就用这-6-行别多写">9.
 </tr>
 <tr class="odd">
 <td>交付包</td>
-<td><code>gateway-1.0.3.9.tar.gz</code>、<code>plugins-1.0.3.9.tar.gz</code>、<code>skill-mcp-1.0.3.9.tar.gz</code></td>
+<td><code>gateway-1.0.3.15.tar.gz</code>、<code>plugins-1.0.3.15.tar.gz</code>、<code>skill-mcp-1.0.3.15.tar.gz</code></td>
 </tr>
 <tr class="even">
 <td>完成判据</td>
@@ -377,9 +335,9 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">ROOT</span><span class="op">=</span>~/wb-router</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span> <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$ROOT</span><span class="st">&quot;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.9.tar.gz</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.9.tar.gz</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.9.tar.gz</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> gateway-1.0.3.15.tar.gz</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> plugins-1.0.3.15.tar.gz</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> skill-mcp-1.0.3.15.tar.gz</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>    <span class="co"># 期望：gateway  plugins  skill-mcp</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-f</span> gateway/main.py <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="at">-d</span> gateway/config <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> PKG_OK</span></code></pre></div>
 <h3 id="装依赖">3.2 装依赖</h3>
@@ -440,9 +398,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="
 ref」，然后停在前台不返回（这就是在跑）。用 <code>Ctrl+C</code>
 可停。</p>
 <blockquote>
-<p>需要常驻时，交给用户环境里现成的进程管理器（supervisor 服务名建议
-<code>router-gateway</code>，systemd
-单元同理）；<strong>不要</strong>自己发明开机自启方式。</p>
+<p>需要常驻时，交给用户环境里现成的进程管理器（服务名按你的部署环境自定义）；<strong>不要</strong>自己发明开机自启方式。</p>
 </blockquote>
 <h3 id="自检另开终端">3.6 自检（另开终端）</h3>
 <div class="sourceCode" id="cb9"><pre
@@ -556,7 +512,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href=
 怎么用：在 DSH 里选 auto / auto-fast / auto-strong，先「生成计划」再「确认开工」
 出问题先看：日志 logs/，或把 /health 的输出发我</code></pre>
 <hr />
-<p><em>版本 1.0.3.9；更多细节见同目录《使用说明书》（26 页）与包内
-<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.9/</code>。</em></p>
+<p><em>版本 1.0.3.15；更多细节见同目录《使用说明书》（28 页）与包内
+<code>gateway/README.md</code>、<code>gateway/docs-1.0.3.15/</code>。</em></p>
 </body>
 </html>

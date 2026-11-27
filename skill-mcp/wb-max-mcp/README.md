@@ -1,6 +1,6 @@
 # wb-max-mcp
 
-WB 模型路由决策器的 MCP stdio server + CLI（无第三方依赖，Node >=20）。
+WB-GearPilot 换挡决策器的 MCP stdio server + CLI（无第三方依赖，Node >=20）。
 
 ## 工具
 
@@ -17,10 +17,10 @@ WB 模型路由决策器的 MCP stdio server + CLI（无第三方依赖，Node >
   "mcpServers": {
     "wb-max": {
       "command": "node",
-      "args": ["/opt/wb-router/tools/wb-max-mcp/server.mjs"],
+      "args": ["<你的部署目录>/tools/wb-max-mcp/server.mjs"],
       "env": {
         "WB_GATEWAY_URL": "http://127.0.0.1:18790",
-        "WB_GATEWAY_KEY_FILE": "/opt/wb-router/config/wb-remote.json"
+        "WB_GATEWAY_KEY_FILE": "<你的部署目录>/config/<凭据文件>"
       }
     }
   }

@@ -323,7 +323,7 @@ export class Ledger {
         this.prefillCost = 0;
     }
 }
-/** Money inside `detail` strings: `¥` + 3 decimals (261117 口径；数值字段仍保留全精度). */
+/** Money inside `detail` strings: `¥` + 3 decimals (早期口径；数值字段仍保留全精度). */
 function fmt(value) {
     return value === null ? 'null' : value.toFixed(3);
 }
